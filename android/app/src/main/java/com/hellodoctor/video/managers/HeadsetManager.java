@@ -1,6 +1,6 @@
 package com.hellodoctor.video.managers;
 
-import static com.hellodoctormx.device.EventManager.EVENT_WIRED_HEADSET;
+import static com.hellodoctor.video.managers.EventManager.EVENT_WIRED_HEADSET;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -49,8 +49,8 @@ public class HeadsetManager {
                         deviceName = "";
                     }
                     WritableMap data = Arguments.createMap();
-                    data.putBoolean("isPlugged", (intent.getIntExtra("state", 0) == 1) ? true : false);
-                    data.putBoolean("hasMic", (intent.getIntExtra("microphone", 0) == 1) ? true : false);
+                    data.putBoolean("isPlugged", intent.getIntExtra("state", 0) == 1);
+                    data.putBoolean("hasMic", intent.getIntExtra("microphone", 0) == 1);
                     data.putString("deviceName", deviceName);
                     eventManager.sendEvent(EVENT_WIRED_HEADSET, data);
                 }

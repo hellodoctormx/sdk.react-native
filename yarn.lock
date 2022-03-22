@@ -1057,6 +1057,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@notifee/react-native@^5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-5.0.2.tgz#c5de6bc602d8ca4205fe9aebcf1b1be63b89789f"
+  integrity sha512-TYfVEdKHVG8d/+bnScs3iIAycGDbUQkkgepT5NS90kWb2aQbXFnUHc3Z9sdkg/PVWkvt9fFLnOtFFL5AzCu67Q==
+
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-6.0.0.tgz#ef9eb1268d85c1bd3caf2c4d36dc350bb080f254"
@@ -5460,6 +5465,11 @@ react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-native-callkeep@^4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/react-native-callkeep/-/react-native-callkeep-4.3.2.tgz#5cfd999551861cd07643c6da8170ce33194eb945"
+  integrity sha512-F2iO9Kil71dWxocYv0wEBHqdxjKjodf/sLrK0wGMoECyTXAjeDhYlprYyTSZcXX1M6vYhgGZeTtBrTZ7ZjLaFA==
 
 react-native-codegen@^0.0.8:
   version "0.0.8"
