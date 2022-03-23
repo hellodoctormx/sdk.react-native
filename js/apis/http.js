@@ -1,12 +1,12 @@
-import auth from "@react-native-firebase/auth";
+import {getCurrentUser} from "../users/auth";
 
-export default class BaseAPI {
+export default class Http {
     constructor(host) {
         this.host = host;
     }
 
     async getRequestHeaders(headers) {
-        const userToken = await auth().currentUser.getIdToken();
+        const userToken = getCurrentUser().getJWT();
 
         headers = headers || {};
 

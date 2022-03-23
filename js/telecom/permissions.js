@@ -16,12 +16,6 @@ export async function checkVideoCallPermissions(shouldRequest) {
     return cameraPermissionGranted && microphonePermissionGranted;
 }
 
-function checkPermissionsGranted(permissions) {
-    const hasRequiredPermissionsPromises = permissions.map(checkPermissionGranted);
-
-    return Promise.all(hasRequiredPermissionsPromises).then(results => results.every(r => r === true));
-}
-
 function checkPermissionGranted(permission, shouldRequest) {
     const handlePermissionResult = result => {
         console.debug(`[handlePermissionResult:${permission}]`, {result});

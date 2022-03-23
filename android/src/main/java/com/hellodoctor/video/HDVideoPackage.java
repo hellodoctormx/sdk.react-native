@@ -12,7 +12,7 @@ import java.util.List;
 public class HDVideoPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Collections.singletonList(getTwilioVideoInstance(reactContext));
+        return Collections.singletonList(getHDVideoInstance(reactContext));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class HDVideoPackage implements ReactPackage {
         return viewManagers;
     }
 
-    private synchronized HDVideo getTwilioVideoInstance(ReactApplicationContext reactContext) {
+    private synchronized HDVideo getHDVideoInstance(ReactApplicationContext reactContext) {
         return HDVideo.getInstance(reactContext);
     }
 }

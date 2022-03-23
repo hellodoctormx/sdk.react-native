@@ -1,7 +1,7 @@
 import React from "react";
 import {Animated, Dimensions} from "react-native";
 import withVideoCallPermissions from "./withVideoCallPermissions";
-import {LocalVideoView} from "../HDVideo";
+import {LocalVideoView} from "./native";
 
 function PreviewLocalVideoView() {
     const [isEnabled, setIsEnabled] = React.useState(false);

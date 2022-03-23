@@ -23,7 +23,6 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.hellodoctor.video.managers.EventManager;
@@ -46,6 +45,7 @@ import com.twilio.video.VideoView;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -203,13 +203,6 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         this.sendEvent("localViewStatus", data);
     }
 
-    @ReactMethod
-    public void startLocalCapture(Promise promise) {
-        prepareLocalMedia();
-
-        promise.resolve("");
-    }
-
     public void prepareLocalMedia() {
         prepareLocalAudio();
         prepareLocalVideo();
@@ -233,13 +226,6 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         }
     }
 
-    @ReactMethod
-    public void stopLocalCapture(Promise promise) {
-//        stopLocalCapture();
-
-        promise.resolve("");
-    }
-
     public void stopLocalCapture() {
         if (cameraCapturer != null) {
             cameraCapturer.stopCapture();
@@ -248,9 +234,7 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         }
     }
 
-
-    @ReactMethod
-    public void connect(String roomName, String accessToken, Promise promise) {
+    public Room connect(String roomName, String accessToken) {
         prepareLocalMedia();
 
         ConnectOptions connectOptions = new ConnectOptions.Builder(accessToken)
@@ -275,36 +259,22 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
 
         setScreenAlwaysOn(true);
 
-        WritableMap map = Arguments.createMap();
-        map.putString("name", this.mRoom.getName());
-        map.putString("sid", this.mRoom.getSid());
-        map.putString("state", this.mRoom.getState().name());
-
-        promise.resolve(map);
+        return mRoom;
     }
 
-    @ReactMethod
-    public void isConnectedToRoom(String roomName, Promise promise) {
-        promise.resolve(mRoom != null && mRoom.getName().equals(roomName));
+    public boolean isConnectedToRoom(String roomName) {
+        return mRoom != null && mRoom.getName().equals(roomName);
     }
 
-    @ReactMethod
-    public void getRemoteParticipants(Promise promise) {
+    public List<RemoteParticipant> getRemoteParticipants() {
         if (mRoom == null) {
-            promise.resolve(null);
+            return Collections.emptyList();
         } else {
-            WritableArray remoteParticipantIdentities = Arguments.createArray();
-
-            for (RemoteParticipant remoteParticipant : mRoom.getRemoteParticipants()) {
-                remoteParticipantIdentities.pushString(remoteParticipant.getIdentity());
-            }
-
-            promise.resolve(remoteParticipantIdentities);
+            return mRoom.getRemoteParticipants();
         }
     }
 
-    @ReactMethod
-    public void disconnect(Promise promise) {
+    public void disconnect() {
         this.unsetAudioFocus();
 
         setScreenAlwaysOn(false);
@@ -327,23 +297,17 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         }
 
         mRemoteVideoViews.clear();
-
-        promise.resolve("disconnected");
     }
 
-    @ReactMethod
-    public void reject(Promise promise) {
+    public void reject() {
         SoundPoolManager.getInstance(getReactApplicationContext()).stopRinging();
         WritableMap params = Arguments.createMap();
         eventManager.sendEvent("connectionDidDisconnect", params);
-        promise.resolve("");
     }
 
-    @ReactMethod
-    public void setVideoPublished(Boolean published, Promise promise) {
+    public void setVideoPublished(Boolean published) throws Exception {
         if (mRoom == null || mRoom.getLocalParticipant() == null || mLocalVideoTrack == null) {
-            promise.reject(new Error("no room and/or local participant and/or local video track"));
-            return;
+            throw new Exception("no room and/or local participant and/or local video track");
         }
 
         LocalParticipant localParticipant = mRoom.getLocalParticipant();
@@ -353,36 +317,25 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         } else {
             localParticipant.unpublishTrack(mLocalVideoTrack);
         }
-
-        promise.resolve("");
     }
 
-    @ReactMethod
-    public void setVideoEnabled(Boolean enabled, Promise promise) {
+    public void setVideoEnabled(Boolean enabled) throws Exception {
         if (mLocalVideoTrack == null) {
-            promise.reject(new Error("local video track was destroyed"));
-            return;
+            throw new Exception("local video track was destroyed");
         }
 
         mLocalVideoTrack.enable(enabled);
-
-        promise.resolve("");
     }
 
-    @ReactMethod
-    public void setAudioEnabled(Boolean enabled, Promise promise) {
+    public void setAudioEnabled(Boolean enabled) throws Exception {
         if (mLocalAudioTrack == null) {
-            promise.reject(new Error("local audio track was destroyed"));
-            return;
+            throw new Exception("local audio track was destroyed");
         }
 
         mLocalAudioTrack.enable(enabled);
-
-        promise.resolve("");
     }
 
-    @ReactMethod
-    public void flipCamera(Promise promise) {
+    public void flipCamera() {
         String currentCameraID = cameraCapturer.getCameraId();
 
         if (currentCameraID.equals(getFrontCameraId()) && getBackCameraId() != null) {
@@ -390,22 +343,20 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         } else if (getFrontCameraId() != null){
             cameraCapturer.switchCamera(getFrontCameraId());
         }
-
-        promise.resolve("");
     }
 
-    @ReactMethod
-    public void setSpeakerPhone(Boolean value, Promise promise) {
-        if (setSpeakerPhone(value)) {
-            promise.resolve("");
-        } else {
-            promise.reject(new Error("could not set speaker phone"));
+    public boolean setSpeakerPhone(Boolean value) {
+        if (audioManager == null) {
+            return false;
         }
+
+        setAudioFocus();
+        audioManager.setSpeakerphoneOn(value);
+
+        return true;
     }
 
-    @SuppressLint("WrongConstant")
-    @ReactMethod
-    public void wakeMainActivity(Promise promise) {
+    public void wakeMainActivity() {
         Context context = getContext();
 
         String packageName = context.getApplicationContext().getPackageName();
@@ -423,22 +374,9 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
 
             getReactApplicationContext().startActivity(focusIntent);
         }
-
-        promise.resolve("");
     }
 
-    public boolean setSpeakerPhone(Boolean value) {
-        if (audioManager == null) {
-            return false;
-        }
-
-        setAudioFocus();
-        audioManager.setSpeakerphoneOn(value);
-
-        return true;
-    }
-
-    private void setScreenAlwaysOn(Boolean alwaysOn) {
+    void setScreenAlwaysOn(Boolean alwaysOn) {
         Activity currentActivity = this.getContext().getCurrentActivity();
 
         if (currentActivity == null) {
@@ -491,7 +429,7 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
     }
 
-    private void unsetAudioFocus() {
+    void unsetAudioFocus() {
         if (audioManager == null) {
             return;
         }
@@ -505,7 +443,7 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         }
     }
 
-    private String getFrontCameraId() {
+    String getFrontCameraId() {
         for (String deviceName : camera1Enumerator.getDeviceNames()) {
             if (camera1Enumerator.isFrontFacing(deviceName)) {
                 return deviceName;
@@ -515,7 +453,7 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         return null;
     }
 
-    private String getBackCameraId() {
+    String getBackCameraId() {
         for (String deviceName : camera1Enumerator.getDeviceNames()) {
             if (camera1Enumerator.isBackFacing(deviceName)) {
                 return deviceName;

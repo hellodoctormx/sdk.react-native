@@ -1,11 +1,9 @@
 import _ from "lodash";
 import React from "react";
 import {Animated, Dimensions, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome5";
-import MDIcon from "react-native-vector-icons/MaterialCommunityIcons";
-import IOIcon from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/Ionicons";
 
-import {HDVideo, hdVideoEvents} from "../HDVideo";
+import {HDVideoCall, hdVideoEvents} from "../HDVideo";
 
 export default function HDVideoCallActions(props) {
     const [areControlsHidden, setAreControlsHidden] = React.useState(false);
@@ -15,8 +13,8 @@ export default function HDVideoCallActions(props) {
     const [currentCameraDirection, setCurrentCameraDirection] = React.useState("front");
     const [videoCallStatus, setVideoCallStatus] = React.useState(props.videoCallStatus);
 
-    const toggleLocalVideoStateIconName = isLocalVideoEnabled ? "video-outline" : "video-off-outline";
-    const toggleLocalAudioStateIconName = isLocalAudioEnabled ? "microphone-outline" : "microphone-off";
+    const toggleLocalVideoStateIconName = isLocalVideoEnabled ? "videocam-outline" : "videocam-off-outline";
+    const toggleLocalAudioStateIconName = isLocalAudioEnabled ? "mic-outline" : "mic-off-outline";
 
     const automaticCloseHandleRef = React.useRef(0);
     const controlsOpacity = React.useRef(new Animated.Value(1)).current;
@@ -47,18 +45,18 @@ export default function HDVideoCallActions(props) {
     });
 
     async function flipCameraDirection() {
-        await HDVideo.flipCamera();
+        await HDVideoCall.flipCamera();
 
         setCurrentCameraDirection(currentCameraDirection === "back" ? "front" : "back");
     }
 
     function toggleLocalVideoState() {
-        HDVideo.setLocalVideoEnabled(!isLocalVideoEnabled);
+        HDVideoCall.setLocalVideoEnabled(!isLocalVideoEnabled);
         setIsLocalVideoEnabled(!isLocalVideoEnabled)
     }
 
     async function toggleLocalAudioState() {
-        HDVideo.setLocalAudioEnabled(!isLocalAudioEnabled);
+        HDVideoCall.setLocalAudioEnabled(!isLocalAudioEnabled);
         setIsLocalAudioEnabled(!isLocalAudioEnabled);
     }
 
@@ -92,8 +90,7 @@ export default function HDVideoCallActions(props) {
         <View style={{margin: 12}}>
             <Pressable onPress={props.onPress} disabled={props.disabled} style={{height: props.size, width: props.size, borderRadius: props.size, alignItems: "center", justifyContent: "center"}}>
                 <View style={{position: "absolute", height: props.size, width: props.size, borderRadius: props.size, backgroundColor: "#444444", opacity: 0.4}}/>
-                {props.icon && <MDIcon name={props.icon} size={32} color={"white"} style={props.iconStyle}/>}
-                {props.ioIcon && <IOIcon name={props.ioIcon} size={32} color={"white"} style={props.iconStyle}/>}
+                <Icon name={props.icon} size={32} color={"white"} style={props.iconStyle}/>
             </Pressable>
         </View>
     );
@@ -110,7 +107,7 @@ export default function HDVideoCallActions(props) {
                     <ToggleAction onPress={props.onEndCall} disabled={areControlsHidden} size={64} color={"#C52723"} icon={"phone"} iconStyle={{transform: [{ rotate: "135deg"}]}}/>
                     <ToggleAction onPress={toggleLocalVideoState} disabled={areControlsHidden} icon={toggleLocalVideoStateIconName}/>
                     <ToggleAction onPress={toggleLocalAudioState} disabled={areControlsHidden} icon={toggleLocalAudioStateIconName}/>
-                    <ToggleAction onPress={flipCameraDirection} disabled={areControlsHidden} ioIcon={"ios-camera-reverse"}/>
+                    <ToggleAction onPress={flipCameraDirection} disabled={areControlsHidden} icon={"ios-camera-reverse"}/>
                 </View>
             </View>
             <Animated.View style={{height: Animated.multiply(controlsOpacity, 64)}}/>
@@ -121,15 +118,15 @@ export default function HDVideoCallActions(props) {
         <Animated.View style={{flex: 1, opacity: controlsOpacity, alignItems: "flex-end"}}>
             <View style={{flex: 1, alignItems: "center", justifyContent: "space-around", backgroundColor: "#000000"}}>
                 <TouchableOpacity onPress={toggleLocalVideoState} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 12}}>
-                    <MDIcon name={toggleLocalVideoStateIconName} size={42} color={"white"}/>
+                    <Icon name={toggleLocalVideoStateIconName} size={42} color={"white"}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={toggleLocalAudioState} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 12}}>
-                    <MDIcon name={toggleLocalAudioStateIconName} size={42} color={"white"}/>
+                    <Icon name={toggleLocalAudioStateIconName} size={42} color={"white"}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={flipCameraDirection} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 12}}>
-                    <Icon name={"sync"} size={42} color={"white"}/>
+                    <Icon name={"ios-camera-reverse"} size={42} color={"white"}/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={props.onEndCall} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 24}}>
                     <View style={{

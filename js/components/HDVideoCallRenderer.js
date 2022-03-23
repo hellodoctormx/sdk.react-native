@@ -4,9 +4,9 @@ import {Animated, Dimensions, Platform, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import withVideoCallPermissions from "./withVideoCallPermissions";
-import {setDidNavigateToVideoCall} from "../services/calls";
 import HDVideoCallActions from "./HDVideoCallActions";
-import {HDVideo, hdVideoEvents, LocalVideoView, RemoteVideoView} from "../HDVideo";
+import {hdVideoEvents, LocalVideoView, RemoteVideoView} from "./native";
+import * as activeCallManager from "../telecom/activeCallManager";
 
 function HDVideoCallRenderer(props) {
     const {videoRoomSID, accessToken, consultationID} = props;
@@ -192,7 +192,7 @@ function HDVideoCallRenderer(props) {
 
         // just making sure that if we've gotten to this point, we should definitely clear out any initial navigation params
         // resetInitialNavigation(); TODO does this need to be implemented here?
-        setDidNavigateToVideoCall(false);
+        // setDidNavigateToVideoCall(false); FIXME probably need to do something in the app code about this
 
         const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", handleConnectedToRoomEvent);
 
@@ -219,7 +219,7 @@ function HDVideoCallRenderer(props) {
 
             clearTimeout(remoteParticipantRenderCheckTimeoutRef.current);
 
-            HDVideo
+            activeCallManager
                 .disconnect()
                 .catch(error => console.warn(`error disconnecting from video room ${videoRoomSID}: ${JSON.stringify(error)}`))
         }
@@ -235,7 +235,7 @@ function HDVideoCallRenderer(props) {
 
         accessTokenRef.current = accessToken;
 
-        HDVideo
+        activeCallManager
             .connect(videoRoomSID, accessToken)
             .catch(error => console.warn(`error connecting to video room ${videoRoomSID}: ${JSON.stringify(error)}`))
     }
