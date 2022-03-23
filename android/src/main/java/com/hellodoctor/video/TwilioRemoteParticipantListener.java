@@ -18,11 +18,11 @@ import com.twilio.video.VideoView;
 
 
 public class TwilioRemoteParticipantListener implements RemoteParticipant.Listener {
-    private String TAG = "TwilioRemoteParticipantListener";
+    private final String TAG = "RemotePartyListener";
 
-    private com.hellodoctor.video.HDVideo mTwilioVideo;
+    private final HDVideo mTwilioVideo;
 
-    TwilioRemoteParticipantListener(com.hellodoctor.video.HDVideo twilioVideo) {
+    TwilioRemoteParticipantListener(HDVideo twilioVideo) {
         mTwilioVideo = twilioVideo;
     }
 

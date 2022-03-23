@@ -25,9 +25,9 @@ public class HDVideoPortalViewManager extends SimpleViewManager<HDVideoPortalVie
     @Nonnull
     @Override
     protected HDVideoPortalView createViewInstance(@Nonnull ThemedReactContext reactContext) {
-        HDVideoPortalView portalView = new HDVideoPortalView(reactContext, mContext);
+        HDVideoPortalView portalView = new HDVideoPortalView(reactContext);
 
-        com.hellodoctor.video.HDVideo hdVideo = com.hellodoctor.video.HDVideo.getInstance(mContext);
+        HDVideo hdVideo = HDVideo.getInstance(mContext);
         hdVideo.setPortalView(portalView);
 
         return portalView;
@@ -35,7 +35,7 @@ public class HDVideoPortalViewManager extends SimpleViewManager<HDVideoPortalVie
 
     @ReactProp(name = "participantSID")
     public void setParticipantSID(HDVideoRemoteView view, String participantSID) {
-        com.hellodoctor.video.HDVideo hdVideo = com.hellodoctor.video.HDVideo.getInstance(mContext);
+        HDVideo hdVideo = HDVideo.getInstance(mContext);
         hdVideo.setPortalParticipantIdentity(participantSID);
     }
 }

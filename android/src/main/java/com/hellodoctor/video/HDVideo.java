@@ -563,4 +563,3 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         this.unsetAudioFocus();
     }
 }
-

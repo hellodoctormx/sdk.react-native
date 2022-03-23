@@ -1057,11 +1057,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@notifee/react-native@^5.0.2":
-  version "5.0.2"
-  resolved "https://registry.yarnpkg.com/@notifee/react-native/-/react-native-5.0.2.tgz#c5de6bc602d8ca4205fe9aebcf1b1be63b89789f"
-  integrity sha512-TYfVEdKHVG8d/+bnScs3iIAycGDbUQkkgepT5NS90kWb2aQbXFnUHc3Z9sdkg/PVWkvt9fFLnOtFFL5AzCu67Q==
-
 "@react-native-community/cli-debugger-ui@^6.0.0-rc.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-6.0.0.tgz#ef9eb1268d85c1bd3caf2c4d36dc350bb080f254"
@@ -5479,6 +5474,11 @@ react-native-codegen@^0.0.8:
     flow-parser "^0.121.0"
     jscodeshift "^0.11.0"
     nullthrows "^1.1.1"
+
+react-native-permissions@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-3.3.1.tgz#8a359d9c0531afcde2f642a459b48c4c1e3e8f2d"
+  integrity sha512-Ap9nVWBWJ7lyU6Ye3Qltm2V+Ut6XjDcs+6ZBmK1UUxcCoSSGx/mQg2GbMJLjlnoVtUgVHR3IhyZ0mN9DlMPRFQ==
 
 react-native@0.67.4:
   version "0.67.4"

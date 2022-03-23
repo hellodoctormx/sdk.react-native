@@ -18,14 +18,14 @@ public class HDVideoPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
-        viewManagers.add(new com.hellodoctor.video.HDVideoLocalViewManager(reactContext));
+        viewManagers.add(new HDVideoLocalViewManager(reactContext));
         viewManagers.add(new HDVideoRemoteViewManager(reactContext));
-        viewManagers.add(new com.hellodoctor.video.HDVideoPortalViewManager(reactContext));
+        viewManagers.add(new HDVideoPortalViewManager(reactContext));
 
         return viewManagers;
     }
 
-    private synchronized com.hellodoctor.video.HDVideo getTwilioVideoInstance(ReactApplicationContext reactContext) {
-        return com.hellodoctor.video.HDVideo.getInstance(reactContext);
+    private synchronized HDVideo getTwilioVideoInstance(ReactApplicationContext reactContext) {
+        return HDVideo.getInstance(reactContext);
     }
 }

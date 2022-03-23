@@ -6,7 +6,7 @@ import com.facebook.react.uimanager.ThemedReactContext;
 
 import javax.annotation.Nonnull;
 
-public class HDVideoLocalViewManager extends SimpleViewManager<com.hellodoctor.video.HDVideoLocalView> {
+public class HDVideoLocalViewManager extends SimpleViewManager<HDVideoLocalView> {
     private static final String REACT_CLASS = "HDVideoLocalView";
 
     private ReactApplicationContext mContext;
@@ -23,10 +23,10 @@ public class HDVideoLocalViewManager extends SimpleViewManager<com.hellodoctor.v
 
     @Nonnull
     @Override
-    protected com.hellodoctor.video.HDVideoLocalView createViewInstance(@Nonnull ThemedReactContext reactContext) {
-        com.hellodoctor.video.HDVideoLocalView localView = new com.hellodoctor.video.HDVideoLocalView(reactContext, mContext);
+    protected HDVideoLocalView createViewInstance(@Nonnull ThemedReactContext reactContext) {
+        HDVideoLocalView localView = new HDVideoLocalView(reactContext);
 
-        com.hellodoctor.video.HDVideo hdVideo = com.hellodoctor.video.HDVideo.getInstance(mContext);
+        HDVideo hdVideo = HDVideo.getInstance(mContext);
         hdVideo.setLocalView(localView);
 
         return localView;

@@ -3,15 +3,12 @@ package com.hellodoctor.video;
 import android.view.Gravity;
 import android.widget.FrameLayout;
 
-import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.twilio.video.VideoScaleType;
 import com.twilio.video.VideoView;
 
 public class HDVideoRemoteView extends VideoView {
-    private static final String TAG = "HDVideoRemoteView";
-
-    public HDVideoRemoteView(ThemedReactContext themedReactContext, ReactApplicationContext reactContext) {
+    public HDVideoRemoteView(ThemedReactContext themedReactContext) {
         super(themedReactContext);
 
         setMirror(true);

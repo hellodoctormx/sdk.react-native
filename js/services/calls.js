@@ -9,19 +9,20 @@ import auth from "@react-native-firebase/auth";
 import firestore from "@react-native-firebase/firestore";
 import notifee from "@notifee/react-native";
 
-import {logError} from "../device/logging";
-import * as NavigationService from "../utils/NavigationService";
-import {getCurrentRoute} from "../utils/NavigationService";
-import {HDVideo} from "../router/authenticated/VideoCallStack/components/HDVideo";
-import VideoService from "../router/authenticated/VideoCallStack/service";
-import {getIncomingCallNotification} from "../notifications/builders/calls";
-import {firebaseListeners} from "../utils/Listeners";
-import {getThisDeviceSnapshot} from "../device";
-import Config from "react-native-config";
-import {getCurrentUserRef, getCurrentUserRole} from "../utils/user";
+import {HDVideo} from "../HDVideo";
+import VideoService from "./api";
 import Permissions, {PERMISSIONS} from "react-native-permissions";
 import DeviceInfo from "react-native-device-info";
 import AsyncStorage from "@react-native-community/async-storage";
+
+const NavigationService = {};
+const logError = console.warn;
+const getCurrentRoute = () => {};
+const getIncomingCallNotification = () => {};
+const firebaseListeners = {};
+const getThisDeviceSnapshot = () => {};
+const getCurrentUserRef = () => {};
+const getCurrentUserRole = () => {};
 
 const calls = [];
 const callListeners = [];

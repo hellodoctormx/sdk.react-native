@@ -12,11 +12,11 @@ import com.twilio.video.Room;
 import com.twilio.video.TwilioException;
 
 public class TwilioRoomListener implements Room.Listener {
-    private com.hellodoctor.video.HDVideo hdVideo;
+    private final HDVideo hdVideo;
 
     private static final String TAG = "TwilioRoomListener";
 
-    TwilioRoomListener(com.hellodoctor.video.HDVideo twilioVideo) {
+    TwilioRoomListener(HDVideo twilioVideo) {
         hdVideo = twilioVideo;
     }
 
