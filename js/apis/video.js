@@ -1,5 +1,4 @@
 import Http from "./http";
-import {unregisterApnsToken} from "../telecom/eventHandlers";
 
 // const videoServiceHost = Config.VideoServiceHost;
 // const videoServiceHost = "https://video-service-3o7jotw3dq-uc.a.run.app";
@@ -30,11 +29,11 @@ export default class VideoServiceAPI {
         return VideoServiceAPI.http.post(`/reject-call`, {videoRoomSID});
     }
 
-    static registerApnsToken(token) {
+    static async registerApnsToken(token) {
 
     }
 
-    static unregisterApnsToken() {
+    static async unregisterApnsToken() {
 
     }
 }

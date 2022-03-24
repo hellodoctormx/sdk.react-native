@@ -4,7 +4,9 @@ import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
+import com.hellodoctor.video.callkeep.RNCallKeepModule;
 
+import java.lang.annotation.Native;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -12,7 +14,11 @@ import java.util.List;
 public class HDVideoPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Collections.singletonList(getHDVideoInstance(reactContext));
+        List<NativeModule> nativeModules = new ArrayList<>();
+        nativeModules.add(HDVideoModule.getInstance(reactContext));
+        nativeModules.add(RNCallKeepModule.getInstance(reactContext, true));
+
+        return nativeModules;
     }
 
     @Override
@@ -23,9 +29,5 @@ public class HDVideoPackage implements ReactPackage {
         viewManagers.add(new HDVideoPortalViewManager(reactContext));
 
         return viewManagers;
-    }
-
-    private synchronized HDVideo getHDVideoInstance(ReactApplicationContext reactContext) {
-        return HDVideo.getInstance(reactContext);
     }
 }

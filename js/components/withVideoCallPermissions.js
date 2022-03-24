@@ -1,7 +1,7 @@
 import React from "react";
 import {Animated, AppState, Dimensions, Linking, Text, TouchableOpacity, View} from "react-native";
 import {checkVideoCallPermissions} from "../telecom/permissions";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Icon from "react-native-vector-icons/Ionicons";
 import HDLogo from "./HDLogo";
 
 export default function withVideoCallPermissions(WrappedComponent) {
@@ -45,11 +45,11 @@ export default function withVideoCallPermissions(WrappedComponent) {
                 {hasVideoCallPermissions && <WrappedComponent {...props}/>}
                 {hasVideoCallPermissions === null && <View style={{height: screenHeight, backgroundColor: "black", padding: 12}}/>}
                 {!hasVideoCallPermissions && (
-                    <View isHidden={hasVideoCallPermissions} style={{flex: 1, backgroundColor: "#0062B2", padding: 12, opacity: opacityRef.current}}>
+                    <Animated.View isHidden={hasVideoCallPermissions} style={{flex: 1, backgroundColor: "#0062B2", padding: 12, opacity: opacityRef.current}}>
                         <HDLogo size={42} white={true} containerStyle={{alignItems: "center"}}/>
                         <View style={{flex: 1, marginTop: 96}}>
                             <View style={{alignItems: "center", marginBottom: 48}}>
-                                <Icon name={"video-slash"} size={48} color={"white"} style={{alignItems: "center"}}/>
+                                <Icon name={"videocam-off-outline"} size={48} color={"white"} style={{alignItems: "center"}}/>
                             </View>
                             <Text style={{fontSize: 26, color: "white"}}>
                                 Permisos faltantes
@@ -64,7 +64,7 @@ export default function withVideoCallPermissions(WrappedComponent) {
                                 <Icon name={"chevron-right"} size={20} color={"white"} style={{position: "absolute", right: 0, paddingRight: 12}}/>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </Animated.View>
                 )}
             </React.Fragment>
         )

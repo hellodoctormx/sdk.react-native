@@ -6,7 +6,7 @@ export default function HDLogo(props) {
     const size = props.size || defaultSize;
     const aspectRatio = 0.9;
 
-    const source = props.white ? require("../assets/logowhite.png") : require("../assets/logo.png");
+    const source = props.white ? require("../../assets/logowhite.png") : require("../../assets/logo.png");
 
     return (
         <View style={{justifyContent: "center", padding: 6, borderRadius: size, ...props.containerStyle}}>

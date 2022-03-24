@@ -1,6 +1,6 @@
 import {NativeModules} from "react-native";
 
-const {HDVideo: HDVideoModule} = NativeModules;
+const {HDVideoModule} = NativeModules;
 
 export function connect(videoRoomSID, accessToken) {
     return HDVideoModule.connect(videoRoomSID, accessToken);

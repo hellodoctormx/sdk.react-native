@@ -13,26 +13,49 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.twilio.video.RemoteParticipant;
 import com.twilio.video.Room;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class HDVideoModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
     public static String TAG = "HDVideoModule";
 
     private final HDVideo hdVideo;
 
+    private static HDVideoModule instance;
+
     HDVideoModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
-        hdVideo = new HDVideo(reactContext);
+        hdVideo = HDVideo.getInstance(reactContext);
+    }
+
+    public static HDVideoModule getInstance(ReactApplicationContext reactContext) {
+        if (instance == null) {
+            instance = new HDVideoModule(reactContext);
+        }
+
+        return instance;
     }
 
     @Nonnull
     @Override
     public String getName() {
         return TAG;
+    }
+
+    @ReactMethod
+    public void sendTestEvent(Promise promise) {
+        sendEvent("testEvent", null);
+
+        promise.resolve("");
+    }
+
+    public void sendEvent(String event, @Nullable WritableMap data) {
+        getReactApplicationContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit(event, data);
     }
 
     @ReactMethod

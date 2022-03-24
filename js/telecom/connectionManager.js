@@ -2,7 +2,7 @@ import uuid from "react-native-uuid-generator";
 import _ from "lodash";
 import {AppState, Platform} from "react-native";
 import DeviceInfo from "react-native-device-info";
-import RNCallKeep from "react-native-callkeep";
+import RNCallKeep from "../callkeep";
 import VideoService from "../apis/video";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
@@ -158,11 +158,12 @@ export async function handleIncomingVideoCallEndedRemotely(callData) {
 
     tryCancelVideoCallNotification(videoRoomSID);
 
-    const currentRoute = getCurrentRoute();
-
-    if (currentRoute?.name === "IncomingVideoCall") {
-        NavigationService.resetToHome();
-    }
+    // FIXME?
+    // const currentRoute = getCurrentRoute();
+    //
+    // if (currentRoute?.name === "IncomingVideoCall") {
+    //     NavigationService.resetToHome();
+    // }
 }
 
 const incomingCallNotificationIDs = {};
@@ -257,7 +258,8 @@ export async function registerPushKitCall(notification) {
 
     await registerIncomingVideoCall(uuid, videoRoomSID, consultationID, caller);
 
-    if (uuid === unregisteredAnswerableCall.uuid) {
-        navigateToVideoCall(consultationID, videoRoomSID).catch(error => console.warn("[registerPushKitCall:navigateToVideoCall:ERROR]", error));
-    }
+    // FIXME
+    // if (uuid === unregisteredAnswerableCall.uuid) {
+    //     navigateToVideoCall(consultationID, videoRoomSID);
+    // }
 }

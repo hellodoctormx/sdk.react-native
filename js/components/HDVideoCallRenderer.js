@@ -8,6 +8,7 @@ import HDVideoCallActions from "./HDVideoCallActions";
 import {hdVideoEvents, LocalVideoView, RemoteVideoView} from "./native";
 import * as activeCallManager from "../telecom/activeCallManager";
 
+
 function HDVideoCallRenderer(props) {
     const {videoRoomSID, accessToken, consultationID} = props;
 

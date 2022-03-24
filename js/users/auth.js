@@ -6,6 +6,10 @@ export function signIn(userID, jwt) {
     return new HDCurrentUser(userID, jwt);
 }
 
+export function signOut() {
+
+}
+
 export function getCurrentUser() {
     return HDCurrentUser.getInstance();
 }
@@ -14,7 +18,7 @@ class HDCurrentUser {
     _id;
     _jwt;
 
-    static _instance;
+    static _instance = null;
 
     constructor(id, jwt) {
         this._id = id;

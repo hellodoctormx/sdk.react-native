@@ -1,16 +1,20 @@
 import {PermissionsAndroid, Platform} from "react-native";
-import RNCallKeep from "react-native-callkeep";
+import RNCallKeep from "../callkeep";
 import {CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
 import VoipPushNotification from "react-native-voip-push-notification";
+import videoApi from "../apis/video";
+import * as auth from "../users/auth";
 
 let isCallsServiceBootstrapped = false;
 
-export async function bootstrap() {
-    console.info("[bootstrap:START]", {isCallsServiceBootstrapping: isCallsServiceBootstrapped});
-    // if (isCallsServiceBootstrapped) {
-    //     console.info("[bootstrap] not bootstrapping: already bootstrapped");
-    //     return;
-    // }
+export async function bootstrap(userID, jwt) {
+    console.info("[connectionService:bootstrap:START]", {isCallsServiceBootstrapped});
+    if (isCallsServiceBootstrapped) {
+        console.info("[bootstrap] not bootstrapping: already bootstrapped");
+        return;
+    }
+
+    auth.signIn(userID, jwt);
 
     await setupCallKeep().catch(error => console.warn(`error setting up CallKeep: ${error}`));
 
@@ -24,6 +28,8 @@ export async function bootstrap() {
 }
 
 export async function teardown() {
+    auth.signOut();
+
     removeCallKeepListeners();
 
     RNCallKeep.endAllCalls();
@@ -36,6 +42,8 @@ export async function teardown() {
         videoConsultationsSnapshotListener();
         videoConsultationsSnapshotListener = null;
     }
+
+    videoApi.unregisterApnsToken().catch(console.warn);
 }
 
 export async function checkIsCallKeepConfigured() {
@@ -44,7 +52,7 @@ export async function checkIsCallKeepConfigured() {
     }
 
     const readPhoneNumbersPermission = await PermissionsAndroid.check('android.permission.READ_PHONE_NUMBERS');
-    console.debug("[checkIsCallKeepConfigured]", {readPhoneNumbersPermission});
+    console.debug("[connectionService:checkIsCallKeepConfigured]", {readPhoneNumbersPermission});
 
     if (!readPhoneNumbersPermission) {
         return false;
@@ -55,7 +63,7 @@ export async function checkIsCallKeepConfigured() {
     const hasPhoneAccount = await RNCallKeep.hasPhoneAccount();
     const hasPhoneAccountEnabled = await RNCallKeep.checkPhoneAccountEnabled();
 
-    console.debug("[checkIsCallKeepConfigured]", {isConnectionServiceAvailable, hasPhoneAccountEnabled, hasPhoneAccount});
+    console.debug("[connectionService:checkIsCallKeepConfigured]", {isConnectionServiceAvailable, hasPhoneAccountEnabled, hasPhoneAccount});
     return isConnectionServiceAvailable && hasPhoneAccountEnabled;
 }
 
@@ -67,7 +75,6 @@ const callKeepConfig = {
         alertDescription: "Para una mejor experiencia de videollamadas, agregue Hello Doctor como una cuenta telefónica",
         cancelButton: "Cancel",
         okButton: "ok",
-        // additionalPermissions: [PERMISSIONS.ANDROID.READ_PHONE_STATE, PERMISSIONS.ANDROID.READ_PHONE_NUMBERS],
         foregroundService: {
             channelId: "com.hellodoctormx.patient",
             channelName: "Hello Doctor Llamadas",
@@ -88,7 +95,7 @@ export async function setupCallKeep() {
 let hasRegisteredCallKeepListeners = false;
 
 export function registerCallKeepListeners() {
-    console.info("[calls:registerCallKeepListeners]", {hasRegisteredCallKeepListeners});
+    console.info("[connectionService:registerCallKeepListeners]", {hasRegisteredCallKeepListeners});
 
     if (hasRegisteredCallKeepListeners) {
         return;
@@ -108,7 +115,7 @@ export function registerCallKeepListeners() {
 
     hasRegisteredCallKeepListeners = true;
 
-    console.info("[calls:registerCallKeepListeners:DONE]");
+    console.info("[connectionService:registerCallKeepListeners:DONE]");
 }
 
 export function removeCallKeepListeners() {
