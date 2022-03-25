@@ -49,7 +49,7 @@ export default function withVideoCallPermissions(WrappedComponent) {
                         <HDLogo size={42} white={true} containerStyle={{alignItems: "center"}}/>
                         <View style={{flex: 1, marginTop: 96}}>
                             <View style={{alignItems: "center", marginBottom: 48}}>
-                                <Icon name={"videocam-off-outline"} size={48} color={"white"} style={{alignItems: "center"}}/>
+                                <Icon name={"videocam-outline"} size={48} color={"white"} style={{alignItems: "center"}}/>
                             </View>
                             <Text style={{fontSize: 26, color: "white"}}>
                                 Permisos faltantes
@@ -61,7 +61,7 @@ export default function withVideoCallPermissions(WrappedComponent) {
                                 <Text style={{fontSize: 18, color: "white", textAlign: "center"}}>
                                     Ajustes
                                 </Text>
-                                <Icon name={"chevron-right"} size={20} color={"white"} style={{position: "absolute", right: 0, paddingRight: 12}}/>
+                                <Icon name={"chevron-forward-outline"} size={20} color={"white"} style={{position: "absolute", right: 0, paddingRight: 12}}/>
                             </TouchableOpacity>
                         </View>
                     </Animated.View>

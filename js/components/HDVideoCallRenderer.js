@@ -191,10 +191,6 @@ function HDVideoCallRenderer(props) {
     React.useEffect(() => {
         console.info(`[VideoCallModal:MOUNT]`, {videoRoomSID, consultationID});
 
-        // just making sure that if we've gotten to this point, we should definitely clear out any initial navigation params
-        // resetInitialNavigation(); TODO does this need to be implemented here?
-        // setDidNavigateToVideoCall(false); FIXME probably need to do something in the app code about this
-
         const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", handleConnectedToRoomEvent);
 
         const participantRoomConnectionEventListener = hdVideoEvents.addListener(

@@ -1,9 +1,10 @@
 import {PermissionsAndroid, Platform} from "react-native";
-import RNCallKeep from "../callkeep";
-import {CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
 import VoipPushNotification from "react-native-voip-push-notification";
-import videoApi from "../apis/video";
+import videoApi from "../api/video";
+import RNCallKeep from "../callkeep";
 import * as auth from "../users/auth";
+import {CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
+import {checkVideoCallPermissions} from "./permissions";
 
 let isCallsServiceBootstrapped = false;
 
@@ -14,17 +15,24 @@ export async function bootstrap(userID, jwt) {
         return;
     }
 
-    auth.signIn(userID, jwt);
-
-    await setupCallKeep().catch(error => console.warn(`error setting up CallKeep: ${error}`));
-
-    registerCallKeepListeners();
-
-    if (Platform.OS === "android") {
-        RNCallKeep.setAvailable(true);
-    }
-
     isCallsServiceBootstrapped = true;
+
+    try {
+        auth.signIn(userID, jwt);
+
+        registerCallKeepListeners();
+
+        await setupCallKeep().catch(error => console.warn(`error setting up CallKeep: ${error}`));
+
+        if (Platform.OS === "android") {
+            RNCallKeep.setAvailable(true);
+        }
+    } catch(error) {
+        console.warn("[connectionService.bootstrap] error occurred during bootstrapping", error);
+        isCallsServiceBootstrapped = false;
+
+        throw error;
+    }
 }
 
 export async function teardown() {
@@ -32,7 +40,12 @@ export async function teardown() {
 
     removeCallKeepListeners();
 
-    RNCallKeep.endAllCalls();
+    const readPhoneNumbersPermission = await PermissionsAndroid.check('android.permission.READ_PHONE_NUMBERS');
+    console.debug("[connectionService:teardown]", {readPhoneNumbersPermission});
+
+    if (Platform.OS !== "android" || readPhoneNumbersPermission) {
+        RNCallKeep.endAllCalls();
+    }
 
     if (Platform.OS === "android") {
         RNCallKeep.setAvailable(false);

@@ -4,6 +4,7 @@ import {Animated, Dimensions, Pressable, Text, TouchableOpacity, TouchableWithou
 import Icon from "react-native-vector-icons/Ionicons";
 import {activeCallManager} from "../../index";
 import {hdVideoEvents} from "./native";
+import {alpha} from "../utils/colors";
 
 export default function HDVideoCallActions(props) {
     const [areControlsHidden, setAreControlsHidden] = React.useState(false);
@@ -13,8 +14,8 @@ export default function HDVideoCallActions(props) {
     const [currentCameraDirection, setCurrentCameraDirection] = React.useState("front");
     const [videoCallStatus, setVideoCallStatus] = React.useState(props.videoCallStatus);
 
-    const toggleLocalVideoStateIconName = isLocalVideoEnabled ? "videocam-outline" : "videocam-off-outline";
-    const toggleLocalAudioStateIconName = isLocalAudioEnabled ? "mic-outline" : "mic-off-outline";
+    const toggleLocalVideoStateIconName = isLocalVideoEnabled ? "videocam" : "videocam-outline";
+    const toggleLocalAudioStateIconName = isLocalAudioEnabled ? "mic" : "mic-off-outline";
 
     const automaticCloseHandleRef = React.useRef(0);
     const controlsOpacity = React.useRef(new Animated.Value(1)).current;
@@ -25,7 +26,7 @@ export default function HDVideoCallActions(props) {
 
             setVideoCallStatus(videoCallStatus);
 
-            setTimeout(hideControls, 2000);
+            setTimeout(hideControls, 6000);
         });
 
         const participantConnectionEventListener = hdVideoEvents.addListener("participantRoomConnectionEvent", event => {
@@ -67,7 +68,7 @@ export default function HDVideoCallActions(props) {
 
         Animated.timing(controlsOpacity, {toValue: 1, duration: 300, useNativeDriver: false}).start();
 
-        automaticCloseHandleRef.current = setTimeout(hideControls, 2000);
+        automaticCloseHandleRef.current = setTimeout(hideControls, 4000);
     }
 
     function hideControls() {
@@ -86,15 +87,6 @@ export default function HDVideoCallActions(props) {
         }
     }
 
-    const ToggleAction = props => (
-        <View style={{margin: 12}}>
-            <Pressable onPress={props.onPress} disabled={props.disabled} style={{height: props.size, width: props.size, borderRadius: props.size, alignItems: "center", justifyContent: "center"}}>
-                <View style={{position: "absolute", height: props.size, width: props.size, borderRadius: props.size, backgroundColor: props.color || "#444444", opacity: 0.4}}/>
-                <Icon name={props.icon} size={32} color={"white"} style={props.iconStyle}/>
-            </Pressable>
-        </View>
-    );
-
     const PortraitLayout = () => (
         <Animated.View style={{flex: 1, opacity: controlsOpacity, justifyContent: "flex-end"}}>
             {didRemoteParticipantDisconnect && (
@@ -102,12 +94,12 @@ export default function HDVideoCallActions(props) {
                     <Text style={{fontSize: 20, color: "white", textAlign: "center"}}>Tu doctor se ha desconectado</Text>
                 </View>
             )}
-            <View style={{padding: 18, backgroundColor: "#000000", borderRadius: 64, margin: 18, opacity: 0.9}}>
+            <View style={{padding: 18, backgroundColor: alpha("#000000", 0.8), borderRadius: 64, margin: 18}}>
                 <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around"}}>
-                    <ToggleAction onPress={props.onEndCall} disabled={areControlsHidden} size={64} color={"#C52723"} icon={"call-outline"} iconStyle={{transform: [{ rotate: "135deg"}]}}/>
-                    <ToggleAction onPress={toggleLocalVideoState} disabled={areControlsHidden} icon={toggleLocalVideoStateIconName}/>
-                    <ToggleAction onPress={toggleLocalAudioState} disabled={areControlsHidden} icon={toggleLocalAudioStateIconName}/>
-                    <ToggleAction onPress={flipCameraDirection} disabled={areControlsHidden} icon={"ios-camera-reverse"}/>
+                    <ToggleAction onPress={props.onEndCall} disabled={areControlsHidden} size={64} color={"#C52723"} icon={"call"} iconStyle={{transform: [{ rotate: "135deg"}]}}/>
+                    <ToggleAction onPress={toggleLocalVideoState} disabled={areControlsHidden} size={54} icon={toggleLocalVideoStateIconName}/>
+                    <ToggleAction onPress={toggleLocalAudioState} disabled={areControlsHidden} size={54} icon={toggleLocalAudioStateIconName}/>
+                    <ToggleAction onPress={flipCameraDirection} disabled={areControlsHidden} size={54} icon={"ios-camera-reverse"}/>
                 </View>
             </View>
             <Animated.View style={{height: Animated.multiply(controlsOpacity, 64)}}/>
@@ -157,3 +149,12 @@ export default function HDVideoCallActions(props) {
         </TouchableWithoutFeedback>
     );
 }
+
+const ToggleAction = props => (
+    <View style={{margin: 12}}>
+        <TouchableOpacity onPress={props.onPress} disabled={props.disabled} style={{height: props.size, width: props.size, borderRadius: props.size, alignItems: "center", justifyContent: "center"}}>
+            <View style={{position: "absolute", height: props.size, width: props.size, borderRadius: props.size, backgroundColor: props.color || alpha("#444444", 0.9)}}/>
+            <Icon name={props.icon} size={32} color={"white"} style={props.iconStyle} solid={true}/>
+        </TouchableOpacity>
+    </View>
+);

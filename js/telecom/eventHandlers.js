@@ -1,7 +1,7 @@
 import React from "react";
 import {AppState, Platform} from "react-native";
-import VideoServiceAPI from "../apis/video";
-import videoServiceApi from "../apis/video";
+import VideoServiceAPI from "../api/video";
+import videoServiceApi from "../api/video";
 import RNCallKeep from "../callkeep";
 import * as connectionManager from "./connectionManager";
 import * as activeCallManager from "./activeCallManager";
@@ -12,11 +12,16 @@ export function registerVideoCallNavigator(navigateToVideoCall) {
     _navigateToVideoCall = navigateToVideoCall;
 }
 
-export function navigateToVideoCall(consultationID, videoRoomSID) {
-    _navigateToVideoCall(consultationID, videoRoomSID);
+export function navigateOnAnswerCall(consultationID, videoRoomSID, accessToken) {
+    // TODO actually use access token in app
+    _navigateToVideoCall(consultationID, videoRoomSID, accessToken);
 }
 
-export async function handleIncomingVideoCall(videoCallPayload) {
+export function navigateOnRejectCall() {
+
+}
+
+export async function handleIncomingVideoCall(videoCallPayload, navigateToVideoCall) {
     const {uuid, consultationID, callerUID, callerDisplayName, callerPhoneNumber, callerEmail, videoRoomSID} = videoCallPayload;
 
     const existingCall = connectionManager.getCallByUUID(uuid);
@@ -43,6 +48,8 @@ export async function handleIncomingVideoCall(videoCallPayload) {
         phoneNumber: callerPhoneNumber,
         email: callerEmail
     }
+
+    registerVideoCallNavigator(navigateToVideoCall);
 
     const call = await connectionManager.registerIncomingVideoCall(null, videoRoomSID, consultationID, caller);
 
@@ -87,7 +94,7 @@ export class CallKeepEventHandlers {
                 return;
             }
 
-            navigateToVideoCall(consultationID, videoRoomSID);
+            navigateOnAnswerCall(consultationID, videoRoomSID);
 
             CallKeepEventHandlers.appStateChangeEventSubscriber?.remove();
             CallKeepEventHandlers.appStateChangeEventSubscriber = null;
@@ -96,7 +103,7 @@ export class CallKeepEventHandlers {
         console.debug(`[CallKeepEventHandlers:handleAnswerCall] app in "${AppState.currentState}" state.`);
 
         if (AppState.currentState === "active") {
-            navigateToVideoCall(consultationID, videoRoomSID);
+            navigateOnAnswerCall(consultationID, videoRoomSID);
         } else {
             CallKeepEventHandlers.appStateChangeEventSubscriber = AppState.addEventListener("change", navigateOnActive);
         }
@@ -105,15 +112,11 @@ export class CallKeepEventHandlers {
     }
 
     static handleDidDisplayIncomingCall({error, callUUID}) {
-        console.info("[CallKeep:handleDidDisplayIncomingCall]", {error, callUUID});
-
         if (error) {
             console.warn(`[CallKeep:handleDidDisplayIncomingCall:ERROR] ${error}`);
-            return;
+        } else {
+            console.info("[CallKeep:handleDidDisplayIncomingCall]", {callUUID});
         }
-
-        const call = connectionManager.getCallByUUID(callUUID);
-        connectionManager.tryCancelVideoCallNotification(call?.videoRoomSID);
     }
 
     static handleDidReceiveStartCallAction({handle}) {
@@ -198,7 +201,7 @@ export class CallKeepEventHandlers {
 
             const {consultationID, videoRoomSID} = callForAnswerCallAction;
 
-            navigateToVideoCall(consultationID, videoRoomSID);
+            navigateOnAnswerCall(consultationID, videoRoomSID);
         } else if (!callForAnswerCallAction) {
             // Very likely PushKit displayed the call but it hasn't yet been registered. Let PushKit know to navigate to this call
             connectionManager.registerAnswerablePushKitCallUUID(answeredCallUUID);

@@ -1,8 +1,8 @@
 import Http from "./http";
 
 // const videoServiceHost = Config.VideoServiceHost;
-// const videoServiceHost = "https://video-service-3o7jotw3dq-uc.a.run.app";
-const videoServiceHost = "http://192.168.100.26:3002";
+const videoServiceHost = "https://video-service-3o7jotw3dq-uc.a.run.app";
+// const videoServiceHost = "http://192.168.100.26:3002";
 
 export default class VideoServiceAPI {
     static http = new Http(videoServiceHost)

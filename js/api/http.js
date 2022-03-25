@@ -1,8 +1,9 @@
 import {getCurrentUser} from "../users/auth";
 
 export default class Http {
-    constructor(host) {
+    constructor(host, headers) {
         this.host = host;
+        this.headers = headers;
     }
 
     async getRequestHeaders(headers) {
@@ -14,6 +15,7 @@ export default class Http {
             "Accept": "application/json",
             "Content-Type": "application/json",
             "Authorization": userToken,
+            ...this.headers,
             ...headers
         }
     }

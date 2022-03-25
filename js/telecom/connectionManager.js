@@ -2,10 +2,12 @@ import uuid from "react-native-uuid-generator";
 import _ from "lodash";
 import {AppState, Platform} from "react-native";
 import DeviceInfo from "react-native-device-info";
+import notifee from "@notifee/react-native";
 import RNCallKeep from "../callkeep";
-import VideoService from "../apis/video";
+import VideoService from "../api/video";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
+import {getIncomingCallNotification} from "./notifications";
 
 const calls = [];
 const callListeners = [];
@@ -72,6 +74,8 @@ export async function notifyIncomingCall(incomingCall) {
         return;
     }
 
+
+
     const {videoRoomSID, consultationID, caller} = incomingCall;
 
     const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
@@ -83,14 +87,17 @@ export async function notifyIncomingCall(incomingCall) {
 
     if (Platform.OS === "android") {
         // TODO are both wakeMainActivity calls necessary?
+
         await activeCallManager.wakeMainActivity();
     }
 
     if (isCallKeepConfigured && isEligibleForCallKeepNotification) {
-        console.debug(`[handleIncomingVideoCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
+        console.debug(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
+
         await connectionService.setupCallKeep();
 
         RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName, "generic", true);
+
     } else {
         console.debug(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
@@ -168,7 +175,7 @@ export async function handleIncomingVideoCallEndedRemotely(callData) {
 
 const incomingCallNotificationIDs = {};
 
-export function tryCancelVideoCallNotification(videoRoomSID) {
+export async function tryCancelVideoCallNotification(videoRoomSID) {
     console.debug("[tryCancelVideoCallNotification]")
     const incomingCallNotificationID = incomingCallNotificationIDs[videoRoomSID];
 
@@ -260,6 +267,6 @@ export async function registerPushKitCall(notification) {
 
     // FIXME
     // if (uuid === unregisteredAnswerableCall.uuid) {
-    //     navigateToVideoCall(consultationID, videoRoomSID);
+    //     navigateOnAnswerCall(consultationID, videoRoomSID);
     // }
 }
