@@ -4,36 +4,34 @@ import Http from "./http";
 const videoServiceHost = "https://video-service-3o7jotw3dq-uc.a.run.app";
 // const videoServiceHost = "http://192.168.100.26:3002";
 
-export default class VideoServiceAPI {
-    static http = new Http(videoServiceHost)
+class VideoServiceAPI {
+    http = null
 
-    static startConsultationVideoCall(consultationID) {
-        return VideoServiceAPI.http.post(`/start-consultation-call`, {consultationID});
+    constructor() {
+        this.http = new Http(videoServiceHost)
     }
 
-    static requestConsultationVideoCallAccess(consultationID, videoRoomSID) {
-        console.debug("[requestConsultationVideoCallAccess]", {consultationID, videoRoomSID});
-        return VideoServiceAPI.http.get(`/access-token?consultationID=${consultationID}&videoRoomSID=${videoRoomSID}`);
+    startConsultationVideoCall(consultationID) {
+        return this.http.post(`/start-consultation-call`, {consultationID});
     }
 
-    static getVideoCall(videoRoomSID) {
+    requestVideoCallAccess(videoRoomSID) {
+        console.debug("[requestVideoCallAccess]", {videoRoomSID});
+        return this.http.get(`/access-token?videoRoomSID=${videoRoomSID}`);
+    }
+
+    getVideoCall(videoRoomSID) {
         console.debug(`[VideoService.getVideoCall] /calls/${videoRoomSID}`);
-        return VideoServiceAPI.http.get(`/calls/${videoRoomSID}`);
+        return this.http.get(`/calls/${videoRoomSID}`);
     }
 
-    static endVideoCall(videoRoomSID) {
-        return VideoServiceAPI.http.post(`/end-call`, {videoRoomSID});
+    endVideoCall(videoRoomSID) {
+        return this.http.post(`/end-call`, {videoRoomSID});
     }
 
-    static rejectVideoCall(videoRoomSID) {
-        return VideoServiceAPI.http.post(`/reject-call`, {videoRoomSID});
-    }
-
-    static async registerApnsToken(token) {
-
-    }
-
-    static async unregisterApnsToken() {
-
+    rejectVideoCall(videoRoomSID) {
+        return this.http.post(`/reject-call`, {videoRoomSID});
     }
 }
+
+export default new VideoServiceAPI();

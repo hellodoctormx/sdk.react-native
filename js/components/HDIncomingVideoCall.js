@@ -54,7 +54,7 @@ async function acceptIncomingVideoCall(rootTag) {
     const {consultationID, videoRoomSID, status} = connectionManager.getIncomingCall();
     console.info("[HDIncomingVideoCall:acceptIncomingVideoCall] got", {consultationID, videoRoomSID, status});
 
-    const response = await videoServiceApi.requestConsultationVideoCallAccess(consultationID, videoRoomSID);
+    const response = await videoServiceApi.requestVideoCallAccess(videoRoomSID);
     console.info("[HDIncomingVideoCall:acceptIncomingVideoCall] response", response);
 
     const {accessToken} = response;

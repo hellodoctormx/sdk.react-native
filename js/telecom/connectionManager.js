@@ -1,13 +1,13 @@
 import uuid from "react-native-uuid-generator";
 import _ from "lodash";
-import {AppState, Platform} from "react-native";
-import DeviceInfo from "react-native-device-info";
+import {AppState, Platform, Vibration} from "react-native";
 import notifee from "@notifee/react-native";
 import RNCallKeep from "../callkeep";
 import VideoService from "../api/video";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
 import {getIncomingCallNotification} from "./notifications";
+import {navigateOnEndCall} from "./eventHandlers";
 
 const calls = [];
 const callListeners = [];
@@ -69,21 +69,15 @@ export async function registerIncomingVideoCall(uuid, videoRoomSID, consultation
 }
 
 export async function notifyIncomingCall(incomingCall) {
-    if (Platform.OS === "ios") {
-        // PushKit calls RNCallKeep natively in iOS to display incoming calls
-        return;
-    }
-
-
+    // FIXME only skip iOS if PushKit not setup. So figure out how to determine that
+    // if (Platform.OS === "ios") {
+    //     // PushKit calls RNCallKeep natively in iOS to display incoming calls
+    //     return;
+    // }
 
     const {videoRoomSID, consultationID, caller} = incomingCall;
 
     const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
-    const androidVersion = Platform.OS !== "android" ? undefined : parseInt(DeviceInfo.getSystemVersion());
-    const deviceModel = DeviceInfo.getModel();
-    const isEligibleForCallKeepNotification = Platform.OS === "ios" || AppState.currentState === "active" || androidVersion < 12 || `${deviceModel}`.match(/Pixel \d.*/) === null;
-
-    console.debug("[notifyIncomingCall]", {deviceModel, androidVersion, systemVersion: DeviceInfo.getSystemVersion(), appState: AppState.currentState, isEligibleForCallKeepNotification});
 
     if (Platform.OS === "android") {
         // TODO are both wakeMainActivity calls necessary?
@@ -91,12 +85,12 @@ export async function notifyIncomingCall(incomingCall) {
         await activeCallManager.wakeMainActivity();
     }
 
-    if (isCallKeepConfigured && isEligibleForCallKeepNotification) {
+    if (isCallKeepConfigured) {
         console.debug(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
         await connectionService.setupCallKeep();
 
-        RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName, "generic", true);
+        RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName || "HelloDoctor", "generic", true);
 
     } else {
         console.debug(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
@@ -108,6 +102,8 @@ export async function notifyIncomingCall(incomingCall) {
         incomingCallNotificationIDs[videoRoomSID] = await notifee
             .displayNotification(incomingCallNotification)
             .catch(error => console.warn(`error displaying incoming call notification`, error));
+
+        Vibration.vibrate([500, 500], true);
     }
 
     console.debug(`[handleIncomingVideoCall] displayed`);
@@ -141,36 +137,6 @@ export function handleIncomingVideoCallAnswered(videoRoomSID) {
     call.status = "in-progress";
 
     tryCancelVideoCallNotification(videoRoomSID);
-}
-
-export async function handleIncomingVideoCallEndedRemotely(callData) {
-    console.info("handling video call ended remotely", callData);
-
-    const {videoRoomSID} = callData;
-
-    const call = calls.find(c => c.videoRoomSID === videoRoomSID);
-
-    if (!call) {
-        console.warn(`no call found for room ${videoRoomSID}`);
-        return;
-    }
-
-    const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
-
-    if (isCallKeepConfigured) {
-        RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
-    }
-
-    await endVideoCall(call.videoRoomSID);
-
-    tryCancelVideoCallNotification(videoRoomSID);
-
-    // FIXME?
-    // const currentRoute = getCurrentRoute();
-    //
-    // if (currentRoute?.name === "IncomingVideoCall") {
-    //     NavigationService.resetToHome();
-    // }
 }
 
 const incomingCallNotificationIDs = {};
@@ -211,6 +177,8 @@ export async function endVideoCall(videoRoomSID) {
 
     await VideoService.endVideoCall(videoRoomSID).catch(error => console.warn(`error ending video call ${videoRoomSID}`, error));
 
+    navigateOnEndCall();
+
     console.info(`[endConsultationVideoCall:${videoRoomSID}:DONE]`);
 }
 
@@ -245,7 +213,7 @@ export function registerAnswerablePushKitCallUUID(pushKitCallUUID) {
 }
 
 export async function registerPushKitCall(notification) {
-    console.debug("[handlePushKitIncomingCallNotification] notification", notification);
+    console.debug("[handlePushKitIncomingCallNotification] notification", {notification, unregisteredAnswerableCall});
     const {uuid, videoRoomSID, consultationID, callerDisplayName, callerPhoneNumber, callerEmail} = notification;
 
     incomingPushKitCall.uuid = uuid;

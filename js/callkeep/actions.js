@@ -1,7 +1,7 @@
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 const RNCallKeepModule = NativeModules.RNCallKeep;
-const eventEmitter = new NativeEventEmitter(NativeModules.HDVideoModule);
+const eventEmitter = new NativeEventEmitter(NativeModules.RNCallKeep);
 
 const RNCallKeepDidReceiveStartCallAction = 'RNCallKeepDidReceiveStartCallAction';
 const RNCallKeepPerformAnswerCallAction = 'RNCallKeepPerformAnswerCallAction';
