@@ -1,7 +1,6 @@
 import uuid from "react-native-uuid-generator";
 import _ from "lodash";
-import {AppState, Platform} from "react-native";
-import DeviceInfo from "react-native-device-info";
+import {AppState, Platform, Vibration} from "react-native";
 import notifee from "@notifee/react-native";
 import RNCallKeep from "../callkeep";
 import VideoService from "../api/video";
@@ -79,11 +78,6 @@ export async function notifyIncomingCall(incomingCall) {
     const {videoRoomSID, consultationID, caller} = incomingCall;
 
     const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
-    const androidVersion = Platform.OS !== "android" ? undefined : parseInt(DeviceInfo.getSystemVersion());
-    const deviceModel = DeviceInfo.getModel();
-    const isEligibleForCallKeepNotification = Platform.OS === "ios" || AppState.currentState === "active" || androidVersion < 12 || `${deviceModel}`.match(/Pixel \d.*/) === null;
-
-    console.debug("[notifyIncomingCall]", {deviceModel, androidVersion, systemVersion: DeviceInfo.getSystemVersion(), appState: AppState.currentState, isEligibleForCallKeepNotification});
 
     if (Platform.OS === "android") {
         // TODO are both wakeMainActivity calls necessary?
@@ -91,7 +85,7 @@ export async function notifyIncomingCall(incomingCall) {
         await activeCallManager.wakeMainActivity();
     }
 
-    if (isCallKeepConfigured && isEligibleForCallKeepNotification) {
+    if (isCallKeepConfigured) {
         console.debug(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
         await connectionService.setupCallKeep();
@@ -108,6 +102,8 @@ export async function notifyIncomingCall(incomingCall) {
         incomingCallNotificationIDs[videoRoomSID] = await notifee
             .displayNotification(incomingCallNotification)
             .catch(error => console.warn(`error displaying incoming call notification`, error));
+
+        Vibration.vibrate([500, 500], true);
     }
 
     console.debug(`[handleIncomingVideoCall] displayed`);

@@ -8,7 +8,7 @@ import {checkVideoCallPermissions} from "./permissions";
 
 let isCallsServiceBootstrapped = false;
 
-export async function bootstrap(userID, jwt) {
+export async function bootstrap() {
     console.info("[connectionService:bootstrap:START]", {isCallsServiceBootstrapped});
     if (isCallsServiceBootstrapped) {
         console.info("[bootstrap] not bootstrapping: already bootstrapped");
@@ -18,8 +18,6 @@ export async function bootstrap(userID, jwt) {
     isCallsServiceBootstrapped = true;
 
     try {
-        auth.signIn(userID, jwt);
-
         registerCallKeepListeners();
 
         await setupCallKeep().catch(error => console.warn(`error setting up CallKeep: ${error}`));
@@ -82,6 +80,8 @@ export async function checkIsCallKeepConfigured() {
 
 let videoConsultationsSnapshotListener = null;
 
+const androidBundleID = "com.delilifetv";
+
 const callKeepConfig = {
     android: {
         alertTitle: "Permisos para videollamadas",
@@ -89,7 +89,7 @@ const callKeepConfig = {
         cancelButton: "Cancel",
         okButton: "ok",
         foregroundService: {
-            channelId: "com.hellodoctormx.patient",
+            channelId: androidBundleID,
             channelName: "Hello Doctor Llamadas",
             notificationTitle: "Hello Doctor Videollamada",
         }
@@ -97,7 +97,7 @@ const callKeepConfig = {
 };
 
 export async function setupCallKeep() {
-    if (Platform.OS === "ios") {
+    if (Platform.OS !== "android") {
         return;
     }
 

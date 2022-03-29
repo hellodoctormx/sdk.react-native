@@ -3,7 +3,7 @@ import {AndroidImportance, AndroidVisibility, AndroidCategory, AndroidLaunchActi
 export function getIncomingCallNotification(consultationID, videoRoomSID) {
     return {
         title: `Tu médico te está llamando.`,
-        body: `Por favor presione "Contestar" para comenzar su consulta.`,
+        body: `Por favor presione "Contestar" para comenzar tu consulta.`,
         data: {
             type: "incomingVideoCall",
             consultationID,
@@ -16,12 +16,12 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             importance: AndroidImportance.HIGH,
             visibility: AndroidVisibility.PUBLIC,
             category: AndroidCategory.CALL,
-            vibrationPattern: [500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500, 500],
             ongoing: true,
             color: "#0062B2",
             fullScreenAction: {
                 id: "defaultFullScreen",
-                mainComponent: "HDIncomingVideoCall"
+                mainComponent: "HDIncomingVideoCall",
+                asForegroundService: true,
             },
             pressAction: {
                 id: "default",
@@ -46,4 +46,24 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             ]
         }
     };
+}
+
+export function getOngoingCallNotification(consultationID, videoRoomSID) {
+    return {
+        title: '&#128222; Tu llamada está activa',
+        subtitle: 'Consulta',
+        android: {
+            channelId: "calls",
+            showChronometer: true,
+            asForegroundService: true,
+            actions: [
+                {
+                    title: `<p style="color: #C52723; font-weight: bold; font-size: 24px">Colgar</p>`,
+                    pressAction: {
+                        id: "disconnect"
+                    }
+                }
+            ]
+        }
+    }
 }

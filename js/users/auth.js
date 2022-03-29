@@ -15,31 +15,31 @@ export function getCurrentUser() {
 }
 
 class HDCurrentUser {
-    _id;
-    _jwt;
+    id;
+    jwt;
 
     static _instance = null;
 
     constructor(id, jwt) {
-        this._id = id;
-        this._jwt = jwt;
+        this.id = id;
+        this.jwt = jwt;
 
         HDCurrentUser._instance = this;
     }
 
     static getInstance() {
         if (HDCurrentUser._instance === null) {
-            throw new Error("No current user is configured. Please sign in.");
+            console.warn("No current user is configured. Please sign in.");
         }
 
         return HDCurrentUser._instance;
     }
 
     getID() {
-        return this._id;
+        return this.id;
     }
 
     getJWT() {
-        return this._jwt;
+        return this.jwt;
     }
 }

@@ -1,6 +1,5 @@
 import React from "react";
 import {AppState, Platform} from "react-native";
-import VideoServiceAPI from "../api/video";
 import videoServiceApi from "../api/video";
 import RNCallKeep from "../callkeep";
 import * as connectionManager from "./connectionManager";
@@ -33,7 +32,7 @@ export async function handleIncomingVideoCall(videoCallPayload, navigateToVideoC
 
     console.info(`[handleIncomingVideoCall] videoRoomSID: ${videoRoomSID}`);
 
-    const getVideoCallResponse = await VideoServiceAPI.getVideoCall(videoRoomSID);
+    const getVideoCallResponse = await videoServiceApi.getVideoCall(videoRoomSID);
     console.debug("[handleIncomingVideoCall] getVideoCallResponse", getVideoCallResponse);
 
     if (getVideoCallResponse.status !== "in-progress") {

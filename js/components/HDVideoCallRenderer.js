@@ -10,7 +10,7 @@ import * as activeCallManager from "../telecom/activeCallManager";
 
 
 function HDVideoCallRenderer(props) {
-    const {videoRoomSID, accessToken, consultationID} = props;
+    const {videoRoomSID, accessToken} = props;
 
     const [remoteParticipantSID, setRemoteParticipantSID] = React.useState(null);
     const [remoteVideoState, setRemoteVideoState] = React.useState(null);
@@ -189,7 +189,7 @@ function HDVideoCallRenderer(props) {
     }
 
     React.useEffect(() => {
-        console.info(`[VideoCallModal:MOUNT]`, {videoRoomSID, consultationID});
+        console.info(`[VideoCallModal:MOUNT]`, {videoRoomSID});
 
         const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", handleConnectedToRoomEvent);
 
@@ -273,10 +273,9 @@ function HDVideoCallRenderer(props) {
             <View style={{position: "absolute", height: screenHeight, width: screenWidth}}>
                 <HDVideoCallActions
                     onEndCall={props.onEndCall}
-                    onHideVideo={props.onHideVideo}
-                    consultationID={consultationID}
                     videoRoomSID={videoRoomSID}
-                    videoCallStatus={videoCallStatus}/>
+                    videoCallStatus={videoCallStatus}
+                />
             </View>
         </React.Fragment>
     )

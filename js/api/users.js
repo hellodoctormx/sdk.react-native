@@ -1,8 +1,8 @@
 import Http from "./http";
 
 // const usersServiceHost = Config.UserServiceHost;
-const usersServiceHost = "https://user-service-3o7jotw3dq-uc.a.run.app";
-// const usersServiceHost = "http://192.168.100.26:3009";
+// const usersServiceHost = "https://user-service-3o7jotw3dq-uc.a.run.app";
+const usersServiceHost = "http://192.168.100.26:3009";
 
 class UsersServiceAPI {
     http = null;
@@ -11,7 +11,7 @@ class UsersServiceAPI {
         this.http = new Http(usersServiceHost);
     }
 
-    registerThirdPartyUserAccount(account) {
+    createThirdPartyUserAccount(account) {
         return this.http.post(`/third-party/users`, account, this.getThirdPartyApiKeyHeaders());
     }
 
@@ -33,7 +33,7 @@ class UsersServiceAPI {
 
     getThirdPartyApiKeyHeaders() {
         // TODO get from config or something
-        const deliLifeApiKey = "Ax3JVY2pal5f8i6NwLNX3wjssyiR46u7itHypjZe";
+        const deliLifeApiKey = "1C362B8B9E6868D76E385C6CBC7D4";
 
         return {
             "X-Third-Party-Api-Key": deliLifeApiKey
