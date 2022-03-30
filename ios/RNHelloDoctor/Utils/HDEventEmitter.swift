@@ -8,8 +8,8 @@
 
 import Foundation
 
-@objc(RNEventEmitter)
-open class RNEventEmitter: RCTEventEmitter {
+@objc(HDEventEmitter)
+open class HDEventEmitter: RCTEventEmitter {
   
   override init() {
     super.init()

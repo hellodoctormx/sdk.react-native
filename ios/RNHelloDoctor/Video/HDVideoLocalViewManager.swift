@@ -11,6 +11,11 @@ import UIKit
 
 @objc(HDVideoLocalViewManager)
 class HDVideoLocalViewManager: RCTViewManager {
+    @objc
+    override static func requiresMainQueueSetup() -> Bool {
+        return true
+    }
+    
     override func view() -> UIView! {
         let container = UIView()
         let inner = VideoView()

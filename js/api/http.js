@@ -6,16 +6,18 @@ export default class Http {
         this.headers = headers;
     }
 
-    async getRequestHeaders(headers) {
-        const userToken = getCurrentUser().getJWT();
+    getRequestHeaders(headers) {
+        const currentUser = getCurrentUser();
 
-        headers = headers || {};
+        if (currentUser === null) {
+            console.warn("[VideoServiceAPI:getRequestHeaders] attempting to request headers without current user");
+            return headers;
+        }
 
         return {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-            "Authorization": userToken,
-            ...this.headers,
+            "Authorization": `Bearer ${currentUser.jwt}`,
+            "X-User-UID": currentUser.uid,
+            "X-Third-Party-Api-Key": currentUser.thirdPartyApiKey,
             ...headers
         }
     }

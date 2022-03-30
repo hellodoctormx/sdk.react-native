@@ -1,26 +1,33 @@
 import React from "react";
 import {AppState, Platform} from "react-native";
 import videoServiceApi from "../api/video";
+import usersServiceApi from "../api/users";
 import RNCallKeep from "../callkeep";
 import * as connectionManager from "./connectionManager";
 import * as activeCallManager from "./activeCallManager";
+import * as connectionService from "./connectionService";
+import {endVideoCall, tryCancelVideoCallNotification} from "./connectionManager";
 
-let _navigateToVideoCall = null;
+let _navigator = null;
 
-export function registerVideoCallNavigator(navigateToVideoCall) {
-    _navigateToVideoCall = navigateToVideoCall;
+export function registerVideoCallNavigator(navigator) {
+    _navigator = navigator;
 }
 
 export function navigateOnAnswerCall(consultationID, videoRoomSID, accessToken) {
     // TODO actually use access token in app
-    _navigateToVideoCall(consultationID, videoRoomSID, accessToken);
+    _navigator.onAnswerCall(consultationID, videoRoomSID, accessToken);
+}
+
+export function navigateOnEndCall() {
+    _navigator.onEndCall();
 }
 
 export function navigateOnRejectCall() {
 
 }
 
-export async function handleIncomingVideoCall(videoCallPayload, navigateToVideoCall) {
+export async function handleIncomingVideoCall(videoCallPayload) {
     const {uuid, consultationID, callerUID, callerDisplayName, callerPhoneNumber, callerEmail, videoRoomSID} = videoCallPayload;
 
     const existingCall = connectionManager.getCallByUUID(uuid);
@@ -48,11 +55,39 @@ export async function handleIncomingVideoCall(videoCallPayload, navigateToVideoC
         email: callerEmail
     }
 
-    registerVideoCallNavigator(navigateToVideoCall);
-
     const call = await connectionManager.registerIncomingVideoCall(null, videoRoomSID, consultationID, caller);
 
     await connectionManager.notifyIncomingCall(call);
+}
+
+export async function handleIncomingVideoCallEndedRemotely(callData) {
+    console.info("handling video call ended remotely", callData);
+
+    const {videoRoomSID} = callData;
+
+    const call = connectionManager.getIncomingCall();
+
+    if (!call) {
+        console.warn(`no call found for room ${videoRoomSID}`);
+        return;
+    }
+
+    const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
+
+    if (isCallKeepConfigured) {
+        RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
+    }
+
+    await endVideoCall(call.videoRoomSID);
+
+    tryCancelVideoCallNotification(videoRoomSID);
+
+    // FIXME?
+    // const currentRoute = getCurrentRoute();
+    //
+    // if (currentRoute?.name === "IncomingVideoCall") {
+    //     NavigationService.resetToHome();
+    // }
 }
 
 export class CallKeepEventHandlers {
@@ -87,13 +122,18 @@ export class CallKeepEventHandlers {
         const {consultationID, videoRoomSID} = call;
         console.debug("[CallKeepEventHandlers:handleAnswerCall]", {videoRoomSID});
 
+        const response = await videoServiceApi.requestVideoCallAccess(videoRoomSID);
+        console.info("[CallKeepEventHandlers:handleAnswerCall] response", response);
+
+        const {accessToken} = response;
+
         const navigateOnActive = async nextAppState => {
             console.debug("[CallKeepEventHandlers:handleAnswerCall:navigateOnActive]", {videoRoomSID, nextAppState});
             if (nextAppState !== "active") {
                 return;
             }
 
-            navigateOnAnswerCall(consultationID, videoRoomSID);
+            navigateOnAnswerCall(consultationID, videoRoomSID, accessToken);
 
             CallKeepEventHandlers.appStateChangeEventSubscriber?.remove();
             CallKeepEventHandlers.appStateChangeEventSubscriber = null;
@@ -102,7 +142,7 @@ export class CallKeepEventHandlers {
         console.debug(`[CallKeepEventHandlers:handleAnswerCall] app in "${AppState.currentState}" state.`);
 
         if (AppState.currentState === "active") {
-            navigateOnAnswerCall(consultationID, videoRoomSID);
+            navigateOnAnswerCall(consultationID, videoRoomSID, accessToken);
         } else {
             CallKeepEventHandlers.appStateChangeEventSubscriber = AppState.addEventListener("change", navigateOnActive);
         }
@@ -200,11 +240,20 @@ export class CallKeepEventHandlers {
 
             const {consultationID, videoRoomSID} = callForAnswerCallAction;
 
-            navigateOnAnswerCall(consultationID, videoRoomSID);
+            const response = await videoServiceApi.requestVideoCallAccess(videoRoomSID);
+            console.info("[CallKeepEventHandlers:handleAnswerCall] response", response);
+
+            const {accessToken} = response;
+
+            navigateOnAnswerCall(consultationID, videoRoomSID, accessToken);
         } else if (!callForAnswerCallAction) {
             // Very likely PushKit displayed the call but it hasn't yet been registered. Let PushKit know to navigate to this call
             connectionManager.registerAnswerablePushKitCallUUID(answeredCallUUID);
         }
+    }
+
+    static async handleDidChangeAudioRoute(event) {
+        console.debug("[handleDidChangeAudioRoute]", event);
     }
 }
 
@@ -212,7 +261,7 @@ export class PushKitEventHandlers {
     static handleOnRegister(token) {
         console.debug(`[VoipPushNotification:EVENT:register:${token}]`);
 
-        videoServiceApi.registerApnsToken(token).catch(error => console.warn(`[VoipPushNotification:EVENT:register:registerApnsToken]`, error));
+        usersServiceApi.registerApnsToken(token).catch(error => console.warn(`[VoipPushNotification:EVENT:register:registerApnsToken]`, error));
     }
 
     static handleOnNotification(notification) {

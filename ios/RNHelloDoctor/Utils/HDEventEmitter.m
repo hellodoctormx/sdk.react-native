@@ -10,7 +10,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(RNEventEmitter, RCTEventEmitter)
+@interface RCT_EXTERN_MODULE(HDEventEmitter, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(supportedEvents)
 

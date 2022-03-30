@@ -1,4 +1,3 @@
-import * as activeCallManager from "./js/telecom/activeCallManager";
 import * as auth from "./js/users/auth";
 import * as connectionManager from "./js/telecom/connectionManager";
 import * as connectionService from "./js/telecom/connectionService";
@@ -8,18 +7,93 @@ import HDVideoCallRenderer from "./js/components/HDVideoCallRenderer"
 import HDVideoPermissionsConfiguration from "./js/components/HDVideoPermissionsConfiguration";
 import HDIncomingVideoCall from "./js/components/HDIncomingVideoCall"
 import PreviewLocalVideoView from "./js/components/PreviewLocalVideoView";
-import usersServiceApi from "./js/api/users";
 import videoServiceApi from "./js/api/video";
 import withVideoCallPermissions from "./js/components/withVideoCallPermissions";
 
+export default class RNHelloDoctor {
+    static videos: HDVideoCalls = null
+
+    static configure(config: RNHelloDoctorConfig) {
+        auth.signIn(config.user)
+
+        connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
+
+        RNHelloDoctor.videos = HDVideoCalls
+    }
+
+    static teardown() {
+        connectionService.teardown().catch(error => console.warn("[RNHelloDoctor:teardown]", {error}));
+    }
+}
+
+class HDVideoCalls {
+    static handleIncomingVideoCallNotification(videoCallPayload) {
+        return eventHandlers.handleIncomingVideoCall(videoCallPayload)
+    }
+
+    static handleIncomingVideoCallNotificationRejected() {
+        console.info("[HDVideoCalls:handleIncomingVideoCallNotificationRejected]");
+
+        const incomingCall = connectionManager.getIncomingCall();
+
+        if (!incomingCall) {
+            console.info("[HDVideoCalls:handleIncomingVideoCallNotificationRejected] cannot reject incoming call: none found");
+            return;
+        }
+
+        connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
+    }
+
+    static handleIncomingVideoCallEndedRemotely(videoCallPayload) {
+        return eventHandlers.handleIncomingVideoCallEndedRemotely(videoCallPayload);
+    }
+
+    static startVideoCall(videoRoomSID) {
+        connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
+
+        const listener = status => {
+            console.debug("[VideoConsultationScreen:startVideoCall] listener status", status);
+            switch (status) {
+                case "completed":
+                case "rejected":
+                    this.endVideoCall().catch(console.warn);
+                    break;
+            }
+        }
+
+        connectionManager.registerCallStatusListener(videoRoomSID, listener);
+    }
+
+    static endVideoCall(videoRoomSID) {
+        return connectionManager.endVideoCall(videoRoomSID)
+    }
+
+    static getVideoCallAccessToken(videoRoomSID) {
+        return videoServiceApi
+            .requestVideoCallAccess(videoRoomSID)
+            .then(response => response.accessToken);
+    }
+}
+
+interface RNHelloDoctorConfig {
+    user: HDUser,
+    video: HDVideoCallsConfig
+}
+
+export interface HDUser {
+    uid: string,
+    jwt?: string,
+    thirdPartyApiKey?: string,
+    deviceID?: string
+}
+
+interface HDVideoCallsConfig {
+    onAnswerCall: function,
+    onEndCall: function
+}
+
 export {
-    activeCallManager,
-    auth,
     connectionManager,
-    connectionService,
-    eventHandlers,
-    usersServiceApi,
-    videoServiceApi,
     HDCallKeep,
     HDIncomingVideoCall,
     HDVideoCallRenderer,
@@ -27,56 +101,3 @@ export {
     PreviewLocalVideoView,
     withVideoCallPermissions
 };
-
-export default class RNHelloDoctor {
-    static _instance: RNHelloDoctor = null
-
-    videos: HDVideoCalls = null
-
-    constructor() {
-        // const videoConfig: HDVideoCallsConfig = {
-        //     onAnswerCall: config.onAnswerCall,
-        //     onEndCall: config.onEndCall
-        // }
-        //
-        // this.videos = new HDVideoCalls(videoConfig)
-    }
-
-    static bootstrap(config: RNHelloDoctorConfig) {
-        if (RNHelloDoctor._instance === null) {
-            RNHelloDoctor._instance = new RNHelloDoctor(config)
-        }
-    }
-}
-
-class HDVideoCalls {
-    onAnswerCall: function
-    onEndCall: function
-
-    constructor(config: HDVideoCallsConfig) {
-        this.onAnswerCall = config.onAnswerCall
-        this.onEndCall = config.onEndCall
-    }
-
-    handleIncomingVideoCallNotification(videoCallPayload) {
-        return eventHandlers.handleIncomingVideoCall(videoCallPayload)
-    }
-
-    answerVideoCall() {
-
-    }
-
-    endVideoCall() {
-
-    }
-}
-
-interface RNHelloDoctorConfig {
-    onAnswerCall: function,
-    onEndCall: function
-}
-
-interface HDVideoCallsConfig {
-    onAnswerCall: function,
-    onEndCall: function
-}

@@ -1,4 +1,5 @@
 import Http from "./http";
+import {getCurrentUser} from "../users/auth";
 
 // const usersServiceHost = Config.UserServiceHost;
 // const usersServiceHost = "https://user-service-3o7jotw3dq-uc.a.run.app";
@@ -12,32 +13,51 @@ class UsersServiceAPI {
     }
 
     createThirdPartyUserAccount(account) {
-        return this.http.post(`/third-party/users`, account, this.getThirdPartyApiKeyHeaders());
+        return this.http.post(`/third-party/users`, account);
     }
 
     deleteThirdPartyUserAccount(helloDoctorUserID) {
-        return this.http.delete(`/third-party/users/${helloDoctorUserID}`, this.getThirdPartyApiKeyHeaders());
+        return this.http.delete(`/third-party/users/${helloDoctorUserID}`);
     }
 
     updateThirdPartyUserMessagingToken(userID, deviceID, fcmToken) {
-        return this.http.put(`/third-party/users/${userID}/devices/${deviceID}`, {fcmToken}, this.getThirdPartyApiKeyHeaders());
+        return this.http.put(`/third-party/users/${userID}/devices/${deviceID}`, {fcmToken});
     }
 
     getThirdPartyUserConsultations(helloDoctorUserID) {
-        return this.http.get(`/third-party/users/${helloDoctorUserID}/consultations`, this.getThirdPartyApiKeyHeaders());
+        return this.http.get(`/third-party/users/${helloDoctorUserID}/consultations`);
     }
 
     rejectThirdPartyUserCall(videoRoomSID) {
-        return this.http.post(`/third-party/calls/${videoRoomSID}/_reject`, null, this.getThirdPartyApiKeyHeaders());
+        return this.http.post(`/third-party/calls/${videoRoomSID}/_reject`, null);
     }
 
-    getThirdPartyApiKeyHeaders() {
-        // TODO get from config or something
-        const deliLifeApiKey = "1C362B8B9E6868D76E385C6CBC7D4";
+    async registerApnsToken(apnsToken) {
+        const currentUser = getCurrentUser();
 
-        return {
-            "X-Third-Party-Api-Key": deliLifeApiKey
+        if (currentUser === null) {
+            console.warn("[registerApnsToken can't register token: no current user");
+            return;
+        } else if (!currentUser.deviceID) {
+            console.warn("[registerApnsToken can't register token: no device ID available");
+            return;
         }
+
+        return this.http.put(`/devices/${currentUser.deviceID}`, {apnsToken});
+    }
+
+    async unregisterApnsToken() {
+        const currentUser = getCurrentUser();
+
+        if (currentUser === null) {
+            console.warn("[registerApnsToken can't register token: no current user");
+            return;
+        } else if (!currentUser.deviceID) {
+            console.warn("[registerApnsToken can't register token: no device ID available");
+            return;
+        }
+
+        return this.http.put(`/devices/${currentUser.deviceID}`, {apnsToken: null});
     }
 }
 

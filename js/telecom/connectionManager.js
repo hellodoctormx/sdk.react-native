@@ -7,6 +7,7 @@ import VideoService from "../api/video";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
 import {getIncomingCallNotification} from "./notifications";
+import {navigateOnEndCall} from "./eventHandlers";
 
 const calls = [];
 const callListeners = [];
@@ -139,36 +140,6 @@ export function handleIncomingVideoCallAnswered(videoRoomSID) {
     tryCancelVideoCallNotification(videoRoomSID);
 }
 
-export async function handleIncomingVideoCallEndedRemotely(callData) {
-    console.info("handling video call ended remotely", callData);
-
-    const {videoRoomSID} = callData;
-
-    const call = calls.find(c => c.videoRoomSID === videoRoomSID);
-
-    if (!call) {
-        console.warn(`no call found for room ${videoRoomSID}`);
-        return;
-    }
-
-    const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
-
-    if (isCallKeepConfigured) {
-        RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
-    }
-
-    await endVideoCall(call.videoRoomSID);
-
-    tryCancelVideoCallNotification(videoRoomSID);
-
-    // FIXME?
-    // const currentRoute = getCurrentRoute();
-    //
-    // if (currentRoute?.name === "IncomingVideoCall") {
-    //     NavigationService.resetToHome();
-    // }
-}
-
 const incomingCallNotificationIDs = {};
 
 export async function tryCancelVideoCallNotification(videoRoomSID) {
@@ -207,6 +178,8 @@ export async function endVideoCall(videoRoomSID) {
 
     await VideoService.endVideoCall(videoRoomSID).catch(error => console.warn(`error ending video call ${videoRoomSID}`, error));
 
+    navigateOnEndCall();
+
     console.info(`[endConsultationVideoCall:${videoRoomSID}:DONE]`);
 }
 
@@ -241,7 +214,7 @@ export function registerAnswerablePushKitCallUUID(pushKitCallUUID) {
 }
 
 export async function registerPushKitCall(notification) {
-    console.debug("[handlePushKitIncomingCallNotification] notification", notification);
+    console.debug("[handlePushKitIncomingCallNotification] notification", {notification, unregisteredAnswerableCall});
     const {uuid, videoRoomSID, consultationID, callerDisplayName, callerPhoneNumber, callerEmail} = notification;
 
     incomingPushKitCall.uuid = uuid;

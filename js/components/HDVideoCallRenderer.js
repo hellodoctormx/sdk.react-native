@@ -192,7 +192,7 @@ function HDVideoCallRenderer(props) {
         console.info(`[VideoCallModal:MOUNT]`, {videoRoomSID});
 
         const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", handleConnectedToRoomEvent);
-
+        console.info("[VideoCallModal] added connectedToRoomListener")
         const participantRoomConnectionEventListener = hdVideoEvents.addListener(
             "participantRoomConnectionEvent",
             handleParticipantRoomConnectionEvent
@@ -209,6 +209,7 @@ function HDVideoCallRenderer(props) {
         );
 
         return () => {
+            console.info("[VideoCallModal] removed connectedToRoomListener")
             connectedToRoomListener.remove();
             participantRoomConnectionEventListener.remove();
             participantVideoEventListener.remove();

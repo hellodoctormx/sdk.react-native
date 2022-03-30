@@ -2,7 +2,7 @@ import _ from "lodash";
 import React from "react";
 import {Animated, Dimensions, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
-import {activeCallManager} from "../../index";
+import * as activeCallManager from "../telecom/activeCallManager";
 import {hdVideoEvents} from "./native";
 import {alpha} from "../utils/colors";
 

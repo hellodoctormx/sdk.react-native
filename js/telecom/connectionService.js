@@ -1,14 +1,13 @@
 import {PermissionsAndroid, Platform} from "react-native";
 import VoipPushNotification from "react-native-voip-push-notification";
-import videoApi from "../api/video";
 import RNCallKeep from "../callkeep";
 import * as auth from "../users/auth";
-import {CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
-import {checkVideoCallPermissions} from "./permissions";
+import {CallKeepEventHandlers, PushKitEventHandlers, registerVideoCallNavigator} from "./eventHandlers";
+import usersServiceApi from "../api/users";
 
 let isCallsServiceBootstrapped = false;
 
-export async function bootstrap() {
+export async function bootstrap(navigator) {
     console.info("[connectionService:bootstrap:START]", {isCallsServiceBootstrapped});
     if (isCallsServiceBootstrapped) {
         console.info("[bootstrap] not bootstrapping: already bootstrapped");
@@ -19,6 +18,7 @@ export async function bootstrap() {
 
     try {
         registerCallKeepListeners();
+        registerVideoCallNavigator(navigator);
 
         await setupCallKeep().catch(error => console.warn(`error setting up CallKeep: ${error}`));
 
@@ -31,19 +31,16 @@ export async function bootstrap() {
 
         throw error;
     }
+
+    console.info("[connectionService:bootstrap:DONE]");
 }
 
 export async function teardown() {
+    console.debug("[connectionService:teardown]");
+
     auth.signOut();
 
     removeCallKeepListeners();
-
-    const readPhoneNumbersPermission = await PermissionsAndroid.check('android.permission.READ_PHONE_NUMBERS');
-    console.debug("[connectionService:teardown]", {readPhoneNumbersPermission});
-
-    if (Platform.OS !== "android" || readPhoneNumbersPermission) {
-        RNCallKeep.endAllCalls();
-    }
 
     if (Platform.OS === "android") {
         RNCallKeep.setAvailable(false);
@@ -54,7 +51,7 @@ export async function teardown() {
         videoConsultationsSnapshotListener = null;
     }
 
-    videoApi.unregisterApnsToken().catch(console.warn);
+    usersServiceApi.unregisterApnsToken().catch(console.warn);
 }
 
 export async function checkIsCallKeepConfigured() {
@@ -121,6 +118,7 @@ export function registerCallKeepListeners() {
     RNCallKeep.addEventListener("didToggleHoldCallAction", CallKeepEventHandlers.handleDidToggleHoldCallAction);
     RNCallKeep.addEventListener("endCall", CallKeepEventHandlers.handleEndCall);
     RNCallKeep.addEventListener("didLoadWithEvents", CallKeepEventHandlers.handleDidLoadWithEvents);
+    RNCallKeep.addEventListener("didChangeAudioRoute", CallKeepEventHandlers.handleDidChangeAudioRoute);
 
     if (Platform.OS === "ios") {
         setupPushKitEvents();

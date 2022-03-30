@@ -12,12 +12,12 @@ class EventEmitter {
     public static var sharedInstance = EventEmitter()
 
     // ReactNativeEventEmitter is instantiated by React Native with the bridge.
-    private static var eventEmitter: RNEventEmitter!
+    private static var eventEmitter: HDEventEmitter!
 
     private init() {}
 
     // When React Native instantiates the emitter it is registered here.
-    func registerEventEmitter(eventEmitter: RNEventEmitter) {
+    func registerEventEmitter(eventEmitter: HDEventEmitter) {
         EventEmitter.eventEmitter = eventEmitter
     }
 

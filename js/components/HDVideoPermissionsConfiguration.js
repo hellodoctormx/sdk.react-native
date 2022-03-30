@@ -51,7 +51,7 @@ const videoCallPermissions = [
     {type: "phoneState", permission: PermissionsAndroid.PERMISSIONS.READ_PHONE_STATE, display: "Estado del teléfono"}
 ];
 
-export default function HDVideoPermissionsConfiguration(props) {
+function HDVideoPermissionsConfiguration(props) {
     const [canShowConfiguration, setCanShowConfiguration] = React.useState(false);
     const [hasPhoneAccountConfigured, setHasPhoneAccountConfigured] = React.useState(false);
     const [hasDefaultPhoneAccount, setHasDefaultPhoneAccount] = React.useState(false);
@@ -438,3 +438,12 @@ const ConfigurationStep = (props) => {
         </TouchableOpacity>
     )
 }
+
+
+function withAndroid(WrappedComponent) {
+    return function WithAndroidGate(props) {
+        return Platform.OS === "android" ? <WrappedComponent {...props}/> : null;
+    }
+}
+
+export default withAndroid(HDVideoPermissionsConfiguration);
