@@ -72,11 +72,11 @@ class HDVideoCalls {
 }
 
 interface RNHelloDoctorConfig {
-    onAnswerCall: function
+    onAnswerCall: function,
     onEndCall: function
 }
 
 interface HDVideoCallsConfig {
-    onAnswerCall: function
+    onAnswerCall: function,
     onEndCall: function
 }
