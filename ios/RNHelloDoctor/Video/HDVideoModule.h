@@ -12,8 +12,6 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
-#import "RNHelloDoctor-Swift.h"
-
 @interface HDVideoModule : NSObject <RCTBridgeModule>
 
 @end

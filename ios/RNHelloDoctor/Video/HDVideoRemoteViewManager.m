@@ -8,7 +8,7 @@
 #import "HDVideoRemoteViewManager.h"
 
 #import <React/RCTConvert.h>
-#import "RNHelloDoctor-Swift.h"
+#import <TwilioVideo/TwilioVideo.h>
 
 @interface HDVideoTrackIdentifier : NSObject
 
@@ -65,10 +65,10 @@ RCT_CUSTOM_VIEW_PROPERTY(scalesType, NSInteger, TVIVideoView) {
 
 RCT_CUSTOM_VIEW_PROPERTY(participantSID, NSString, TVIVideoView) {
     if (json) {
-        HDVideo *hdVideo = [HDVideo getInstance];
-        NSString *participantSID = [RCTConvert NSString:json];
-
-        [hdVideo addParticipantViewWithView:view.subviews[0] sid:participantSID];
+//        HDVideo *hdVideo = [HDVideo getInstance];
+//        NSString *participantSID = [RCTConvert NSString:json];
+//
+//        [hdVideo addParticipantViewWithView:view.subviews[0] sid:participantSID];
     }
 }
 

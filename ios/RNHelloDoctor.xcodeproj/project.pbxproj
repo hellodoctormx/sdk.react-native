@@ -3,161 +3,135 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 55;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		96905EF65AED1B983A6B3ABC /* libPods-RNHelloDoctor.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-RNHelloDoctor.a */; };
-		CDCB95E927F2EC4100CF3347 /* RNEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95DA27F2EC4100CF3347 /* RNEventEmitter.m */; };
-		CDCB95EA27F2EC4100CF3347 /* HDPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95DB27F2EC4100CF3347 /* HDPromise.m */; };
-		CDCB95EB27F2EC4100CF3347 /* RNEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95DC27F2EC4100CF3347 /* RNEventEmitter.swift */; };
-		CDCB95EC27F2EC4100CF3347 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95DE27F2EC4100CF3347 /* EventEmitter.swift */; };
-		CDCB95ED27F2EC4100CF3347 /* HDVideoRemoteViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95E027F2EC4100CF3347 /* HDVideoRemoteViewManager.m */; };
-		CDCB95EE27F2EC4100CF3347 /* RNCallKeep.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95E127F2EC4100CF3347 /* RNCallKeep.m */; };
-		CDCB95EF27F2EC4100CF3347 /* HDVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95E527F2EC4100CF3347 /* HDVideo.swift */; };
-		CDCB95F027F2EC4100CF3347 /* HDVideoLocalViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95E727F2EC4100CF3347 /* HDVideoLocalViewManager.m */; };
-		CDCB95F127F2EC4100CF3347 /* HDVideoModule.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCB95E827F2EC4100CF3347 /* HDVideoModule.m */; };
+		CDE7A65027F40AFC00B76F43 /* HDVideoRemoteViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64027F40AFC00B76F43 /* HDVideoRemoteViewManager.m */; };
+		CDE7A65127F40AFC00B76F43 /* RNCallKeep.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64127F40AFC00B76F43 /* RNCallKeep.m */; };
+		CDE7A65227F40AFC00B76F43 /* HDVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64527F40AFC00B76F43 /* HDVideo.swift */; };
+		CDE7A65327F40AFC00B76F43 /* HDVideoLocalViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64727F40AFC00B76F43 /* HDVideoLocalViewManager.m */; };
+		CDE7A65427F40AFC00B76F43 /* HDVideoModule.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64827F40AFC00B76F43 /* HDVideoModule.m */; };
+		CDE7A65527F40AFC00B76F43 /* RNEventEmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64B27F40AFC00B76F43 /* RNEventEmitter.m */; };
+		CDE7A65627F40AFC00B76F43 /* HDPromise.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64C27F40AFC00B76F43 /* HDPromise.m */; };
+		CDE7A65727F40AFC00B76F43 /* RNEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64D27F40AFC00B76F43 /* RNEventEmitter.swift */; };
+		CDE7A65827F40AFC00B76F43 /* EventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64F27F40AFC00B76F43 /* EventEmitter.swift */; };
+		CDE7A65C27F4194800B76F43 /* HDVideoLocalViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A65B27F4194800B76F43 /* HDVideoLocalViewManager.swift */; };
+		CDE7A65E27F41BBA00B76F43 /* HDVideoModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A65D27F41BBA00B76F43 /* HDVideoModule.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CDE7A63127F40AD700B76F43 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		13B07F961A680F5B00A75B9A /* RNHelloDoctor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNHelloDoctor.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = RNHelloDoctor/Images.xcassets; sourceTree = "<group>"; };
-		58EEBF8E8E6FB1BC6CAF49B5 /* libPods-RNHelloDoctor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNHelloDoctor.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6C2E3173556A471DD304B334 /* Pods-RNHelloDoctor.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNHelloDoctor.debug.xcconfig"; path = "Target Support Files/Pods-RNHelloDoctor/Pods-RNHelloDoctor.debug.xcconfig"; sourceTree = "<group>"; };
-		7A4D352CD337FB3A3BF06240 /* Pods-RNHelloDoctor.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNHelloDoctor.release.xcconfig"; path = "Target Support Files/Pods-RNHelloDoctor/Pods-RNHelloDoctor.release.xcconfig"; sourceTree = "<group>"; };
-		CDCB95D827F2EC4100CF3347 /* RNHelloDoctor-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "RNHelloDoctor-Bridging-Header.h"; path = "RNHelloDoctor/RNHelloDoctor-Bridging-Header.h"; sourceTree = "<group>"; };
-		CDCB95DA27F2EC4100CF3347 /* RNEventEmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNEventEmitter.m; sourceTree = "<group>"; };
-		CDCB95DB27F2EC4100CF3347 /* HDPromise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDPromise.m; sourceTree = "<group>"; };
-		CDCB95DC27F2EC4100CF3347 /* RNEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNEventEmitter.swift; sourceTree = "<group>"; };
-		CDCB95DD27F2EC4100CF3347 /* HDPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDPromise.h; sourceTree = "<group>"; };
-		CDCB95DE27F2EC4100CF3347 /* EventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
-		CDCB95E027F2EC4100CF3347 /* HDVideoRemoteViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoRemoteViewManager.m; sourceTree = "<group>"; };
-		CDCB95E127F2EC4100CF3347 /* RNCallKeep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCallKeep.m; sourceTree = "<group>"; };
-		CDCB95E227F2EC4100CF3347 /* HDVideoModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDVideoModule.h; sourceTree = "<group>"; };
-		CDCB95E327F2EC4100CF3347 /* HDVideoLocalViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDVideoLocalViewManager.h; sourceTree = "<group>"; };
-		CDCB95E427F2EC4100CF3347 /* HDVideoRemoteViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDVideoRemoteViewManager.h; sourceTree = "<group>"; };
-		CDCB95E527F2EC4100CF3347 /* HDVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HDVideo.swift; sourceTree = "<group>"; };
-		CDCB95E627F2EC4100CF3347 /* RNCallKeep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCallKeep.h; sourceTree = "<group>"; };
-		CDCB95E727F2EC4100CF3347 /* HDVideoLocalViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoLocalViewManager.m; sourceTree = "<group>"; };
-		CDCB95E827F2EC4100CF3347 /* HDVideoModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoModule.m; sourceTree = "<group>"; };
-		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		CDE7A63327F40AD700B76F43 /* libRNHelloDoctor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNHelloDoctor.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDE7A64027F40AFC00B76F43 /* HDVideoRemoteViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoRemoteViewManager.m; sourceTree = "<group>"; };
+		CDE7A64127F40AFC00B76F43 /* RNCallKeep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCallKeep.m; sourceTree = "<group>"; };
+		CDE7A64227F40AFC00B76F43 /* HDVideoModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDVideoModule.h; sourceTree = "<group>"; };
+		CDE7A64327F40AFC00B76F43 /* HDVideoLocalViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDVideoLocalViewManager.h; sourceTree = "<group>"; };
+		CDE7A64427F40AFC00B76F43 /* HDVideoRemoteViewManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDVideoRemoteViewManager.h; sourceTree = "<group>"; };
+		CDE7A64527F40AFC00B76F43 /* HDVideo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HDVideo.swift; sourceTree = "<group>"; };
+		CDE7A64627F40AFC00B76F43 /* RNCallKeep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNCallKeep.h; sourceTree = "<group>"; };
+		CDE7A64727F40AFC00B76F43 /* HDVideoLocalViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoLocalViewManager.m; sourceTree = "<group>"; };
+		CDE7A64827F40AFC00B76F43 /* HDVideoModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoModule.m; sourceTree = "<group>"; };
+		CDE7A64B27F40AFC00B76F43 /* RNEventEmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNEventEmitter.m; sourceTree = "<group>"; };
+		CDE7A64C27F40AFC00B76F43 /* HDPromise.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDPromise.m; sourceTree = "<group>"; };
+		CDE7A64D27F40AFC00B76F43 /* RNEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RNEventEmitter.swift; sourceTree = "<group>"; };
+		CDE7A64E27F40AFC00B76F43 /* HDPromise.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HDPromise.h; sourceTree = "<group>"; };
+		CDE7A64F27F40AFC00B76F43 /* EventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventEmitter.swift; sourceTree = "<group>"; };
+		CDE7A65927F40D3800B76F43 /* Podfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Podfile; sourceTree = "<group>"; };
+		CDE7A65A27F417F700B76F43 /* RNHelloDoctor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RNHelloDoctor-Bridging-Header.h"; sourceTree = "<group>"; };
+		CDE7A65B27F4194800B76F43 /* HDVideoLocalViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDVideoLocalViewManager.swift; sourceTree = "<group>"; };
+		CDE7A65D27F41BBA00B76F43 /* HDVideoModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HDVideoModule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
+		CDE7A63027F40AD700B76F43 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				96905EF65AED1B983A6B3ABC /* libPods-RNHelloDoctor.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		13B07FAE1A68108700A75B9A /* RNHelloDoctor */ = {
+		CDE7A62A27F40AD700B76F43 = {
 			isa = PBXGroup;
 			children = (
-				CDCB95D827F2EC4100CF3347 /* RNHelloDoctor-Bridging-Header.h */,
-				CDCB95D927F2EC4100CF3347 /* Utils */,
-				CDCB95DF27F2EC4100CF3347 /* Video */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
+				CDE7A65927F40D3800B76F43 /* Podfile */,
+				CDE7A63527F40AD700B76F43 /* RNHelloDoctor */,
+				CDE7A63427F40AD700B76F43 /* Products */,
 			);
-			name = RNHelloDoctor;
 			sourceTree = "<group>";
 		};
-		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+		CDE7A63427F40AD700B76F43 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				58EEBF8E8E6FB1BC6CAF49B5 /* libPods-RNHelloDoctor.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Libraries;
-			sourceTree = "<group>";
-		};
-		83CBB9F61A601CBA00E9B192 = {
-			isa = PBXGroup;
-			children = (
-				13B07FAE1A68108700A75B9A /* RNHelloDoctor */,
-				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				83CBBA001A601CBA00E9B192 /* Products */,
-				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				D65327D7A22EEC0BE12398D9 /* Pods */,
-			);
-			indentWidth = 2;
-			sourceTree = "<group>";
-			tabWidth = 2;
-			usesTabs = 0;
-		};
-		83CBBA001A601CBA00E9B192 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				13B07F961A680F5B00A75B9A /* RNHelloDoctor.app */,
+				CDE7A63327F40AD700B76F43 /* libRNHelloDoctor.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CDCB95D927F2EC4100CF3347 /* Utils */ = {
+		CDE7A63527F40AD700B76F43 /* RNHelloDoctor */ = {
 			isa = PBXGroup;
 			children = (
-				CDCB95DA27F2EC4100CF3347 /* RNEventEmitter.m */,
-				CDCB95DB27F2EC4100CF3347 /* HDPromise.m */,
-				CDCB95DC27F2EC4100CF3347 /* RNEventEmitter.swift */,
-				CDCB95DD27F2EC4100CF3347 /* HDPromise.h */,
-				CDCB95DE27F2EC4100CF3347 /* EventEmitter.swift */,
+				CDE7A64A27F40AFC00B76F43 /* Utils */,
+				CDE7A63F27F40AFC00B76F43 /* Video */,
+				CDE7A65A27F417F700B76F43 /* RNHelloDoctor-Bridging-Header.h */,
 			);
-			name = Utils;
-			path = RNHelloDoctor/Utils;
+			path = RNHelloDoctor;
 			sourceTree = "<group>";
 		};
-		CDCB95DF27F2EC4100CF3347 /* Video */ = {
+		CDE7A63F27F40AFC00B76F43 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				CDCB95E027F2EC4100CF3347 /* HDVideoRemoteViewManager.m */,
-				CDCB95E127F2EC4100CF3347 /* RNCallKeep.m */,
-				CDCB95E227F2EC4100CF3347 /* HDVideoModule.h */,
-				CDCB95E327F2EC4100CF3347 /* HDVideoLocalViewManager.h */,
-				CDCB95E427F2EC4100CF3347 /* HDVideoRemoteViewManager.h */,
-				CDCB95E527F2EC4100CF3347 /* HDVideo.swift */,
-				CDCB95E627F2EC4100CF3347 /* RNCallKeep.h */,
-				CDCB95E727F2EC4100CF3347 /* HDVideoLocalViewManager.m */,
-				CDCB95E827F2EC4100CF3347 /* HDVideoModule.m */,
+				CDE7A64527F40AFC00B76F43 /* HDVideo.swift */,
+				CDE7A65B27F4194800B76F43 /* HDVideoLocalViewManager.swift */,
+				CDE7A64227F40AFC00B76F43 /* HDVideoModule.h */,
+				CDE7A64827F40AFC00B76F43 /* HDVideoModule.m */,
+				CDE7A65D27F41BBA00B76F43 /* HDVideoModule.swift */,
+				CDE7A64327F40AFC00B76F43 /* HDVideoLocalViewManager.h */,
+				CDE7A64727F40AFC00B76F43 /* HDVideoLocalViewManager.m */,
+				CDE7A64427F40AFC00B76F43 /* HDVideoRemoteViewManager.h */,
+				CDE7A64027F40AFC00B76F43 /* HDVideoRemoteViewManager.m */,
+				CDE7A64627F40AFC00B76F43 /* RNCallKeep.h */,
+				CDE7A64127F40AFC00B76F43 /* RNCallKeep.m */,
 			);
-			name = Video;
-			path = RNHelloDoctor/Video;
+			path = Video;
 			sourceTree = "<group>";
 		};
-		D65327D7A22EEC0BE12398D9 /* Pods */ = {
+		CDE7A64A27F40AFC00B76F43 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				6C2E3173556A471DD304B334 /* Pods-RNHelloDoctor.debug.xcconfig */,
-				7A4D352CD337FB3A3BF06240 /* Pods-RNHelloDoctor.release.xcconfig */,
+				CDE7A64B27F40AFC00B76F43 /* RNEventEmitter.m */,
+				CDE7A64C27F40AFC00B76F43 /* HDPromise.m */,
+				CDE7A64D27F40AFC00B76F43 /* RNEventEmitter.swift */,
+				CDE7A64E27F40AFC00B76F43 /* HDPromise.h */,
+				CDE7A64F27F40AFC00B76F43 /* EventEmitter.swift */,
 			);
-			path = Pods;
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13B07F861A680F5B00A75B9A /* RNHelloDoctor */ = {
+		CDE7A63227F40AD700B76F43 /* RNHelloDoctor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RNHelloDoctor" */;
+			buildConfigurationList = CDE7A63C27F40AD700B76F43 /* Build configuration list for PBXNativeTarget "RNHelloDoctor" */;
 			buildPhases = (
-				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				FD10A7F022414F080027D42C /* Start Packager */,
-				13B07F871A680F5B00A75B9A /* Sources */,
-				13B07F8C1A680F5B00A75B9A /* Frameworks */,
-				13B07F8E1A680F5B00A75B9A /* Resources */,
-				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				FE0A812C704F634415871E19 /* [CP] Embed Pods Frameworks */,
+				CDE7A62F27F40AD700B76F43 /* Sources */,
+				CDE7A63027F40AD700B76F43 /* Frameworks */,
+				CDE7A63127F40AD700B76F43 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -165,217 +139,81 @@
 			);
 			name = RNHelloDoctor;
 			productName = RNHelloDoctor;
-			productReference = 13B07F961A680F5B00A75B9A /* RNHelloDoctor.app */;
-			productType = "com.apple.product-type.application";
+			productReference = CDE7A63327F40AD700B76F43 /* libRNHelloDoctor.a */;
+			productType = "com.apple.product-type.library.static";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		83CBB9F71A601CBA00E9B192 /* Project object */ = {
+		CDE7A62B27F40AD700B76F43 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1310;
 				TargetAttributes = {
-					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = H8JJZYX3RL;
-						LastSwiftMigration = 1250;
+					CDE7A63227F40AD700B76F43 = {
+						CreatedOnToolsVersion = 13.1;
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RNHelloDoctor" */;
-			compatibilityVersion = "Xcode 3.2";
+			buildConfigurationList = CDE7A62E27F40AD700B76F43 /* Build configuration list for PBXProject "RNHelloDoctor" */;
+			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
 			);
-			mainGroup = 83CBB9F61A601CBA00E9B192;
-			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
+			mainGroup = CDE7A62A27F40AD700B76F43;
+			productRefGroup = CDE7A63427F40AD700B76F43 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* RNHelloDoctor */,
+				CDE7A63227F40AD700B76F43 /* RNHelloDoctor */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		13B07F8E1A680F5B00A75B9A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export NODE_BINARY=node\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\n`node --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n";
-		};
-		08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RNHelloDoctor-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FD10A7F022414F080027D42C /* Start Packager */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Start Packager";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > `node --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/.packager.env'\"`\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open `node --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/launchPackager.command'\"` || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		FE0A812C704F634415871E19 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNHelloDoctor/Pods-RNHelloDoctor-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/TwilioVideo/TwilioVideo.framework/TwilioVideo",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TwilioVideo.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNHelloDoctor/Pods-RNHelloDoctor-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		13B07F871A680F5B00A75B9A /* Sources */ = {
+		CDE7A62F27F40AD700B76F43 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CDCB95F027F2EC4100CF3347 /* HDVideoLocalViewManager.m in Sources */,
-				CDCB95EF27F2EC4100CF3347 /* HDVideo.swift in Sources */,
-				CDCB95F127F2EC4100CF3347 /* HDVideoModule.m in Sources */,
-				CDCB95E927F2EC4100CF3347 /* RNEventEmitter.m in Sources */,
-				CDCB95EC27F2EC4100CF3347 /* EventEmitter.swift in Sources */,
-				CDCB95EB27F2EC4100CF3347 /* RNEventEmitter.swift in Sources */,
-				CDCB95EA27F2EC4100CF3347 /* HDPromise.m in Sources */,
-				CDCB95EE27F2EC4100CF3347 /* RNCallKeep.m in Sources */,
-				CDCB95ED27F2EC4100CF3347 /* HDVideoRemoteViewManager.m in Sources */,
+				CDE7A65C27F4194800B76F43 /* HDVideoLocalViewManager.swift in Sources */,
+				CDE7A65327F40AFC00B76F43 /* HDVideoLocalViewManager.m in Sources */,
+				CDE7A65E27F41BBA00B76F43 /* HDVideoModule.swift in Sources */,
+				CDE7A65727F40AFC00B76F43 /* RNEventEmitter.swift in Sources */,
+				CDE7A65627F40AFC00B76F43 /* HDPromise.m in Sources */,
+				CDE7A65827F40AFC00B76F43 /* EventEmitter.swift in Sources */,
+				CDE7A65027F40AFC00B76F43 /* HDVideoRemoteViewManager.m in Sources */,
+				CDE7A65527F40AFC00B76F43 /* RNEventEmitter.m in Sources */,
+				CDE7A65127F40AFC00B76F43 /* RNCallKeep.m in Sources */,
+				CDE7A65227F40AFC00B76F43 /* HDVideo.swift in Sources */,
+				CDE7A65427F40AFC00B76F43 /* HDVideoModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		13B07F941A680F5B00A75B9A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6C2E3173556A471DD304B334 /* Pods-RNHelloDoctor.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H8JJZYX3RL;
-				ENABLE_BITCODE = NO;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"FB_SONARKIT_ENABLED=1",
-				);
-				INFOPLIST_FILE = RNHelloDoctor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hellodoctor.RNHelloDoctor;
-				PRODUCT_NAME = RNHelloDoctor;
-				SWIFT_OBJC_BRIDGING_HEADER = "RNHelloDoctor/RNHelloDoctor-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		13B07F951A680F5B00A75B9A /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7A4D352CD337FB3A3BF06240 /* Pods-RNHelloDoctor.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H8JJZYX3RL;
-				INFOPLIST_FILE = RNHelloDoctor/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.hellodoctor.RNHelloDoctor;
-				PRODUCT_NAME = RNHelloDoctor;
-				SWIFT_OBJC_BRIDGING_HEADER = "RNHelloDoctor/RNHelloDoctor-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		83CBBA201A601CBA00E9B192 /* Debug */ = {
+		CDE7A63A27F40AD700B76F43 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -384,17 +222,18 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -402,37 +241,38 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
-				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
-				MTL_ENABLE_DEBUG_INFO = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
-		83CBBA211A601CBA00E9B192 /* Release */ = {
+		CDE7A63B27F40AD700B76F43 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
@@ -441,17 +281,18 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 ";
-				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -459,37 +300,64 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
-				LD_RUNPATH_SEARCH_PATHS = "/usr/lib/swift $(inherited)";
-				LIBRARY_SEARCH_PATHS = "\"$(inherited)\"";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CDE7A63D27F40AD700B76F43 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H8JJZYX3RL;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNHelloDoctor/RNHelloDoctor-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CDE7A63E27F40AD700B76F43 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H8JJZYX3RL;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "RNHelloDoctor/RNHelloDoctor-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RNHelloDoctor" */ = {
+		CDE7A62E27F40AD700B76F43 /* Build configuration list for PBXProject "RNHelloDoctor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				13B07F941A680F5B00A75B9A /* Debug */,
-				13B07F951A680F5B00A75B9A /* Release */,
+				CDE7A63A27F40AD700B76F43 /* Debug */,
+				CDE7A63B27F40AD700B76F43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "RNHelloDoctor" */ = {
+		CDE7A63C27F40AD700B76F43 /* Build configuration list for PBXNativeTarget "RNHelloDoctor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				83CBBA201A601CBA00E9B192 /* Debug */,
-				83CBBA211A601CBA00E9B192 /* Release */,
+				CDE7A63D27F40AD700B76F43 /* Debug */,
+				CDE7A63E27F40AD700B76F43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+	rootObject = CDE7A62B27F40AD700B76F43 /* Project object */;
 }
