@@ -35,7 +35,7 @@ export async function bootstrap(navigator) {
     console.info("[connectionService:bootstrap:DONE]");
 }
 
-export async function teardown() {
+async function teardown() {
     console.debug("[connectionService:teardown]");
 
     auth.signOut();

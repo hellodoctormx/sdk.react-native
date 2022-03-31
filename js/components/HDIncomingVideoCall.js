@@ -5,7 +5,7 @@ import videoServiceApi from "../api/video";
 import * as connectionManager from "../telecom/connectionManager";
 import PreviewLocalVideoView from "./PreviewLocalVideoView";
 import withVideoCallPermissions from "./withVideoCallPermissions";
-import {eventHandlers} from "../../index";
+import RNHelloDoctor, {eventHandlers} from "../../index";
 
 
 function HDIncomingVideoCall(props) {
@@ -49,7 +49,7 @@ function HDIncomingVideoCall(props) {
 async function acceptIncomingVideoCall(rootTag) {
     console.info("[HDIncomingVideoCall:acceptIncomingVideoCall]");
 
-    AppRegistry.runApplication("hellodoctorpatient", {rootTag});
+    AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag});
 
     const {consultationID, videoRoomSID, status} = connectionManager.getIncomingCall();
     console.info("[HDIncomingVideoCall:acceptIncomingVideoCall] got", {consultationID, videoRoomSID, status});
@@ -66,7 +66,7 @@ async function acceptIncomingVideoCall(rootTag) {
 async function rejectIncomingVideoCall(rootTag) {
     console.info("[HDIncomingVideoCall:rejectIncomingVideoCall]");
 
-    AppRegistry.runApplication("hellodoctorpatient", {rootTag});
+    AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag});
 
     const incomingCall = connectionManager.getIncomingCall();
 
