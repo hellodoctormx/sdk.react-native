@@ -29,7 +29,7 @@ export async function checkHasTriedCallKeepConfig() {
         return false;
     }
 
-    return await AsyncStorage.getItem(`has-tried-call-keep-config-${getCurrentUser().id}`) === "true";
+    return await AsyncStorage.getItem(`has-tried-call-keep-config-${currentUser.uid}`) === "true";
 }
 
 export async function setHasTriedCallKeepConfig() {
@@ -84,7 +84,6 @@ function HDVideoPermissionsConfiguration(props) {
     }, []);
 
     React.useEffect(() => {
-        console.debug("[configurationStatus:useEffect]", {configurationStatus})
         if (configurationStatus === "pending") {
             checkHasVideoCallPermissions().catch(console.warn);
             return;
@@ -126,11 +125,13 @@ function HDVideoPermissionsConfiguration(props) {
         }
     }, [hasVideoCallPermissions]);
 
-    const callKeepInfoSuppressionKey = `suppress-call-keep-info-${getCurrentUser().id}`;
+    const currentUser = getCurrentUser();
+
+    const callKeepInfoSuppressionKey = `suppress-call-keep-info-${currentUser.uid}`;
 
     const checkIsDialogSuppressed = async () => {
         const callKeepSuppression = await AsyncStorage.getItem(callKeepInfoSuppressionKey);
-        console.debug("[checkIsDialogSuppressed]", {callKeepSuppression})
+
         const hasSuppression = !_.isEmpty(callKeepSuppression);
         const isSuppressionExpired = hasSuppression && new Date(callKeepSuppression) < new Date();
 
@@ -141,12 +142,12 @@ function HDVideoPermissionsConfiguration(props) {
         const impossibleExpires = new Date();
         impossibleExpires.setFullYear(2200, 1, 1);
 
-        AsyncStorage.setItem(`suppress-call-keep-info-${getCurrentUser().id}`, impossibleExpires.toISOString());
+        AsyncStorage.setItem(`suppress-call-keep-info-${currentUser.uid}`, impossibleExpires.toISOString());
         setIsSuppressed(true);
     }
 
     const doRestoreDialog = () => {
-        AsyncStorage.removeItem(`suppress-call-keep-info-${getCurrentUser().id}`);
+        AsyncStorage.removeItem(`suppress-call-keep-info-${currentUser.uid}`);
         setIsSuppressed(false);
     }
 
@@ -156,7 +157,7 @@ function HDVideoPermissionsConfiguration(props) {
 
         setHasTriedCallKeepConfig().catch(console.warn);
 
-        AsyncStorage.setItem(`suppress-call-keep-info-${getCurrentUser().id}`, temporaryExpires.toISOString());
+        AsyncStorage.setItem(`suppress-call-keep-info-${currentUser.uid}`, temporaryExpires.toISOString());
         setIsSuppressed(true);
 
         if (props.onHide) {
@@ -166,7 +167,7 @@ function HDVideoPermissionsConfiguration(props) {
 
     const checkHasPhoneAccountConfigured = async () => {
         const hasVideoCallPermissions = await checkHasVideoCallPermissions();
-        console.debug("[checkHasPhoneAccountConfigured]", {hasVideoCallPermissions});
+
         if (!hasVideoCallPermissions) {
             setHasPhoneAccountConfigured(false);
             return;
@@ -174,7 +175,6 @@ function HDVideoPermissionsConfiguration(props) {
 
         const hasPhoneAccount = await RNCallKeep.checkPhoneAccountEnabled();
         setHasPhoneAccountConfigured(hasPhoneAccount);
-        console.debug("[checkHasPhoneAccountConfigured]", {hasPhoneAccount});
 
         return hasPhoneAccount;
     }
@@ -205,16 +205,12 @@ function HDVideoPermissionsConfiguration(props) {
     }
 
     const checkHasVideoCallPermissions = async () => {
-        console.info("[checkHasVideoCallPermissions:START]");
-
         for (let permission of videoCallPermissions) {
             permission.granted = await PermissionsAndroid.check(permission.permission);
         }
 
         const missingPermissions = videoCallPermissions.filter(p => !p.granted);
         setMissingPermissions(missingPermissions);
-
-        console.info("[checkHasVideoCallPermissions]", {missingPermissions});
 
         return missingPermissions.length === 0;
     }
@@ -231,8 +227,6 @@ function HDVideoPermissionsConfiguration(props) {
             Linking.openSettings().catch(console.warn);
 
             const appStateChangeSubscription = AppState.addEventListener("change", (appState) => {
-                console.debug(`[checkHasVideoCallPermissions:appStateChangeSubscription]`, {appState});
-
                 if (appState === "active") {
                     checkHasVideoCallPermissions().catch(console.warn);
                     appStateChangeSubscription.remove();
@@ -259,9 +253,8 @@ function HDVideoPermissionsConfiguration(props) {
     const tryConfigurePhoneAccount = async () => {
         configureRetriesRef.current = configureRetriesRef.current + 1;
 
-        console.debug("[tryConfigurePhoneAccount]");
         const hasPhoneAccountConfigured = await checkHasPhoneAccountConfigured(true);
-        console.debug("[tryConfigurePhoneAccount]", {hasPhoneAccountConfigured});
+
         if (hasPhoneAccountConfigured) {
             doOpenPhoneAccountSettings();
 
@@ -277,8 +270,6 @@ function HDVideoPermissionsConfiguration(props) {
 
     const registerActiveAppStateHandler = (handler) => {
         const appStateChangeSubscription = AppState.addEventListener("change", async (appState) => {
-            console.debug(`[appStateChangeEvent]`, {appState});
-
             if (appState === "active") {
                 handler();
                 appStateChangeSubscription.remove();
@@ -292,8 +283,6 @@ function HDVideoPermissionsConfiguration(props) {
 
         setTimeout(doSuppressDialog, 3000);
     }
-
-    console.debug("RENDER", {isSuppressed, needsConfirmDefault, hasVideoCallPermissions, hasPhoneAccountConfigured, hasDefaultPhoneAccount})
 
     const SuppressedHeaderComponent = isConfigured ? View : TouchableOpacity;
 
@@ -440,10 +429,12 @@ const ConfigurationStep = (props) => {
 }
 
 
-function withAndroid(WrappedComponent) {
-    return function WithAndroidGate(props) {
-        return Platform.OS === "android" ? <WrappedComponent {...props}/> : null;
+function withPermissionsGate(WrappedComponent) {
+    return function WithPermissionsGate(props) {
+        const shouldRender = Platform.OS === "android" && getCurrentUser() !== null;
+
+        return shouldRender ? <WrappedComponent {...props}/> : null;
     }
 }
 
-export default withAndroid(HDVideoPermissionsConfiguration);
+export default withPermissionsGate(HDVideoPermissionsConfiguration);

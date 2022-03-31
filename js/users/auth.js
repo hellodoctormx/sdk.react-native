@@ -17,5 +17,5 @@ export function signOut() {
 }
 
 export function getCurrentUser() {
-    return _currentUser;
+    return _currentUser || null;
 }

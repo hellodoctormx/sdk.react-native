@@ -1,30 +1,33 @@
 import {getCurrentUser} from "../users/auth";
 
 export default class Http {
-    constructor(host, headers) {
+    static API_KEY: string = "";
+
+    constructor(host) {
         this.host = host;
-        this.headers = headers;
     }
 
     getRequestHeaders(headers) {
         const currentUser = getCurrentUser();
 
-        if (currentUser === null) {
-            console.warn("[VideoServiceAPI:getRequestHeaders] attempting to request headers without current user");
-            return headers;
-        }
-
-        return {
-            "Authorization": `Bearer ${currentUser.jwt}`,
-            "X-User-UID": currentUser.uid,
-            "X-Third-Party-Api-Key": currentUser.thirdPartyApiKey,
+        const requestHeaders = {
             "Content-Type": "application/json",
             ...headers
         }
+
+        if (currentUser !== null) {
+            requestHeaders["Authorization"] = `Bearer ${currentUser.jwt}`
+            requestHeaders["X-User-UID"] = currentUser.uid
+        }
+
+        if (!!Http.API_KEY) {
+            requestHeaders["X-Api-Key"] = Http.API_KEY
+        }
+        return requestHeaders;
     }
 
     async post(path, data, headers) {
-        const requestHeaders = await this.getRequestHeaders(headers);
+        const requestHeaders = this.getRequestHeaders(headers);
 
         const request = fetch(`${this.host}${path}`, {
             method: "POST",
@@ -38,7 +41,7 @@ export default class Http {
     async put(path, data, headers) {
         const request = fetch(`${this.host}${path}`, {
             method: "PUT",
-            headers: await this.getRequestHeaders(headers),
+            headers: this.getRequestHeaders(headers),
             body: JSON.stringify(data)
         });
 
@@ -48,14 +51,14 @@ export default class Http {
     async get(path, headers) {
         return fetch(`${this.host}${path}`, {
             method: "GET",
-            headers: await this.getRequestHeaders(headers)
+            headers: this.getRequestHeaders(headers)
         }).then(nullSafeJsonResponse);
     }
 
     async delete(path, headers) {
         return fetch(`${this.host}${path}`, {
             method: "DELETE",
-            headers: await this.getRequestHeaders(headers)
+            headers: this.getRequestHeaders(headers)
         });
     }
 }

@@ -12,12 +12,22 @@ import usersServiceApi from "./js/api/users";
 import videoServiceApi from "./js/api/video";
 import withVideoCallPermissions from "./js/components/withVideoCallPermissions";
 import {getCurrentUser} from "./js/users/auth";
+import Http from "./js/api/http";
 
 export default class RNHelloDoctor {
+    static appName: string = null
+    static consultations: HDConsultations = null
+    static users: HDUsers = null
     static videos: HDVideoCalls = null
 
-    static configure(config: RNHelloDoctorConfig) {
-        auth.signIn(config.user)
+    static configure(appName, apiKey, config: RNHelloDoctorConfig) {
+        RNHelloDoctor.appName = appName;
+
+        Http.API_KEY = apiKey;
+
+        if (config.user) {
+            auth.signIn(config.user)
+        }
 
         connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
 
@@ -27,7 +37,7 @@ export default class RNHelloDoctor {
     }
 
     static teardown() {
-        connectionService.teardown().catch(error => console.warn("[RNHelloDoctor:teardown]", {error}));
+        connectionService.teardown();
     }
 }
 
@@ -97,7 +107,7 @@ class HDVideoCalls {
             switch (status) {
                 case "completed":
                 case "rejected":
-                    this.endVideoCall().catch(console.warn);
+                    this.endVideoCall(videoRoomSID).catch(console.warn);
                     break;
             }
         }
@@ -117,7 +127,7 @@ class HDVideoCalls {
 }
 
 interface RNHelloDoctorConfig {
-    user: HDUser,
+    user?: HDUser,
     video: HDVideoCallsConfig
 }
 
@@ -129,8 +139,8 @@ export interface HDUser {
 }
 
 interface HDVideoCallsConfig {
-    onAnswerCall: function,
-    onEndCall: function
+    onAnswerCall: Function,
+    onEndCall: Function
 }
 
 export {
