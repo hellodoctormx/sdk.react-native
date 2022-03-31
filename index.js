@@ -2,13 +2,16 @@ import * as auth from "./js/users/auth";
 import * as connectionManager from "./js/telecom/connectionManager";
 import * as connectionService from "./js/telecom/connectionService";
 import * as eventHandlers from "./js/telecom/eventHandlers";
+import * as notifications from "./js/telecom/notifications";
 import HDCallKeep from "./js/callkeep";
 import HDVideoCallRenderer from "./js/components/HDVideoCallRenderer"
 import HDVideoPermissionsConfiguration from "./js/components/HDVideoPermissionsConfiguration";
 import HDIncomingVideoCall from "./js/components/HDIncomingVideoCall"
 import PreviewLocalVideoView from "./js/components/PreviewLocalVideoView";
+import usersServiceApi from "./js/api/users";
 import videoServiceApi from "./js/api/video";
 import withVideoCallPermissions from "./js/components/withVideoCallPermissions";
+import {getCurrentUser} from "./js/users/auth";
 
 export default class RNHelloDoctor {
     static videos: HDVideoCalls = null
@@ -18,11 +21,49 @@ export default class RNHelloDoctor {
 
         connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
 
+        RNHelloDoctor.consultations = HDConsultations
+        RNHelloDoctor.users = HDUsers
         RNHelloDoctor.videos = HDVideoCalls
     }
 
     static teardown() {
         connectionService.teardown().catch(error => console.warn("[RNHelloDoctor:teardown]", {error}));
+    }
+}
+
+class HDUsers {
+    static createUser(accountPayload) {
+        return usersServiceApi.createThirdPartyUserAccount(accountPayload)
+    }
+
+    static deleteUser(userID) {
+        return usersServiceApi.deleteThirdPartyUserAccount(userID)
+    }
+
+    static updateMessagingToken(token) {
+        const currentUser = getCurrentUser()
+
+        if (currentUser === null) {
+            console.warn("[HDUsers:updateMessagingToken] can't update: no current user");
+            return;
+        }
+
+        return usersServiceApi.updateThirdPartyUserMessagingToken(currentUser.uid, currentUser.deviceID, token)
+    }
+}
+
+class HDConsultations {
+    static getConsultations(thirdPartyUserID) {
+        // TODO probably want to use hd user ID, but things are tangled up with the third-party ID at the moment
+
+        // const currentUser = getCurrentUser()
+        //
+        // if (currentUser === null) {
+        //     console.warn("[HDConsultations:getConsultations] can't get consultations: no current user");
+        //     return;
+        // }
+
+        return usersServiceApi.getThirdPartyUserConsultations(thirdPartyUserID);
     }
 }
 
@@ -94,6 +135,7 @@ interface HDVideoCallsConfig {
 
 export {
     connectionManager,
+    notifications,
     HDCallKeep,
     HDIncomingVideoCall,
     HDVideoCallRenderer,

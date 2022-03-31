@@ -69,12 +69,11 @@ export async function registerIncomingVideoCall(uuid, videoRoomSID, consultation
 }
 
 export async function notifyIncomingCall(incomingCall) {
-    if (Platform.OS === "ios") {
-        // PushKit calls RNCallKeep natively in iOS to display incoming calls
-        return;
-    }
-
-
+    // FIXME only skip iOS if PushKit not setup. So figure out how to determine that
+    // if (Platform.OS === "ios") {
+    //     // PushKit calls RNCallKeep natively in iOS to display incoming calls
+    //     return;
+    // }
 
     const {videoRoomSID, consultationID, caller} = incomingCall;
 
@@ -91,7 +90,7 @@ export async function notifyIncomingCall(incomingCall) {
 
         await connectionService.setupCallKeep();
 
-        RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName, "generic", true);
+        RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName || "HelloDoctor", "generic", true);
 
     } else {
         console.debug(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);

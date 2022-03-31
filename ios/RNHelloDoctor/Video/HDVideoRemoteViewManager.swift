@@ -11,8 +11,8 @@ import UIKit
 
 @objc(HDVideoRemoteViewManager)
 class HDVideoRemoteViewManager: RCTViewManager {
-    var container: UIView
-    var videoView: VideoView
+    var container: UIView?
+    var videoView: VideoView?
 
     @objc
     override static func requiresMainQueueSetup() -> Bool {
@@ -21,22 +21,27 @@ class HDVideoRemoteViewManager: RCTViewManager {
 
     override func view() -> UIView! {
         container = UIView()
+        
+        self.videoView = VideoView()
+        
+        if let videoView = self.videoView {
+            videoView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+            videoView.contentMode = .scaleAspectFill
 
-        videoView = VideoView()
-        videoView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        videoView.contentMode = .scaleAspectFill
+            container?.addSubview(videoView)
 
-        container.addSubview(videoView)
-
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.setLocalView(view:videoView)
-
+            let hdVideo = HDVideo.getInstance()
+            hdVideo.setLocalView(view:videoView)
+        }
+        
         return container
     }
 
     @objc func setParticipantSID(participantSID: NSString) {
-        let hdVideo = HDVideo()
-        hdVideo.addParticipantView(view: self.videoView, sid: participantSID as String)
+        if let videoView = self.videoView {
+            let hdVideo = HDVideo()
+            hdVideo.addParticipantView(view: videoView, sid: participantSID as String)
+        }
     }
 }
 

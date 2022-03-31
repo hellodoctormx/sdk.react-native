@@ -3,11 +3,14 @@ import {AndroidImportance, AndroidVisibility, AndroidCategory, AndroidLaunchActi
 export function getIncomingCallNotification(consultationID, videoRoomSID) {
     return {
         title: `Tu médico te está llamando.`,
-        body: `Por favor presione "Contestar" para comenzar tu consulta.`,
+        body: `Por favor presione aquí para comenzar tu consulta.`,
         data: {
             type: "incomingVideoCall",
             consultationID,
             videoRoomSID
+        },
+        ios: {
+            categoryId: "incomingVideoCalls"
         },
         android: {
             channelId: "calls",

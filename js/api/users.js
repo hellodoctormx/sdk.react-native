@@ -2,8 +2,8 @@ import Http from "./http";
 import {getCurrentUser} from "../users/auth";
 
 // const usersServiceHost = Config.UserServiceHost;
-// const usersServiceHost = "https://user-service-3o7jotw3dq-uc.a.run.app";
-const usersServiceHost = "http://192.168.100.26:3009";
+const usersServiceHost = "https://user-service-3o7jotw3dq-uc.a.run.app";
+// const usersServiceHost = "http://192.168.100.26:3009";
 
 class UsersServiceAPI {
     http = null;

@@ -18,6 +18,7 @@ export default class Http {
             "Authorization": `Bearer ${currentUser.jwt}`,
             "X-User-UID": currentUser.uid,
             "X-Third-Party-Api-Key": currentUser.thirdPartyApiKey,
+            "Content-Type": "application/json",
             ...headers
         }
     }
@@ -45,7 +46,6 @@ export default class Http {
     }
 
     async get(path, headers) {
-        console.debug(`getting ${this.host}/${path}`);
         return fetch(`${this.host}${path}`, {
             method: "GET",
             headers: await this.getRequestHeaders(headers)
