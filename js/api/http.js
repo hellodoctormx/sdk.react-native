@@ -65,7 +65,7 @@ export default class Http {
 
 export const nullSafeJsonResponse = response => {
     if (response.status < 200 || response.status >= 300) {
-        console.debug("returning error", response);
+        console.warn(`[Http.nullSafeJsonResponse:BAD_STATUS:${response.status}]`, response);
         throw new Error(response.status);
     }
 

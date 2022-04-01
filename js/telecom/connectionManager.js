@@ -86,14 +86,14 @@ export async function notifyIncomingCall(incomingCall) {
     }
 
     if (isCallKeepConfigured) {
-        console.debug(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
+        console.info(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
         await connectionService.setupCallKeep();
 
         RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName || "HelloDoctor", "generic", true);
 
     } else {
-        console.debug(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
+        console.info(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
         const incomingCallNotification = await getIncomingCallNotification(consultationID, videoRoomSID);
 
@@ -106,7 +106,7 @@ export async function notifyIncomingCall(incomingCall) {
         Vibration.vibrate([500, 500], true);
     }
 
-    console.debug(`[handleIncomingVideoCall] displayed`);
+    console.info(`[handleIncomingVideoCall] displayed`);
 }
 
 export function handleIncomingVideoCallStarted(videoRoomSID) {
@@ -142,11 +142,9 @@ export function handleIncomingVideoCallAnswered(videoRoomSID) {
 const incomingCallNotificationIDs = {};
 
 export async function tryCancelVideoCallNotification(videoRoomSID) {
-    console.debug("[tryCancelVideoCallNotification]")
     const incomingCallNotificationID = incomingCallNotificationIDs[videoRoomSID];
 
     if (incomingCallNotificationID) {
-        console.debug("this.incomingCallNotificationID", incomingCallNotificationID);
         notifee.cancelNotification(incomingCallNotificationID).catch(console.warn);
     }
 }
@@ -213,7 +211,7 @@ export function registerAnswerablePushKitCallUUID(pushKitCallUUID) {
 }
 
 export async function registerPushKitCall(notification) {
-    console.debug("[handlePushKitIncomingCallNotification] notification", {notification, unregisteredAnswerableCall});
+    console.info("[connectionManager.registerPushKitCall]", {notification, unregisteredAnswerableCall});
     const {uuid, videoRoomSID, consultationID, callerDisplayName, callerPhoneNumber, callerEmail} = notification;
 
     incomingPushKitCall.uuid = uuid;

@@ -1,7 +1,7 @@
 import Http from "./http";
 
 // const videoServiceHost = Config.VideoServiceHost;
-const videoServiceHost = "https://video-service-3o7jotw3dq-uc.a.run.app";
+const videoServiceHost = "https://video-service-pusuheofiq-uc.a.run.app";
 // const videoServiceHost = "http://192.168.100.26:3002";
 
 class VideoServiceAPI {
@@ -16,12 +16,10 @@ class VideoServiceAPI {
     }
 
     requestVideoCallAccess(videoRoomSID) {
-        console.debug("[requestVideoCallAccess]", {videoRoomSID});
         return this.http.get(`/access-token?videoRoomSID=${videoRoomSID}`);
     }
 
     getVideoCall(videoRoomSID) {
-        console.debug(`[VideoService.getVideoCall] /calls/${videoRoomSID}`);
         return this.http.get(`/calls/${videoRoomSID}`);
     }
 

@@ -5,14 +5,14 @@ import videoServiceApi from "../api/video";
 import * as connectionManager from "../telecom/connectionManager";
 import PreviewLocalVideoView from "./PreviewLocalVideoView";
 import withVideoCallPermissions from "./withVideoCallPermissions";
-import RNHelloDoctor, {eventHandlers} from "../../index";
+import RNHelloDoctor from "../../index";
+import * as eventHandlers from "../telecom/eventHandlers";
 
 
-function HDIncomingVideoCall(props) {
+function HDIncomingVideoCallView(props) {
     const {autoAccept} = props;
     const rootTag = React.useContext(RootTagContext);
 
-    console.debug("[HDIncomingVideoCall:RENDER]", {autoAccept, rootTag});
     React.useEffect(() => {
         if (autoAccept) {
             acceptIncomingVideoCall().catch(error => `[IncomingVideoCallScreen:componentDidMount:acceptIncomingVideoCall] ${error}`)
@@ -47,15 +47,13 @@ function HDIncomingVideoCall(props) {
 }
 
 async function acceptIncomingVideoCall(rootTag) {
-    console.info("[HDIncomingVideoCall:acceptIncomingVideoCall]");
+    console.info("[HDIncomingVideoCallView:acceptIncomingVideoCall]");
 
     AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag});
 
-    const {consultationID, videoRoomSID, status} = connectionManager.getIncomingCall();
-    console.info("[HDIncomingVideoCall:acceptIncomingVideoCall] got", {consultationID, videoRoomSID, status});
+    const {consultationID, videoRoomSID} = connectionManager.getIncomingCall();
 
     const response = await videoServiceApi.requestVideoCallAccess(videoRoomSID);
-    console.info("[HDIncomingVideoCall:acceptIncomingVideoCall] response", response);
 
     const {accessToken} = response;
 
@@ -64,7 +62,7 @@ async function acceptIncomingVideoCall(rootTag) {
 }
 
 async function rejectIncomingVideoCall(rootTag) {
-    console.info("[HDIncomingVideoCall:rejectIncomingVideoCall]");
+    console.info("[HDIncomingVideoCallView:rejectIncomingVideoCall]");
 
     AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag});
 
@@ -79,4 +77,4 @@ async function rejectIncomingVideoCall(rootTag) {
     eventHandlers.navigateOnRejectCall();
 }
 
-export default withVideoCallPermissions(HDIncomingVideoCall);
+export default withVideoCallPermissions(HDIncomingVideoCallView);

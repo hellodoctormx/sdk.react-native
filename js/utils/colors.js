@@ -67,7 +67,5 @@ export function shade(color, percent) {
 
     const hex = v => v.toString(16).padStart(2, 0);
 
-    const shaded = `#${hex(r)}${hex(g)}${hex(b)}`;
-    console.debug({shaded});
-    return shaded;
+    return `#${hex(r)}${hex(g)}${hex(b)}`;
 }

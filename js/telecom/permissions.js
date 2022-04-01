@@ -18,7 +18,6 @@ export async function checkVideoCallPermissions(shouldRequest) {
 
 function checkPermissionGranted(permission, shouldRequest) {
     const handlePermissionResult = result => {
-        console.debug(`[handlePermissionResult:${permission}]`, {result});
         switch (result) {
             case RESULTS.UNAVAILABLE:
                 console.log("This feature is not available (on this device / in this context)");
