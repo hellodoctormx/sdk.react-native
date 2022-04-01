@@ -23,7 +23,7 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             color: "#0062B2",
             fullScreenAction: {
                 id: "defaultFullScreen",
-                mainComponent: "HDIncomingVideoCall",
+                mainComponent: "HDIncomingVideoCallView",
                 asForegroundService: true,
             },
             pressAction: {

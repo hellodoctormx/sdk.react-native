@@ -35,8 +35,8 @@ export async function bootstrap(navigator) {
     console.info("[connectionService:bootstrap:DONE]");
 }
 
-async function teardown() {
-    console.debug("[connectionService:teardown]");
+export async function teardown() {
+    console.info("[connectionService:teardown]");
 
     auth.signOut();
 
@@ -60,7 +60,6 @@ export async function checkIsCallKeepConfigured() {
     }
 
     const readPhoneNumbersPermission = await PermissionsAndroid.check('android.permission.READ_PHONE_NUMBERS');
-    console.debug("[connectionService:checkIsCallKeepConfigured]", {readPhoneNumbersPermission});
 
     if (!readPhoneNumbersPermission) {
         return false;
@@ -71,7 +70,6 @@ export async function checkIsCallKeepConfigured() {
     const hasPhoneAccount = await RNCallKeep.hasPhoneAccount();
     const hasPhoneAccountEnabled = await RNCallKeep.checkPhoneAccountEnabled();
 
-    console.debug("[connectionService:checkIsCallKeepConfigured]", {isConnectionServiceAvailable, hasPhoneAccountEnabled, hasPhoneAccount});
     return isConnectionServiceAvailable && hasPhoneAccountEnabled;
 }
 

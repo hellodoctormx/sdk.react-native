@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react";
-import {Animated, Dimensions, Platform, Text, View} from "react-native";
+import {Animated, Dimensions, Platform, Text, Vibration, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import withVideoCallPermissions from "./withVideoCallPermissions";
@@ -9,7 +9,7 @@ import {hdVideoEvents, LocalVideoView, RemoteVideoView} from "./native";
 import * as activeCallManager from "../telecom/activeCallManager";
 
 
-function HDVideoCallRenderer(props) {
+function HDVideoCallView(props) {
     const {videoRoomSID, accessToken} = props;
 
     const [remoteParticipantSID, setRemoteParticipantSID] = React.useState(null);
@@ -82,10 +82,8 @@ function HDVideoCallRenderer(props) {
             // FIXME This section is some hacky shit for iOS to try to re-render practitioner video that for
             // whatever reason was not appearing as "published" at the time of connection. Which is bullshit. But whatever
             // this works for now.
-            console.debug("didRenderRemoteParticipant? ", didRenderRemoteParticipantRef.current);
-
             if (!didRenderRemoteParticipantRef.current && renderAttemptsRef.current < 10) {
-                console.debug("RETRYING", renderAttemptsRef.current);
+                console.info("[HDVideoCallView:doSetRemoteParticipantSID:RETRYING]", renderAttemptsRef.current);
                 renderAttemptsRef.current = renderAttemptsRef.current + 1;
                 setRemoteParticipantSID(null);
                 setTimeout(() => doSetRemoteParticipantSID(remoteParticipantSID), 500);
@@ -102,7 +100,7 @@ function HDVideoCallRenderer(props) {
         participantsRef.current = participants;
 
         const remoteParticipantIdentity = _.first(participants);
-        console.debug("got remoteParticipantIdentity", remoteParticipantIdentity);
+
         if (remoteParticipantIdentity) {
             doMinimizeLocalVideoView();
             doSetRemoteParticipantSID(remoteParticipantIdentity);
@@ -110,19 +108,16 @@ function HDVideoCallRenderer(props) {
     }
 
     const handleParticipantDisconnectedEvent = participantIdentity => {
-        console.debug(`[handleParticipantDisconnectedEvent] before removing ${participantIdentity}`, participantsRef.current);
+        console.info(`[handleParticipantDisconnectedEvent:${participantIdentity}]`, participantsRef.current);
 
         participantsRef.current = participantsRef.current.filter(p => p !== participantIdentity);
 
-        console.debug(`after removing ${participantIdentity}`, participantsRef.current);
         const remoteParticipantIdentity = _.first(participantsRef.current);
-        console.debug("got remoteParticipantIdentity", remoteParticipantIdentity);
+
         if (remoteParticipantIdentity) {
             doMinimizeLocalVideoView();
-            console.debug("setting remote participants", remoteParticipantIdentity);
             doSetRemoteParticipantSID(remoteParticipantIdentity);
         } else {
-            console.debug("maximizing");
             doMaximizeLocalVideoView();
         }
     }
@@ -145,7 +140,6 @@ function HDVideoCallRenderer(props) {
         const {participantIdentity} = event;
 
         const handleParticipantConnectedEvent = () => {
-            console.debug("[handleParticipantConnectedEvent] setting remote participant", participantIdentity);
             participantsRef.current = _.uniq([...participantsRef.current, participantIdentity]);
             doSetRemoteParticipantSID(participantIdentity);
             doMinimizeLocalVideoView();
@@ -192,7 +186,7 @@ function HDVideoCallRenderer(props) {
         console.info(`[VideoCallModal:MOUNT]`, {videoRoomSID});
 
         const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", handleConnectedToRoomEvent);
-        console.info("[VideoCallModal] added connectedToRoomListener")
+
         const participantRoomConnectionEventListener = hdVideoEvents.addListener(
             "participantRoomConnectionEvent",
             handleParticipantRoomConnectionEvent
@@ -207,6 +201,9 @@ function HDVideoCallRenderer(props) {
             "participantAudioEvent",
             handleParticipantAudioEvent
         );
+
+        // let's be sure to cancel vibration if it's still running
+        Vibration.cancel();
 
         return () => {
             console.info("[VideoCallModal] removed connectedToRoomListener")
@@ -227,7 +224,7 @@ function HDVideoCallRenderer(props) {
         console.info("[HDVideoCallRenderer:tryConnect]");
 
         if (!accessToken) {
-            console.debug("can't connect video call: no access token available yet");
+            console.info("can't connect video call: no access token available yet");
             return;
         }
 
@@ -282,4 +279,4 @@ function HDVideoCallRenderer(props) {
     )
 }
 
-export default withVideoCallPermissions(HDVideoCallRenderer);
+export default withVideoCallPermissions(HDVideoCallView);

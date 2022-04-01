@@ -4,9 +4,9 @@ import * as connectionService from "./js/telecom/connectionService";
 import * as eventHandlers from "./js/telecom/eventHandlers";
 import * as notifications from "./js/telecom/notifications";
 import HDCallKeep from "./js/callkeep";
-import HDVideoCallRenderer from "./js/components/HDVideoCallRenderer"
+import HDVideoCallView from "./js/components/HDVideoCallView"
 import HDVideoPermissionsConfiguration from "./js/components/HDVideoPermissionsConfiguration";
-import HDIncomingVideoCall from "./js/components/HDIncomingVideoCall"
+import HDIncomingVideoCallView from "./js/components/HDIncomingVideoCallView"
 import PreviewLocalVideoView from "./js/components/PreviewLocalVideoView";
 import usersServiceApi from "./js/api/users";
 import videoServiceApi from "./js/api/video";
@@ -103,7 +103,6 @@ class HDVideoCalls {
         connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
 
         const listener = status => {
-            console.debug("[VideoConsultationScreen:startVideoCall] listener status", status);
             switch (status) {
                 case "completed":
                 case "rejected":
@@ -147,8 +146,8 @@ export {
     connectionManager,
     notifications,
     HDCallKeep,
-    HDIncomingVideoCall,
-    HDVideoCallRenderer,
+    HDIncomingVideoCallView,
+    HDVideoCallView,
     HDVideoPermissionsConfiguration,
     PreviewLocalVideoView,
     withVideoCallPermissions

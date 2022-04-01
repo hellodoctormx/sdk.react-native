@@ -18,7 +18,6 @@ export function getRemoteParticipantIdentities() {
 }
 
 export function disconnect() {
-    console.debug("[HDVideoModule:disconnect]");
     return HDVideoModule.disconnect();
 }
 
@@ -27,22 +26,18 @@ export function startLocalCapture() {
 }
 
 export function setLocalVideoPublished(published) {
-    console.debug(`setLocalVideoPublished: ${published}`);
     return HDVideoModule.setVideoPublished(published);
 }
 
 export function setLocalVideoEnabled(enabled) {
-    console.debug(`setLocalVideoEnabled: ${enabled}`);
     return HDVideoModule.setVideoEnabled(enabled);
 }
 
 export function setLocalAudioEnabled(enabled) {
-    console.debug(`setLocalAudioEnabled: ${enabled}`);
     return HDVideoModule.setAudioEnabled(enabled);
 }
 
 export function setSpeakerEnabled(enabled) {
-    console.debug(`setSpeakerEnabled: ${enabled}`);
     return HDVideoModule.setSpeakerPhone(enabled);
 }
 
@@ -51,6 +46,5 @@ export function flipCamera() {
 }
 
 export function wakeMainActivity() {
-    console.debug("[HDVideo:wakeMainActivity]");
     return HDVideoModule.wakeMainActivity();
 }

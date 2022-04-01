@@ -9,39 +9,14 @@ import Foundation
 import TwilioVideo
 import UIKit
 
-@objc(HDVideoRemoteViewManager)
-class HDVideoRemoteViewManager: RCTViewManager {
-    var container: UIView?
-    var videoView: VideoView?
-
+@objc(HDVideoRemoteView)
+class HDVideoRemoteView: RCTViewManager {
     @objc
     override static func requiresMainQueueSetup() -> Bool {
         return true
     }
 
     override func view() -> UIView! {
-        container = UIView()
-        
-        self.videoView = VideoView()
-        
-        if let videoView = self.videoView {
-            videoView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-            videoView.contentMode = .scaleAspectFill
-
-            container?.addSubview(videoView)
-
-            let hdVideo = HDVideo.getInstance()
-            hdVideo.setLocalView(view:videoView)
-        }
-        
-        return container
-    }
-
-    @objc func setParticipantSID(participantSID: NSString) {
-        if let videoView = self.videoView {
-            let hdVideo = HDVideo()
-            hdVideo.addParticipantView(view: videoView, sid: participantSID as String)
-        }
+        return HDVideoView()
     }
 }
-
