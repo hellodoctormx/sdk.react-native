@@ -15,7 +15,6 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
         android: {
             channelId: "calls",
             smallIcon: "ic_launcher",
-            largeIcon: "ic_launcher",
             importance: AndroidImportance.HIGH,
             visibility: AndroidVisibility.PUBLIC,
             category: AndroidCategory.CALL,
@@ -29,15 +28,15 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             pressAction: {
                 id: "default",
                 launchActivity: "default",
-                launchActivityFlags: [AndroidLaunchActivityFlag.SINGLE_TOP],
+                mainComponent: "HDIncomingVideoCallView"
             },
             actions: [
                 {
-                    title: `<p style="color: #10810a; font-weight: bold; font-size: 24px">Contestar</p>`,
+                    title: '<p style="color: #10810a; font-weight: bold; font-size: 24px; background-color: green;">Contestar</p>',
                     pressAction: {
                         id: "answer",
                         launchActivity: "default",
-                        launchActivityFlags: [AndroidLaunchActivityFlag.SINGLE_TOP]
+                        mainComponent: "HDVideoCall"
                     }
                 },
                 {
@@ -51,7 +50,7 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
     };
 }
 
-export function getOngoingCallNotification(consultationID, videoRoomSID) {
+export function getOngoingCallNotification() {
     return {
         title: '&#128222; Tu llamada está activa',
         subtitle: 'Consulta',

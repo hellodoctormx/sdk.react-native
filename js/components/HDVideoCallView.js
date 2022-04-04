@@ -1,16 +1,21 @@
 import _ from "lodash";
 import React from "react";
-import {Animated, Dimensions, Platform, Text, Vibration, View} from "react-native";
+import {Animated, AppRegistry, Dimensions, Platform, RootTagContext, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import withVideoCallPermissions from "./withVideoCallPermissions";
 import HDVideoCallActions from "./HDVideoCallActions";
 import {hdVideoEvents, LocalVideoView, RemoteVideoView} from "./native";
 import * as activeCallManager from "../telecom/activeCallManager";
+import * as connectionManager from "../telecom/connectionManager";
+import RNHelloDoctor from "../../index";
+import {tryCancelVideoCallNotification} from "../telecom/connectionManager";
 
 
 function HDVideoCallView(props) {
-    const {videoRoomSID, accessToken} = props;
+    const {consultationID, videoRoomSID, accessToken} = props;
+
+    const rootTag = React.useContext(RootTagContext);
 
     const [remoteParticipantSID, setRemoteParticipantSID] = React.useState(null);
     const [remoteVideoState, setRemoteVideoState] = React.useState(null);
@@ -202,8 +207,7 @@ function HDVideoCallView(props) {
             handleParticipantAudioEvent
         );
 
-        // let's be sure to cancel vibration if it's still running
-        Vibration.cancel();
+        connectionManager.handleIncomingVideoCallAnswered(videoRoomSID);
 
         return () => {
             console.info("[VideoCallModal] removed connectedToRoomListener")
@@ -245,6 +249,16 @@ function HDVideoCallView(props) {
 
     const videoCallStatus = !remoteParticipantSID ? "waiting" : "in-progress";
 
+    const handleOnEndCall = async () => {
+        if (props.onEndCall) {
+            props.onEndCall(consultationID, videoRoomSID);
+        }
+
+        await AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag, didHandleOnEndCall: true});
+
+        connectionManager.endVideoCall(videoRoomSID);
+    }
+
     return (
         <React.Fragment>
             <View style={{flex: 1, backgroundColor: "black"}}>
@@ -270,7 +284,7 @@ function HDVideoCallView(props) {
             </View>
             <View style={{position: "absolute", height: screenHeight, width: screenWidth}}>
                 <HDVideoCallActions
-                    onEndCall={props.onEndCall}
+                    onEndCall={handleOnEndCall}
                     videoRoomSID={videoRoomSID}
                     videoCallStatus={videoCallStatus}
                 />

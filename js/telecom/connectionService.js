@@ -55,6 +55,7 @@ export async function teardown() {
 }
 
 export async function checkIsCallKeepConfigured() {
+    return Platform.OS === "ios";
     if (Platform.OS === "ios") {
         return true;
     }
@@ -92,6 +93,7 @@ const callKeepConfig = {
 };
 
 export async function setupCallKeep() {
+    return;
     if (Platform.OS !== "android") {
         return;
     }

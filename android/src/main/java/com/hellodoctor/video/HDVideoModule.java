@@ -177,6 +177,18 @@ public class HDVideoModule extends ReactContextBaseJavaModule implements Activit
         promise.resolve("");
     }
 
+    @ReactMethod
+    public void startRingtone(Promise promise) {
+        hdVideo.setRingtonePlaying(true);
+        promise.resolve("started ringtone");
+    }
+
+    @ReactMethod
+    public void stopRingtone(Promise promise) {
+        hdVideo.setRingtonePlaying(false);
+        promise.resolve("stopped ringtone");
+    }
+
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
 

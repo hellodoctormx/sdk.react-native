@@ -4,6 +4,7 @@ export default class Http {
     static API_KEY: string = "";
 
     constructor(host) {
+        console.debug("HOST", host);
         this.host = host;
     }
 
