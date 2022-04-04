@@ -14,18 +14,29 @@ export function registerVideoCallNavigator(navigator) {
     _navigator = navigator;
 }
 
+export function tryNavigateOnIncomingCall(consultationID, videoRoomSID, accessToken) {
+    if (AppState.currentState === "active" && _navigator.onIncomingCall) {
+        console.debug("[tryNavigateOnIncomingCall:YES]")
+        _navigator.onIncomingCall(consultationID, videoRoomSID);
+        return true;
+    } else {
+        console.debug("[tryNavigateOnIncomingCall:NO]")
+        return false
+    }
+}
+
 export function navigateOnAnswerCall(consultationID, videoRoomSID, accessToken) {
-    Vibration.cancel();
+    activeCallManager.stopNotificationAlerts();
     _navigator.onAnswerCall(consultationID, videoRoomSID, accessToken);
 }
 
-export function navigateOnEndCall() {
-    Vibration.cancel(); // just in case
-    _navigator.onEndCall();
+export function navigateOnEndCall(consultationID, videoRoomSID) {
+    activeCallManager.stopNotificationAlerts(); // just in case
+    _navigator.onEndCall(consultationID, videoRoomSID);
 }
 
 export function navigateOnRejectCall() {
-    Vibration.cancel();
+    activeCallManager.stopNotificationAlerts();
     _navigator.onEndCall();
 }
 
@@ -83,14 +94,7 @@ export async function handleIncomingVideoCallEndedRemotely(callData) {
 
     tryCancelVideoCallNotification(videoRoomSID);
 
-    Vibration.cancel();
-
-    // FIXME?
-    // const currentRoute = getCurrentRoute();
-    //
-    // if (currentRoute?.name === "IncomingVideoCall") {
-    //     NavigationService.resetToHome();
-    // }
+    activeCallManager.stopNotificationAlerts();
 }
 
 export class CallKeepEventHandlers {
@@ -114,13 +118,7 @@ export class CallKeepEventHandlers {
 
         call.status = "answering";
 
-        if (Platform.OS === "android") {
-            // FIXME should this stay here? (see other FIXME)
-            await RNCallKeep.reportEndCallWithUUID(call.uuid, 4);
-            await activeCallManager.wakeMainActivity();
-        } else {
-            RNCallKeep.answerIncomingCall(call.uuid);
-        }
+        RNCallKeep.answerIncomingCall(call.uuid);
 
         const {consultationID, videoRoomSID} = call;
         console.info("[CallKeepEventHandlers:handleAnswerCall]", {videoRoomSID});
@@ -227,7 +225,9 @@ export class CallKeepEventHandlers {
             return;
         }
 
-        const canAnswerCall = callForAnswerCallAction?.status === "incoming" || incomingPushKitCall.uuid === answeredCallUUID;
+        // FIXME for the PushKit case
+        // const canAnswerCall = callForAnswerCallAction?.status === "incoming" || incomingPushKitCall.uuid === answeredCallUUID;
+        const canAnswerCall = callForAnswerCallAction?.status === "incoming";
 
         if (canAnswerCall) {
             // This call was answered from the call UI and we need to go to the call NOW

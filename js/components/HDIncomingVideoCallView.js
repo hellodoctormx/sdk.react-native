@@ -7,6 +7,7 @@ import PreviewLocalVideoView from "./PreviewLocalVideoView";
 import withVideoCallPermissions from "./withVideoCallPermissions";
 import RNHelloDoctor from "../../index";
 import * as eventHandlers from "../telecom/eventHandlers";
+import {getIncomingCall, tryCancelVideoCallNotification} from "../telecom/connectionManager";
 
 
 function HDIncomingVideoCallView(props) {
@@ -14,6 +15,10 @@ function HDIncomingVideoCallView(props) {
     const rootTag = React.useContext(RootTagContext);
 
     React.useEffect(() => {
+        const incomingCall = getIncomingCall();
+
+        tryCancelVideoCallNotification(incomingCall?.videoRoomSID);
+
         if (autoAccept) {
             acceptIncomingVideoCall().catch(error => `[IncomingVideoCallScreen:componentDidMount:acceptIncomingVideoCall] ${error}`)
         }
@@ -49,16 +54,13 @@ function HDIncomingVideoCallView(props) {
 async function acceptIncomingVideoCall(rootTag) {
     console.info("[HDIncomingVideoCallView:acceptIncomingVideoCall]");
 
-    AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag});
-
     const {consultationID, videoRoomSID} = connectionManager.getIncomingCall();
 
     const response = await videoServiceApi.requestVideoCallAccess(videoRoomSID);
 
     const {accessToken} = response;
 
-    eventHandlers.navigateOnAnswerCall(consultationID, videoRoomSID, accessToken);
-    connectionManager.handleIncomingVideoCallAnswered(videoRoomSID);
+    AppRegistry.runApplication("HDVideoCall", {rootTag, initialProps: {consultationID, videoRoomSID, accessToken}});
 }
 
 async function rejectIncomingVideoCall(rootTag) {

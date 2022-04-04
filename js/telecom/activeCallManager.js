@@ -1,4 +1,4 @@
-import {NativeModules} from "react-native";
+import {NativeModules, Platform, Vibration} from "react-native";
 
 const {HDVideoModule} = NativeModules;
 
@@ -45,6 +45,20 @@ export function flipCamera() {
     return HDVideoModule.flipCamera();
 }
 
-export function wakeMainActivity() {
-    return HDVideoModule.wakeMainActivity();
+export function startNotificationAlerts() {
+    if (Platform.OS !== "android") {
+        return;
+    }
+
+    Vibration.vibrate([800, 1600], true);
+    HDVideoModule.startRingtone()
+}
+
+export function stopNotificationAlerts() {
+    if (Platform.OS !== "android") {
+        return;
+    }
+
+    Vibration.cancel();
+    HDVideoModule.stopRingtone()
 }

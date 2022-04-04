@@ -7,7 +7,7 @@ import VideoService from "../api/video";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
 import {getIncomingCallNotification} from "./notifications";
-import {navigateOnEndCall} from "./eventHandlers";
+import {navigateOnEndCall, tryNavigateOnIncomingCall} from "./eventHandlers";
 
 const calls = [];
 const callListeners = [];
@@ -77,33 +77,27 @@ export async function notifyIncomingCall(incomingCall) {
 
     const {videoRoomSID, consultationID, caller} = incomingCall;
 
-    const isCallKeepConfigured = await connectionService.checkIsCallKeepConfigured();
-
     if (Platform.OS === "android") {
-        // TODO are both wakeMainActivity calls necessary?
+        console.info(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
-        await activeCallManager.wakeMainActivity();
-    }
+        activeCallManager.startNotificationAlerts();
 
-    if (isCallKeepConfigured) {
+        const didNavigate = tryNavigateOnIncomingCall(consultationID, videoRoomSID);
+
+        if (!didNavigate) {
+            const incomingCallNotification = await getIncomingCallNotification(consultationID, videoRoomSID);
+
+            incomingCallNotificationIDs[videoRoomSID] = await notifee
+                .displayNotification(incomingCallNotification)
+                .catch(error => console.warn(`error displaying incoming call notification`, error));
+        }
+    } else {
         console.info(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
-        await connectionService.setupCallKeep();
+        // await connectionService.setupCallKeep();
 
         RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName || "HelloDoctor", "generic", true);
 
-    } else {
-        console.info(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
-
-        const incomingCallNotification = await getIncomingCallNotification(consultationID, videoRoomSID);
-
-        tryCancelVideoCallNotification(videoRoomSID);
-
-        incomingCallNotificationIDs[videoRoomSID] = await notifee
-            .displayNotification(incomingCallNotification)
-            .catch(error => console.warn(`error displaying incoming call notification`, error));
-
-        Vibration.vibrate([500, 500], true);
     }
 
     console.info(`[handleIncomingVideoCall] displayed`);
@@ -127,21 +121,22 @@ export function handleIncomingVideoCallStarted(videoRoomSID) {
 export function handleIncomingVideoCallAnswered(videoRoomSID) {
     console.info(`[handleIncomingVideoCallAnswered] videoRoomSID: ${videoRoomSID}`, videoRoomSID);
 
-    const call = calls.find(c => c.videoRoomSID === videoRoomSID);
+    try {
+        activeCallManager.stopNotificationAlerts();
 
-    if (call?.status !== "incoming") {
-        console.warn(`not handling ${videoRoomSID} call: invalid status "${call?.status}"`);
-        return;
+        const call = calls.find(c => c.videoRoomSID === videoRoomSID);
+
+        call.status = "in-progress";
+
+        tryCancelVideoCallNotification(videoRoomSID);
+    } catch(error) {
+        console.warn("WTF", error)
     }
-
-    call.status = "in-progress";
-
-    tryCancelVideoCallNotification(videoRoomSID);
 }
 
 const incomingCallNotificationIDs = {};
 
-export async function tryCancelVideoCallNotification(videoRoomSID) {
+export function tryCancelVideoCallNotification(videoRoomSID) {
     const incomingCallNotificationID = incomingCallNotificationIDs[videoRoomSID];
 
     if (incomingCallNotificationID) {
@@ -175,7 +170,7 @@ export async function endVideoCall(videoRoomSID) {
 
     await VideoService.endVideoCall(videoRoomSID).catch(error => console.warn(`error ending video call ${videoRoomSID}`, error));
 
-    navigateOnEndCall();
+    navigateOnEndCall(call.consultationID, videoRoomSID);
 
     console.info(`[endConsultationVideoCall:${videoRoomSID}:DONE]`);
 }
@@ -191,6 +186,8 @@ export async function rejectVideoCall(videoRoomSID) {
     call.status = "completed";
 
     notifyCallStatusListeners(videoRoomSID, call.status);
+
+    activeCallManager.stopNotificationAlerts();
 
     await VideoService.rejectVideoCall(videoRoomSID);
 

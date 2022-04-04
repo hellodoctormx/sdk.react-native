@@ -1,9 +1,11 @@
 import * as auth from "./js/users/auth";
+import {getCurrentUser} from "./js/users/auth";
 import * as connectionManager from "./js/telecom/connectionManager";
 import * as connectionService from "./js/telecom/connectionService";
 import * as eventHandlers from "./js/telecom/eventHandlers";
 import * as notifications from "./js/telecom/notifications";
 import HDCallKeep from "./js/callkeep";
+import HDVideoCall from "./js/components/HDVideoCall"
 import HDVideoCallView from "./js/components/HDVideoCallView"
 import HDVideoPermissionsConfiguration from "./js/components/HDVideoPermissionsConfiguration";
 import HDIncomingVideoCallView from "./js/components/HDIncomingVideoCallView"
@@ -11,35 +13,7 @@ import PreviewLocalVideoView from "./js/components/PreviewLocalVideoView";
 import usersServiceApi from "./js/api/users";
 import videoServiceApi from "./js/api/video";
 import withVideoCallPermissions from "./js/components/withVideoCallPermissions";
-import {getCurrentUser} from "./js/users/auth";
 import Http from "./js/api/http";
-
-export default class RNHelloDoctor {
-    static appName: string = null
-    static consultations: HDConsultations = null
-    static users: HDUsers = null
-    static videos: HDVideoCalls = null
-
-    static configure(appName, apiKey, config: RNHelloDoctorConfig) {
-        RNHelloDoctor.appName = appName;
-
-        Http.API_KEY = apiKey;
-
-        if (config.user) {
-            auth.signIn(config.user)
-        }
-
-        connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
-
-        RNHelloDoctor.consultations = HDConsultations
-        RNHelloDoctor.users = HDUsers
-        RNHelloDoctor.videos = HDVideoCalls
-    }
-
-    static teardown() {
-        connectionService.teardown();
-    }
-}
 
 class HDUsers {
     static createUser(accountPayload) {
@@ -125,6 +99,29 @@ class HDVideoCalls {
     }
 }
 
+export default class RNHelloDoctor {
+    static appName: string = null
+    static consultations: HDConsultations = HDConsultations
+    static users: HDUsers = HDUsers
+    static videos: HDVideoCalls = HDVideoCalls
+
+    static configure(appName, apiKey, config: RNHelloDoctorConfig) {
+        RNHelloDoctor.appName = appName;
+
+        Http.API_KEY = apiKey;
+
+        if (config.user) {
+            auth.signIn(config.user)
+        }
+
+        connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
+    }
+
+    static teardown() {
+        connectionService.teardown();
+    }
+}
+
 interface RNHelloDoctorConfig {
     user?: HDUser,
     video: HDVideoCallsConfig
@@ -139,7 +136,8 @@ export interface HDUser {
 
 interface HDVideoCallsConfig {
     onAnswerCall: Function,
-    onEndCall: Function
+    onEndCall: Function,
+    onIncomingCall?: Function
 }
 
 export {
@@ -147,6 +145,7 @@ export {
     notifications,
     HDCallKeep,
     HDIncomingVideoCallView,
+    HDVideoCall,
     HDVideoCallView,
     HDVideoPermissionsConfiguration,
     PreviewLocalVideoView,

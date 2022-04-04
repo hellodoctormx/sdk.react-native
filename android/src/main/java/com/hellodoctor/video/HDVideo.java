@@ -64,6 +64,7 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
     private VideoTextureView mLocalParticipantView;
 
     private AudioManager audioManager;
+    private SoundPoolManager soundPoolManager;
     private ToneGenerator dtmfGenerator;
     private Handler outboundRingingHandler;
     private Runnable outboundRingingRunnable;
@@ -87,6 +88,8 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         super(reactContext);
 
         eventManager = new EventManager(reactContext);
+
+        soundPoolManager = new SoundPoolManager(reactContext);
 
         remoteParticipantListener = new TwilioRemoteParticipantListener(this);
 
@@ -354,6 +357,14 @@ public class HDVideo extends ReactContextBaseJavaModule implements ActivityEvent
         audioManager.setSpeakerphoneOn(value);
 
         return true;
+    }
+
+    public void setRingtonePlaying(Boolean shouldPlayRingtone) {
+         if (shouldPlayRingtone) {
+             soundPoolManager.playRinging();
+         } else {
+             soundPoolManager.stopRinging();
+         }
     }
 
     public void wakeMainActivity() {
