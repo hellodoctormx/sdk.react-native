@@ -105,16 +105,18 @@ export default class RNHelloDoctor {
     static users: HDUsers = HDUsers
     static videos: HDVideoCalls = HDVideoCalls
 
-    static configure(appName, apiKey, config: RNHelloDoctorConfig) {
+    static configure(appName, apiKey, config?: RNHelloDoctorConfig) {
         RNHelloDoctor.appName = appName;
 
         Http.API_KEY = apiKey;
 
-        if (config.user) {
+        if (config !== undefined && config.user) {
             auth.signIn(config.user)
         }
 
-        connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
+        if (config !== undefined && config.video) {
+            connectionService.bootstrap(config.video).catch(error => console.warn("[RNHelloDoctor:configure]", {error}));
+        }
     }
 
     static teardown() {

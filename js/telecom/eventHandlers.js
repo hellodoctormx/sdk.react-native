@@ -26,7 +26,6 @@ export function tryNavigateOnIncomingCall(consultationID, videoRoomSID, accessTo
 }
 
 export function navigateOnAnswerCall(consultationID, videoRoomSID, accessToken) {
-    activeCallManager.stopNotificationAlerts();
     _navigator.onAnswerCall(consultationID, videoRoomSID, accessToken);
 }
 

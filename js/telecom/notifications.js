@@ -28,7 +28,8 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             pressAction: {
                 id: "default",
                 launchActivity: "default",
-                mainComponent: "HDIncomingVideoCallView"
+                mainComponent: "HDVideoCall",
+                asForegroundService: true
             },
             actions: [
                 {
@@ -36,7 +37,8 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
                     pressAction: {
                         id: "answer",
                         launchActivity: "default",
-                        mainComponent: "HDVideoCall"
+                        mainComponent: "HDVideoCall",
+                        asForegroundService: true
                     }
                 },
                 {

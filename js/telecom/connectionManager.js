@@ -6,7 +6,7 @@ import RNCallKeep from "../callkeep";
 import VideoService from "../api/video";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
-import {getIncomingCallNotification} from "./notifications";
+import {getIncomingCallNotification, getOngoingCallNotification} from "./notifications";
 import {navigateOnEndCall, tryNavigateOnIncomingCall} from "./eventHandlers";
 
 const calls = [];
@@ -80,7 +80,7 @@ export async function notifyIncomingCall(incomingCall) {
     if (Platform.OS === "android") {
         console.info(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
-        activeCallManager.startNotificationAlerts();
+        await activeCallManager.startNotificationAlerts();
 
         const didNavigate = tryNavigateOnIncomingCall(consultationID, videoRoomSID);
 
@@ -121,6 +121,7 @@ export function handleIncomingVideoCallStarted(videoRoomSID) {
 export function handleIncomingVideoCallAnswered(videoRoomSID) {
     console.info(`[handleIncomingVideoCallAnswered] videoRoomSID: ${videoRoomSID}`, videoRoomSID);
 
+    // FIXME I don't think this try/catch is the best
     try {
         activeCallManager.stopNotificationAlerts();
 
