@@ -1,4 +1,5 @@
-import {NativeModules, Platform, Vibration} from "react-native";
+import {AppState, NativeModules, Platform, Vibration} from "react-native";
+import notifee from "@notifee/react-native";
 
 const {HDVideoModule} = NativeModules;
 
@@ -45,19 +46,29 @@ export function flipCamera() {
     return HDVideoModule.flipCamera();
 }
 
-export function startNotificationAlerts() {
+export async function startNotificationAlerts() {
     if (Platform.OS !== "android") {
         return;
     }
 
-    Vibration.vibrate([800, 1600], true);
-    HDVideoModule.startRingtone()
+    const doNotificationAlerts = async () => {
+        Vibration.vibrate([800, 1600], true);
+        HDVideoModule.startRingtone()
+    }
+
+    if (AppState.currentState === "active") {
+        await doNotificationAlerts();
+    } else {
+        notifee.registerForegroundService(doNotificationAlerts);
+    }
 }
 
 export function stopNotificationAlerts() {
     if (Platform.OS !== "android") {
         return;
     }
+
+    notifee.stopForegroundService()
 
     Vibration.cancel();
     HDVideoModule.stopRingtone()

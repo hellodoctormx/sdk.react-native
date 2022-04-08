@@ -15,10 +15,6 @@ function HDIncomingVideoCallView(props) {
     const rootTag = React.useContext(RootTagContext);
 
     React.useEffect(() => {
-        const incomingCall = getIncomingCall();
-
-        tryCancelVideoCallNotification(incomingCall?.videoRoomSID);
-
         if (autoAccept) {
             acceptIncomingVideoCall().catch(error => `[IncomingVideoCallScreen:componentDidMount:acceptIncomingVideoCall] ${error}`)
         }
