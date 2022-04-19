@@ -1,5 +1,5 @@
 import React from "react";
-import {AppState, Platform, Vibration} from "react-native";
+import {AppState, Platform} from "react-native";
 import videoServiceApi from "../api/video";
 import usersServiceApi from "../api/users";
 import RNCallKeep from "../callkeep";
@@ -14,7 +14,7 @@ export function registerVideoCallNavigator(navigator) {
     _navigator = navigator;
 }
 
-export function tryNavigateOnIncomingCall(consultationID, videoRoomSID, accessToken) {
+export function tryNavigateOnIncomingCall(consultationID, videoRoomSID) {
     if (AppState.currentState === "active" && _navigator.onIncomingCall) {
         console.debug("[tryNavigateOnIncomingCall:YES]")
         _navigator.onIncomingCall(consultationID, videoRoomSID);

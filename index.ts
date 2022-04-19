@@ -105,13 +105,13 @@ export default class RNHelloDoctor {
     static users: HDUsers = HDUsers
     static videos: HDVideoCalls = HDVideoCalls
 
-    static configure(appName, apiKey, config?: RNHelloDoctorConfig) {
+    static async configure(appName, apiKey, config?: RNHelloDoctorConfig) {
         RNHelloDoctor.appName = appName;
 
         Http.API_KEY = apiKey;
 
         if (config !== undefined && config.user) {
-            auth.signIn(config.user)
+            await auth.signIn(config.user.uid, config.user.deviceID, config.user.jwt, config.user.serverToken)
         }
 
         if (config !== undefined && config.video) {
@@ -124,16 +124,19 @@ export default class RNHelloDoctor {
     }
 }
 
-interface RNHelloDoctorConfig {
-    user?: HDUser,
+export interface RNHelloDoctorConfig {
+    user?: HDUserConfig,
     video: HDVideoCallsConfig
 }
 
 export interface HDUser {
     uid: string,
     jwt?: string,
-    thirdPartyApiKey?: string,
     deviceID?: string
+}
+
+interface HDUserConfig extends HDUser {
+    serverToken: string
 }
 
 interface HDVideoCallsConfig {
