@@ -1,7 +1,6 @@
 import Http from "./http";
 import {getCurrentUser} from "../users/auth";
 
-// const usersServiceHost = Config.UserServiceHost;
 const usersServiceHost = "https://user-service-pusuheofiq-uc.a.run.app";
 // const usersServiceHost = "http://192.168.100.26:3009";
 
@@ -16,16 +15,20 @@ class UsersServiceAPI {
         return this.http.post(`/third-party/users`, account);
     }
 
+    authenticateThirdPartyUser(userID, serverAuthToken) {
+        return this.http.post(`/third-party/users/${userID}/_authenticate`, {token: serverAuthToken});
+    }
+
     deleteThirdPartyUserAccount(helloDoctorUserID) {
         return this.http.delete(`/third-party/users/${helloDoctorUserID}`);
     }
 
     updateThirdPartyUserMessagingToken(userID, deviceID, fcmToken) {
-        return this.http.put(`/third-party/users/${userID}/devices/${deviceID}`, {fcmToken});
+        return this.http.put(`/third-party/devices/${deviceID}`, {fcmToken});
     }
 
     getThirdPartyUserConsultations(helloDoctorUserID) {
-        return this.http.get(`/third-party/users/${helloDoctorUserID}/consultations`);
+        return this.http.get(`/third-party/consultations`);
     }
 
     rejectThirdPartyUserCall(videoRoomSID) {

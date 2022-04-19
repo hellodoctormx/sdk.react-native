@@ -1,19 +1,51 @@
-import {getCurrentUser} from "../users/auth";
+import {getCurrentUser, refreshAccessToken} from "../users/auth";
 
 export default class Http {
     static API_KEY: string = "";
 
     constructor(host) {
-        console.debug("HOST", host);
         this.host = host;
     }
 
-    getRequestHeaders(headers) {
+    async post(path, data) {
+        return this.doRequest(`${this.host}${path}`, 'POST', data)
+    }
+
+    async put(path, data) {
+        return this.doRequest(`${this.host}${path}`, 'PUT', data)
+    }
+
+    async get(path) {
+        return this.doRequest(`${this.host}${path}`, 'GET')
+    }
+
+    async delete(path) {
+        return this.doRequest(`${this.host}${path}`, 'DELETE')
+    }
+
+    async doRequest(path, method, data) {
+        const doFetch = () => fetch(path, {
+            method,
+            body: JSON.stringify(data),
+            headers: this.getRequestHeaders()
+        })
+
+        let response = await doFetch()
+
+        if (response.status === 401) {
+            await refreshAccessToken()
+
+            response = await doFetch()
+        }
+
+        return nullSafeJsonResponse(response)
+    }
+
+    getRequestHeaders() {
         const currentUser = getCurrentUser();
 
         const requestHeaders = {
             "Content-Type": "application/json",
-            ...headers
         }
 
         if (currentUser !== null) {
@@ -24,43 +56,8 @@ export default class Http {
         if (!!Http.API_KEY) {
             requestHeaders["X-Api-Key"] = Http.API_KEY
         }
+
         return requestHeaders;
-    }
-
-    async post(path, data, headers) {
-        const requestHeaders = this.getRequestHeaders(headers);
-
-        const request = fetch(`${this.host}${path}`, {
-            method: "POST",
-            headers: requestHeaders,
-            body: JSON.stringify(data)
-        });
-
-        return request.then(nullSafeJsonResponse);
-    }
-
-    async put(path, data, headers) {
-        const request = fetch(`${this.host}${path}`, {
-            method: "PUT",
-            headers: this.getRequestHeaders(headers),
-            body: JSON.stringify(data)
-        });
-
-        return request.then(nullSafeJsonResponse);
-    }
-
-    async get(path, headers) {
-        return fetch(`${this.host}${path}`, {
-            method: "GET",
-            headers: this.getRequestHeaders(headers)
-        }).then(nullSafeJsonResponse);
-    }
-
-    async delete(path, headers) {
-        return fetch(`${this.host}${path}`, {
-            method: "DELETE",
-            headers: this.getRequestHeaders(headers)
-        });
     }
 }
 

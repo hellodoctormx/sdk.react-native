@@ -1,4 +1,4 @@
-import {PermissionsAndroid, Platform} from "react-native";
+import {Platform} from "react-native";
 import VoipPushNotification from "react-native-voip-push-notification";
 import RNCallKeep from "../callkeep";
 import * as auth from "../users/auth";
@@ -19,12 +19,6 @@ export async function bootstrap(navigator) {
     try {
         registerCallKeepListeners();
         registerVideoCallNavigator(navigator);
-
-        await setupCallKeep().catch(error => console.warn(`error setting up CallKeep: ${error}`));
-
-        if (Platform.OS === "android") {
-            RNCallKeep.setAvailable(true);
-        }
     } catch(error) {
         console.warn("[connectionService.bootstrap] error occurred during bootstrapping", error);
         isCallsServiceBootstrapped = false;
@@ -56,51 +50,9 @@ export async function teardown() {
 
 export async function checkIsCallKeepConfigured() {
     return Platform.OS === "ios";
-    if (Platform.OS === "ios") {
-        return true;
-    }
-
-    const readPhoneNumbersPermission = await PermissionsAndroid.check('android.permission.READ_PHONE_NUMBERS');
-
-    if (!readPhoneNumbersPermission) {
-        return false;
-    }
-
-    await bootstrap();
-    const isConnectionServiceAvailable = await RNCallKeep.isConnectionServiceAvailable();
-    const hasPhoneAccount = await RNCallKeep.hasPhoneAccount();
-    const hasPhoneAccountEnabled = await RNCallKeep.checkPhoneAccountEnabled();
-
-    return isConnectionServiceAvailable && hasPhoneAccountEnabled;
 }
 
 let videoConsultationsSnapshotListener = null;
-
-const androidBundleID = "com.delilifetv";
-
-const callKeepConfig = {
-    android: {
-        alertTitle: "Permisos para videollamadas",
-        alertDescription: "Para una mejor experiencia de videollamadas, agregue Hello Doctor como una cuenta telefónica",
-        cancelButton: "Cancel",
-        okButton: "ok",
-        foregroundService: {
-            channelId: androidBundleID,
-            channelName: "Hello Doctor Llamadas",
-            notificationTitle: "Hello Doctor Videollamada",
-        }
-    }
-};
-
-export async function setupCallKeep() {
-    return;
-    if (Platform.OS !== "android") {
-        return;
-    }
-
-    await RNCallKeep.registerPhoneAccount(callKeepConfig);
-    await RNCallKeep.registerAndroidEvents();
-}
 
 let hasRegisteredCallKeepListeners = false;
 
