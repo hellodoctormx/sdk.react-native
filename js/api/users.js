@@ -27,8 +27,8 @@ class UsersServiceAPI {
         return this.http.put(`/third-party/devices/${deviceID}`, {fcmToken});
     }
 
-    getThirdPartyUserConsultations(helloDoctorUserID) {
-        return this.http.get(`/third-party/consultations`);
+    getThirdPartyUserConsultations(helloDoctorUserID, limit) {
+        return this.http.get(`/third-party/consultations?limit=${limit}`);
     }
 
     rejectThirdPartyUserCall(videoRoomSID) {

@@ -37,7 +37,7 @@ class HDUsers {
 }
 
 class HDConsultations {
-    static getConsultations(thirdPartyUserID) {
+    static getConsultations(thirdPartyUserID, limit) {
         // TODO probably want to use hd user ID, but things are tangled up with the third-party ID at the moment
 
         // const currentUser = getCurrentUser()
@@ -47,7 +47,7 @@ class HDConsultations {
         //     return;
         // }
 
-        return usersServiceApi.getThirdPartyUserConsultations(thirdPartyUserID);
+        return usersServiceApi.getThirdPartyUserConsultations(thirdPartyUserID, limit);
     }
 }
 

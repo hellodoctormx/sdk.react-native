@@ -36,10 +36,6 @@ export async function teardown() {
 
     removeCallKeepListeners();
 
-    if (Platform.OS === "android") {
-        RNCallKeep.setAvailable(false);
-    }
-
     if (videoConsultationsSnapshotListener !== null) {
         videoConsultationsSnapshotListener();
         videoConsultationsSnapshotListener = null;

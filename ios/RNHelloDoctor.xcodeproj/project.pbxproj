@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CD25300E280EA59800B53BA6 /* HDVideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD25300C280EA59800B53BA6 /* HDVideoView.swift */; };
+		CD25300F280EA59800B53BA6 /* RNHelloDoctorVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = CD25300D280EA59800B53BA6 /* RNHelloDoctorVideo.m */; };
 		CDE7A65027F40AFC00B76F43 /* HDVideoRemoteViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64027F40AFC00B76F43 /* HDVideoRemoteViewManager.m */; };
 		CDE7A65127F40AFC00B76F43 /* RNCallKeep.m in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64127F40AFC00B76F43 /* RNCallKeep.m */; };
 		CDE7A65227F40AFC00B76F43 /* HDVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDE7A64527F40AFC00B76F43 /* HDVideo.swift */; };
@@ -33,6 +35,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		CD25300B280EA59800B53BA6 /* RNHelloDoctorVideoDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNHelloDoctorVideoDelegate.h; sourceTree = "<group>"; };
+		CD25300C280EA59800B53BA6 /* HDVideoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HDVideoView.swift; sourceTree = "<group>"; };
+		CD25300D280EA59800B53BA6 /* RNHelloDoctorVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNHelloDoctorVideo.m; sourceTree = "<group>"; };
+		CD253010280EA85D00B53BA6 /* RNHelloDoctorVideo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNHelloDoctorVideo.h; sourceTree = "<group>"; };
 		CDE7A63327F40AD700B76F43 /* libRNHelloDoctor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRNHelloDoctor.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		CDE7A64027F40AFC00B76F43 /* HDVideoRemoteViewManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HDVideoRemoteViewManager.m; sourceTree = "<group>"; };
 		CDE7A64127F40AFC00B76F43 /* RNCallKeep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNCallKeep.m; sourceTree = "<group>"; };
@@ -91,6 +97,10 @@
 		CDE7A63F27F40AFC00B76F43 /* Video */ = {
 			isa = PBXGroup;
 			children = (
+				CD25300C280EA59800B53BA6 /* HDVideoView.swift */,
+				CD25300B280EA59800B53BA6 /* RNHelloDoctorVideoDelegate.h */,
+				CD253010280EA85D00B53BA6 /* RNHelloDoctorVideo.h */,
+				CD25300D280EA59800B53BA6 /* RNHelloDoctorVideo.m */,
 				CDE7A64527F40AFC00B76F43 /* HDVideo.swift */,
 				CDE7A64827F40AFC00B76F43 /* HDVideoModule.m */,
 				CDE7A65D27F41BBA00B76F43 /* HDVideoModule.swift */,
@@ -171,6 +181,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD25300F280EA59800B53BA6 /* RNHelloDoctorVideo.m in Sources */,
 				CDE7A66627F47C0200B76F43 /* HDVideoRemoteViewManager.swift in Sources */,
 				CDE7A65C27F4194800B76F43 /* HDVideoLocalViewManager.swift in Sources */,
 				CDE7A65327F40AFC00B76F43 /* HDVideoLocalViewManager.m in Sources */,
@@ -181,6 +192,7 @@
 				CDE7A65527F40AFC00B76F43 /* HDEventEmitter.m in Sources */,
 				CDE7A65127F40AFC00B76F43 /* RNCallKeep.m in Sources */,
 				CDE7A65227F40AFC00B76F43 /* HDVideo.swift in Sources */,
+				CD25300E280EA59800B53BA6 /* HDVideoView.swift in Sources */,
 				CDE7A65427F40AFC00B76F43 /* HDVideoModule.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
