@@ -20,6 +20,7 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             category: AndroidCategory.CALL,
             ongoing: true,
             color: "#0062B2",
+            asForegroundService: true,
             fullScreenAction: {
                 id: "defaultFullScreen",
                 mainComponent: "HDIncomingVideoCallView",
@@ -27,9 +28,7 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
             },
             pressAction: {
                 id: "default",
-                launchActivity: "default",
                 mainComponent: "HDVideoCall",
-                asForegroundService: true
             },
             actions: [
                 {
@@ -37,8 +36,6 @@ export function getIncomingCallNotification(consultationID, videoRoomSID) {
                     pressAction: {
                         id: "answer",
                         launchActivity: "default",
-                        mainComponent: "HDVideoCall",
-                        asForegroundService: true
                     }
                 },
                 {

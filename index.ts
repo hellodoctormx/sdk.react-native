@@ -1,5 +1,6 @@
 import * as auth from "./js/users/auth";
 import {getCurrentUser} from "./js/users/auth";
+import * as activeCallManager from "./js/telecom/activeCallManager";
 import * as connectionManager from "./js/telecom/connectionManager";
 import * as connectionService from "./js/telecom/connectionService";
 import * as eventHandlers from "./js/telecom/eventHandlers";
@@ -58,6 +59,8 @@ class HDVideoCalls {
 
     static handleIncomingVideoCallNotificationRejected() {
         console.info("[HDVideoCalls:handleIncomingVideoCallNotificationRejected]");
+
+        activeCallManager.stopNotificationAlerts();
 
         const incomingCall = connectionManager.getIncomingCall();
 

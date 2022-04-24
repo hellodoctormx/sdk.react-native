@@ -80,21 +80,17 @@ export async function notifyIncomingCall(incomingCall) {
     if (Platform.OS === "android") {
         console.info(`[handleIncomingVideoCall:notification] displaying incoming call notification ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
+        tryNavigateOnIncomingCall(consultationID, videoRoomSID);
+
         await activeCallManager.startNotificationAlerts();
 
-        const didNavigate = tryNavigateOnIncomingCall(consultationID, videoRoomSID);
+        const incomingCallNotification = await getIncomingCallNotification(consultationID, videoRoomSID);
 
-        if (!didNavigate) {
-            const incomingCallNotification = await getIncomingCallNotification(consultationID, videoRoomSID);
-
-            incomingCallNotificationIDs[videoRoomSID] = await notifee
-                .displayNotification(incomingCallNotification)
-                .catch(error => console.warn(`error displaying incoming call notification`, error));
-        }
+        incomingCallNotificationIDs[videoRoomSID] = await notifee
+            .displayNotification(incomingCallNotification)
+            .catch(error => console.warn(`error displaying incoming call notification`, error));
     } else {
         console.info(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
-
-        // await connectionService.setupCallKeep();
 
         RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName || "HelloDoctor", "generic", true);
 
