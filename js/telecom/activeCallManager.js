@@ -51,10 +51,10 @@ export async function startNotificationAlerts() {
         return;
     }
 
-    const doNotificationAlerts = async () => {
+    const doNotificationAlerts = () => new Promise(resolve => {
+        HDVideoModule.startRingtone();
         Vibration.vibrate([800, 1600], true);
-        HDVideoModule.startRingtone()
-    }
+    });
 
     if (AppState.currentState === "active") {
         await doNotificationAlerts();

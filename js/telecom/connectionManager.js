@@ -94,8 +94,6 @@ export async function notifyIncomingCall(incomingCall) {
     } else {
         console.info(`[notifyIncomingCall:CallKeep] displaying incoming call ${videoRoomSID}:${incomingCall.uuid} | appState: ${AppState.currentState}`);
 
-        // await connectionService.setupCallKeep();
-
         RNCallKeep.displayIncomingCall(incomingCall.uuid, "HelloDoctor", caller.displayName || "HelloDoctor", "generic", true);
 
     }

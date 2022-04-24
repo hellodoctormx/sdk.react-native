@@ -1,5 +1,6 @@
 import React from "react";
 import {AppState, Platform} from "react-native";
+import VoipPushNotification from "react-native-voip-push-notification";
 import videoServiceApi from "../api/video";
 import usersServiceApi from "../api/users";
 import RNCallKeep from "../callkeep";
@@ -263,7 +264,9 @@ export class PushKitEventHandlers {
     static handleOnNotification(notification) {
         console.info("[VoipPushNotification:EVENT:notification]", notification);
 
-        connectionManager.registerPushKitCall(notification).catch(error => console.warn(`[VoipPushNotification:EVENT:notification:registerPushKitCall]`, error));
+        connectionManager.registerPushKitCall(notification)
+            .then(() => VoipPushNotification.onVoipNotificationCompleted(notification.uuid))
+            .catch(error => console.warn(`[VoipPushNotification:EVENT:notification:registerPushKitCall]`, error));
     }
 
     static handleOnDidLoadWithEvents(events) {
