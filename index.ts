@@ -133,9 +133,10 @@ export interface RNHelloDoctorConfig {
 }
 
 export interface HDUser {
-    uid: string,
-    jwt?: string,
+    uid: string
+    jwt?: string
     deviceID?: string
+    isThirdParty: boolean
 }
 
 interface HDUserConfig extends HDUser {

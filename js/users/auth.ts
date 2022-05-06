@@ -7,7 +7,8 @@ let _refreshToken: string = null
 export async function signIn(userID: string, deviceID: string, jwt?: string, serverAuthToken?: string) {
     _currentUser = {
         uid: userID,
-        deviceID: deviceID
+        deviceID: deviceID,
+        isThirdParty: !!serverAuthToken
     }
 
     if (jwt) {
@@ -29,6 +30,10 @@ export function signOut() {
 }
 
 export async function refreshAccessToken() {
+    if (!_currentUser?.isThirdParty) {
+        return;
+    }
+
     console.debug("[refreshAccessToken]", {_refreshToken});
     if (_currentUser === null || _refreshToken === null) {
         throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
