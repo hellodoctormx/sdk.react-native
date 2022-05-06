@@ -36,7 +36,7 @@
   },
   "description": "HelloDoctor public SDK for React Native applications",
   "main": "index.ts",
-  "repository": "git@github.com:hellodoctordev/sdk.react-native.git",
+  "repository": "git@github.com:hellodoctormx/sdk.react-native.git",
   "author": "Daniel Sarfati <daniel@hellodoctor.com.mx>",
   "license": "GPL-3.0 License"
 }
