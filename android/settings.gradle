@@ -1,0 +1,2 @@
+rootProject.name = '@hellodoctor_react-native-sdk'
+include ':sdk'
