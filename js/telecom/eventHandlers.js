@@ -43,6 +43,10 @@ export function navigateOnRejectCall() {
 export async function handleIncomingVideoCall(videoCallPayload) {
     const {uuid, consultationID, callerUID, callerDisplayName, callerPhoneNumber, callerEmail, videoRoomSID} = videoCallPayload;
 
+    if (Platform.OS === "android") {
+        return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName);
+    }
+
     const existingCall = connectionManager.getCallByUUID(uuid);
 
     if (existingCall) {

@@ -1,0 +1,22 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    namespace 'com.hellodoctormx.rn'
+    compileSdk 32
+
+    defaultConfig {
+        minSdk 23
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    implementation "com.facebook.react:react-native:+"
+    implementation "com.twilio:video-android:7.1.1" // TODO After bringing in Native SDK as a library dependency, this might not be needed anymore
+    implementation project(path: ':sdk')  // From node_modules
+}
