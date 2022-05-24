@@ -1,6 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.kotlin_version = '1.7.0-RC'
     ext {
         buildToolsVersion = "30.0.2"
         minSdkVersion = 23
@@ -19,6 +20,7 @@ buildscript {
         // in the individual module build.gradle files
         classpath("com.android.library:com.android.library.gradle.plugin:7.2.0")
         classpath("com.google.gms:google-services:4.3.10")
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -29,36 +31,29 @@ plugins {
 }
 
 kotlin {
+    android()
     jvm()
-
-    // TODO Was this needed here, or in the native android sdk?
-    android {
-        publishAllLibraryVariants()
-        publishLibraryVariantsGroupedByFlavor = true
-    }
 }
 
 allprojects {
     repositories {
         google()
         maven { url 'https://www.jitpack.io' }
-    }
-}
 
-repositories {
-    maven {
-        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
-        url("$rootDir/../node_modules/react-native/android")
-    }
-    maven {
-        // Android JSC is installed from npm
-        url("$rootDir/../node_modules/jsc-android/dist")
-    }
-    mavenCentral {
-        // We don't want to fetch react-native from Maven Central as there are
-        // older versions over there.
-        content {
-            excludeGroup "com.facebook.react"
+        maven {
+            // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+            url("$rootDir/../node_modules/react-native/android")
+        }
+        maven {
+            // Android JSC is installed from npm
+            url("$rootDir/node_modules/jsc-android/dist")
+        }
+        mavenCentral {
+            // We don't want to fetch react-native from Maven Central as there are
+            // older versions over there.
+            content {
+                excludeGroup "com.facebook.react"
+            }
         }
     }
 }
@@ -66,6 +61,8 @@ repositories {
 apply plugin: "com.android.library"
 
 android {
+    namespace 'com.hellodoctormx.rn.sdk'
+
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion
