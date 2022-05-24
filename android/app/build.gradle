@@ -1,0 +1,13 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdk 32
+}
+
+dependencies {
+    implementation "com.facebook.react:react-native:+"
+    implementation "com.twilio:video-android:7.1.1" // TODO After bringing in Native SDK as a library dependency, this might not be needed anymore
+    implementation project(path: ':sdk')  // From node_modules
+}
