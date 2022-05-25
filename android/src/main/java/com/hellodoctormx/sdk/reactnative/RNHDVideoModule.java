@@ -1,4 +1,4 @@
-package com.hellodoctormx.rn;
+package com.hellodoctormx.sdk.reactnative;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.CALLER_DISPLAY_NAME;
@@ -28,25 +28,17 @@ import com.hellodoctormx.sdk.video.VideoCallController;
 
 import javax.annotation.Nonnull;
 
-public class HDVideoModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
-    public static String TAG = "HDVideoModule";
+public class RNHDVideoModule extends ReactContextBaseJavaModule implements ActivityEventListener, LifecycleEventListener {
+    public static String TAG = "RNHDVideoModule";
 
     private final VideoCallController videoCallController;
 
-    private static HDVideoModule instance;
+    private static RNHDVideoModule instance;
 
-    HDVideoModule(ReactApplicationContext reactContext) {
+    RNHDVideoModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         videoCallController = VideoCallController.Companion.getInstance(reactContext);
-    }
-
-    public static HDVideoModule getInstance(ReactApplicationContext reactContext) {
-        if (instance == null) {
-            instance = new HDVideoModule(reactContext);
-        }
-
-        return instance;
     }
 
     @Nonnull

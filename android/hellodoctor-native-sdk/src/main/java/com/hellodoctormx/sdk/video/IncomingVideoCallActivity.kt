@@ -34,9 +34,9 @@ enum class Actions(val action: String) {
 }
 
 const val INCOMING_VIDEO_CALL_NOTIFICATION_ID = 42
-const val INCOMING_VIDEO_CALL_STATE = "com.hellodoctormx.sdk.video.INCOMING_VIDEO_CALL_STATE"
-const val VIDEO_ROOM_SID = "com.hellodoctormx.sdk.video.VIDEO_ROOM_SID"
-const val CALLER_DISPLAY_NAME = "com.hellodoctormx.sdk.video.CALLER_DISPLAY_NAME"
+const val INCOMING_VIDEO_CALL_STATE = "INCOMING_VIDEO_CALL_STATE"
+const val VIDEO_ROOM_SID = "VIDEO_ROOM_SID"
+const val CALLER_DISPLAY_NAME = "CALLER_DISPLAY_NAME"
 
 open class IncomingVideoCallActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

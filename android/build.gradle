@@ -2,6 +2,7 @@
 
 buildscript {
     ext.kotlin_version = '1.6.10'
+
     ext {
         buildToolsVersion = "30.0.2"
         minSdkVersion = 23
@@ -10,9 +11,11 @@ buildscript {
         ndkVersion = "21.4.7075529"
         composeVersion = "1.1.1"
     }
+
     repositories {
         google()
     }
+
     dependencies {
         classpath("com.android.tools.build:gradle:7.2.0")
         // NOTE: Do not place your application dependencies here; they belong
@@ -23,11 +26,20 @@ buildscript {
     }
 }
 
-plugins {
-    id 'com.android.library' version '7.2.0'
-    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
-    id 'org.jetbrains.kotlin.multiplatform' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+if (project == rootProject) {
+    plugins {
+        id 'com.android.library' version '7.2.0'
+        id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+        id 'org.jetbrains.kotlin.multiplatform' version '1.6.10'
+        id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+    }
+} else {
+    plugins {
+        id 'com.android.library'
+        id 'org.jetbrains.kotlin.android' apply false
+        id 'org.jetbrains.kotlin.multiplatform'
+        id 'org.jetbrains.kotlin.plugin.serialization'
+    }
 }
 
 kotlin {
@@ -39,6 +51,8 @@ kotlin {
 }
 
 android {
+    namespace "com.hellodoctormx.sdk.reactnative"
+
     compileSdk 32
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -47,7 +61,14 @@ android {
 
     sourceSets {
         main {
-            manifest.srcFile 'app/src/main/AndroidManifest.xml'
+            manifest.srcFile 'src/main/AndroidManifest.xml'
         }
     }
+}
+
+dependencies {
+    implementation "com.facebook.react:react-native:+"
+    implementation "com.twilio:video-android:7.1.1"
+    implementation project(path: ':hellodoctor-native-sdk')
+    // TODO After bringing in Native SDK as a remote dependency, this might not be needed anymore
 }
