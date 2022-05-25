@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace 'com.hellodoctormx.rn'
     compileSdk 32
 
     defaultConfig {

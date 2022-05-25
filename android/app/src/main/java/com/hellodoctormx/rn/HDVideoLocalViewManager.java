@@ -1,4 +1,4 @@
-package com.hellodoctormx.rn.video;
+package com.hellodoctormx.rn;
 
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;

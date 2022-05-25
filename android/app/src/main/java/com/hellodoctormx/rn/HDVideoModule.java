@@ -1,4 +1,4 @@
-package com.hellodoctormx.rn.video;
+package com.hellodoctormx.rn;
 
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
 import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.CALLER_DISPLAY_NAME;

@@ -40,15 +40,6 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
-    libraryVariants.all { variant ->
-        variant.outputs.each { output ->
-            def outputFile = output.outputFile
-            if (outputFile != null && outputFile.name.endsWith('.aar')) {
-                output.outputFileName = "RNHelloDoctor-${defaultConfig.versionName}.aar"
-            }
-        }
-    }
 }
 
 dependencies {
