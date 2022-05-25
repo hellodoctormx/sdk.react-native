@@ -1,4 +1,4 @@
-package com.hellodoctormx.rn;
+package com.hellodoctormx.sdk;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
@@ -9,11 +9,11 @@ import com.facebook.react.uimanager.ViewManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HDVideoPackage implements ReactPackage {
+public class RNHDVideoPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> nativeModules = new ArrayList<>();
-        nativeModules.add(HDVideoModule.getInstance(reactContext));
+        nativeModules.add(new RNHDVideoModule(reactContext));
 
         return nativeModules;
     }
@@ -26,7 +26,7 @@ public class HDVideoPackage implements ReactPackage {
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
         List<ViewManager> viewManagers = new ArrayList<>();
-        viewManagers.add(new HDVideoLocalViewManager());
+        viewManagers.add(new RNHDVideoLocalViewManager());
 
         return viewManagers;
     }

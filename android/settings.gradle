@@ -33,5 +33,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = '@hellodoctor_react-native-sdk'
-include ':app'
-include ':sdk'
+include ':hellodoctor-native-sdk'

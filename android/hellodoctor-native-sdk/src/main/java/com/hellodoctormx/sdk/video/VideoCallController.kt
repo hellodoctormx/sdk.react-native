@@ -231,37 +231,27 @@ class LocalAudioController(val context: Context) {
         audioManager.mode = AudioManager.MODE_IN_COMMUNICATION
 
         // Request audio focus before making any device switch
-        if (Build.VERSION.SDK_INT >= 26) {
+        focusRequest = run {
             val playbackAttributes = AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
                 .build()
 
-            focusRequest =
-                AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
-                    .setAudioAttributes(playbackAttributes)
-                    .setAcceptsDelayedFocusGain(true)
-                    .setOnAudioFocusChangeListener { }
-                    .build().apply {
-                        audioManager.requestAudioFocus(this)
-                    }
-        } else {
-            audioManager.requestAudioFocus(
-                null,
-                AudioManager.STREAM_VOICE_CALL,
-                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE
-            )
+            AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE)
+                .setAudioAttributes(playbackAttributes)
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener { }
+                .build().apply {
+                    audioManager.requestAudioFocus(this)
+                }
         }
     }
 
     private fun unsetAudioFocus() {
         audioManager.mode = originalAudioMode
-        if (Build.VERSION.SDK_INT >= 26) {
-            if (focusRequest != null) {
-                audioManager.abandonAudioFocusRequest(focusRequest!!)
-            }
-        } else {
-            audioManager.abandonAudioFocus(null)
+
+        if (focusRequest != null) {
+            audioManager.abandonAudioFocusRequest(focusRequest!!)
         }
     }
 }
@@ -285,7 +275,7 @@ class CameraController(val context: Context) {
         val newCameraID = (
                 if (cameraCapturer.cameraId == getFrontCameraID()) getBackCameraID()
                 else getFrontCameraID()
-        ) ?: return
+                ) ?: return
 
         cameraCapturer.switchCamera(newCameraID)
     }
