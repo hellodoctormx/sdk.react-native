@@ -3,6 +3,10 @@ import notifee from "@notifee/react-native";
 
 const {HDVideoModule} = NativeModules;
 
+export function displayIncomingCallNotification(videoRoomSID, callerDisplayName) {
+    return HDVideoModule.displayIncomingCallNotification(videoRoomSID, callerDisplayName);
+}
+
 export function connect(videoRoomSID, accessToken) {
     return HDVideoModule.connect(videoRoomSID, accessToken);
 }
@@ -23,6 +27,10 @@ export function disconnect() {
 }
 
 export function startLocalCapture() {
+    return HDVideoModule.startLocalCapture();
+}
+
+export function stopLocalCapture() {
     return HDVideoModule.startLocalCapture();
 }
 
