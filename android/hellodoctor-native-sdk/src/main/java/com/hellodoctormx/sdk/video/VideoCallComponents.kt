@@ -122,7 +122,7 @@ fun EndCallControl(activeVideoCallModel: ActiveVideoCallModel) {
         iconResource = R.drawable.ic_phone_solid,
         iconRotateDegrees = 135f,
         background = Red500,
-        controlDescription = "endCall",
+        controlDescription = "end-call",
         onClick = { activeVideoCallModel.doDisconnect(context) }
     )
 }
@@ -133,7 +133,7 @@ fun ToggleCameraEnabledButton(activeVideoCallModel: ActiveVideoCallModel) {
 
     ActiveCallControlButton(
         iconResource = if (activeVideoCallModel.isCameraEnabled) R.drawable.ic_video_solid else R.drawable.ic_video_slash_solid,
-        controlDescription = "toggleVideo",
+        controlDescription = "toggle-camera-enabled",
         onClick = {
             activeVideoCallModel.toggleCameraEnabled(context)
         }
@@ -146,7 +146,7 @@ fun ToggleMicrophoneEnabledButton(activeVideoCallModel: ActiveVideoCallModel) {
 
     ActiveCallControlButton(
         iconResource = if (activeVideoCallModel.isMicrophoneEnabled) R.drawable.ic_microphone_solid else R.drawable.ic_microphone_slash_solid,
-        controlDescription = "toggleAudio",
+        controlDescription = "toggle-microphone-enabled",
         onClick = {
             activeVideoCallModel.toggleMicrophoneEnabled(context)
         }
@@ -160,7 +160,7 @@ fun ToggleCameraButton(activeVideoCallModel: ActiveVideoCallModel) {
     ActiveCallControlButton(
         iconResource = R.drawable.ic_arrows_rotate_solid,
         iconRotateDegrees = if (activeVideoCallModel.activeCamera == "front") 0f else 90f,
-        controlDescription = "toggleAudio",
+        controlDescription = "toggle-camera",
         onClick = {
             activeVideoCallModel.toggleCamera(context)
         }

@@ -1,4 +1,4 @@
-package com.hellodoctormx.rn;
+package com.hellodoctormx.sdk;
 
 import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -7,7 +7,7 @@ import com.hellodoctormx.sdk.video.VideoCallController;
 
 import javax.annotation.Nonnull;
 
-public class HDVideoLocalViewManager extends SimpleViewManager<LocalParticipantView> {
+public class RNHDVideoLocalViewManager extends SimpleViewManager<LocalParticipantView> {
     private static final String REACT_CLASS = "HDVideoLocalView";
 
     @Nonnull
