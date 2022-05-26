@@ -58,6 +58,6 @@ android {
 dependencies {
     implementation "com.facebook.react:react-native:+"
     implementation "com.twilio:video-android:7.1.1"
-    implementation project(path: ':hellodoctor-native-sdk')
+    implementation "com.hellodoctormx.sdk:hellodoctor-native-sdk:1.1.1"
     // TODO After bringing in Native SDK as a remote dependency, this might not be needed anymore
 }

@@ -9,6 +9,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
 
@@ -33,4 +34,3 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = '@hellodoctor_react-native-sdk'
-include ':hellodoctor-native-sdk'
