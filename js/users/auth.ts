@@ -1,8 +1,11 @@
+import {NativeModules} from "react-native";
 import type {HDUser} from "../../index";
 import usersServiceApi from "../api/users";
 
 let _currentUser: HDUser = null
 let _refreshToken: string = null
+
+const {RNHDVideoModule} = NativeModules;
 
 export async function signIn(userID: string, deviceID: string, jwt?: string, serverAuthToken?: string) {
     _currentUser = {
@@ -13,6 +16,7 @@ export async function signIn(userID: string, deviceID: string, jwt?: string, ser
 
     if (jwt) {
         _currentUser.jwt = jwt
+        await RNHDVideoModule.signInWithJWT(userID, jwt);
     } else if (serverAuthToken) {
         const authenticationResponse = await usersServiceApi.authenticateThirdPartyUser(userID, serverAuthToken)
         _currentUser.jwt = authenticationResponse.jwt

@@ -26,20 +26,11 @@ buildscript {
     }
 }
 
-if (project == rootProject) {
-    plugins {
-        id 'com.android.library' version '7.2.0'
-        id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
-        id 'org.jetbrains.kotlin.multiplatform' version '1.6.10'
-        id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
-    }
-} else {
-    plugins {
-        id 'com.android.library'
-        id 'org.jetbrains.kotlin.android' apply false
-        id 'org.jetbrains.kotlin.multiplatform'
-        id 'org.jetbrains.kotlin.plugin.serialization'
-    }
+plugins {
+    id 'com.android.library' version '7.2.0'
+    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+    id 'org.jetbrains.kotlin.multiplatform' version '1.6.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
 }
 
 kotlin {
@@ -51,8 +42,6 @@ kotlin {
 }
 
 android {
-    namespace "com.hellodoctormx.sdk.reactnative"
-
     compileSdk 32
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11

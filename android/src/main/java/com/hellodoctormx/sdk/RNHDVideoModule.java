@@ -1,15 +1,20 @@
-package com.hellodoctormx.sdk.reactnative;
+package com.hellodoctormx.sdk;
 
+import static android.provider.Settings.System.getString;
 import static androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC;
+import static androidx.core.content.ContextCompat.getSystemService;
 import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.CALLER_DISPLAY_NAME;
 import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.INCOMING_VIDEO_CALL_NOTIFICATION_ID;
-import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.INCOMING_VIDEO_CALL_STATE;
+import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.INCOMING_VIDEO_CALL_ACTION;
 import static com.hellodoctormx.sdk.video.IncomingVideoCallActivityKt.VIDEO_ROOM_SID;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -21,7 +26,6 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.hellodoctormx.sdk.HelloDoctorClient;
 import com.hellodoctormx.sdk.video.Actions;
 import com.hellodoctormx.sdk.video.IncomingVideoCallActivity;
 import com.hellodoctormx.sdk.video.VideoCallController;
@@ -56,7 +60,7 @@ public class RNHDVideoModule extends ReactContextBaseJavaModule implements Activ
 
         Intent answerCallIntent = new Intent(context, IncomingVideoCallActivity.class);
         answerCallIntent.setAction(Actions.INCOMING_VIDEO_CALL_ANSWERED.getAction());
-        answerCallIntent.putExtra(INCOMING_VIDEO_CALL_STATE, "answered");
+        answerCallIntent.putExtra(INCOMING_VIDEO_CALL_ACTION, "answered");
         answerCallIntent.putExtra(VIDEO_ROOM_SID, videoRoomSID);
         answerCallIntent.putExtra(CALLER_DISPLAY_NAME, callerDisplayName);
 
@@ -71,7 +75,7 @@ public class RNHDVideoModule extends ReactContextBaseJavaModule implements Activ
 
         Intent rejectCallIntent = new Intent(context, IncomingVideoCallActivity.class);
         rejectCallIntent.setAction(Actions.INCOMING_VIDEO_CALL_REJECTED.getAction());
-        rejectCallIntent.putExtra(INCOMING_VIDEO_CALL_STATE, "rejected");
+        rejectCallIntent.putExtra(INCOMING_VIDEO_CALL_ACTION, "rejected");
 
         PendingIntent rejectCallPendingIntent = PendingIntent.getActivity(
                 context, 0, rejectCallIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
@@ -101,6 +105,8 @@ public class RNHDVideoModule extends ReactContextBaseJavaModule implements Activ
                 .setFullScreenIntent(fullScreenPendingIntent, true)
                 .build();
 
+        createNotificationChannel();
+
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(INCOMING_VIDEO_CALL_NOTIFICATION_ID, notification);
 
@@ -108,6 +114,23 @@ public class RNHDVideoModule extends ReactContextBaseJavaModule implements Activ
         videoCallController.getLocalAudioController().setRingtonePlaying(true);
 
         promise.resolve("");
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelID = "incoming_video_call";
+            String channelName = "Videollamadas";
+            String descriptionText = "Videollamadas";
+
+            NotificationChannel channel = new NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription(descriptionText);
+
+            // Register the channel with the system
+            NotificationManager notificationManager = getReactApplicationContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     @ReactMethod

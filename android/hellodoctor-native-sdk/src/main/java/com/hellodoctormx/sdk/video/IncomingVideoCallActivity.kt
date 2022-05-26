@@ -1,10 +1,16 @@
 package com.hellodoctormx.sdk.video
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -13,7 +19,6 @@ import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,7 +39,7 @@ enum class Actions(val action: String) {
 }
 
 const val INCOMING_VIDEO_CALL_NOTIFICATION_ID = 42
-const val INCOMING_VIDEO_CALL_STATE = "INCOMING_VIDEO_CALL_STATE"
+const val INCOMING_VIDEO_CALL_ACTION = "INCOMING_VIDEO_CALL_ACTION"
 const val VIDEO_ROOM_SID = "VIDEO_ROOM_SID"
 const val CALLER_DISPLAY_NAME = "CALLER_DISPLAY_NAME"
 
@@ -56,15 +61,16 @@ open class IncomingVideoCallActivity : ComponentActivity() {
             HelloDoctorSDKTheme {
                 VideoCallPermissions(
                     content = {
-                        when (intent.getStringExtra(INCOMING_VIDEO_CALL_STATE)) {
-                            "answered" -> ActiveVideoCallScreen(activeVideoCallModel)
-                            "rejected" -> {
-                                cancelIncomingCallNotification(this)
-                                finish()
-                            }
-                            else -> IncomingVideoCallScreen(
+                        val action = intent.getStringExtra(INCOMING_VIDEO_CALL_ACTION)
+
+                        if (action == "rejected") {
+                            IncomingVideoCallNotification.cancel(this)
+                            finish()
+                        } else {
+                            VideoCallScreen(
                                 activeVideoCallModel = activeVideoCallModel,
-                                callerDisplayName = intent.getStringExtra(CALLER_DISPLAY_NAME)
+                                callerDisplayName = intent.getStringExtra(CALLER_DISPLAY_NAME),
+                                isConnected = action == "answered"
                             )
                         }
                     }
@@ -74,13 +80,48 @@ open class IncomingVideoCallActivity : ComponentActivity() {
     }
 }
 
-fun cancelIncomingCallNotification(context: Context) {
-    VideoCallController.getInstance(context).apply {
-        localAudioController.setRingtonePlaying(false)
+object IncomingVideoCallNotification {
+    private fun createChannel(
+        context: Context,
+        channelID: String,
+        channelName: String,
+        descriptionText: String
+    ) {
+        val channel = NotificationChannel(channelID, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+            description = descriptionText
+            lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+
+            vibrationPattern = longArrayOf(
+                0, 900, 1500, 900, 1500, 900, 1500, 900, 1500, 900, 1500, 900, 1500
+            )
+
+            val ringtoneSound: android.net.Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
+            val ringtoneAttributes: AudioAttributes = AudioAttributes.Builder()
+                .setFlags(AudioAttributes.FLAG_AUDIBILITY_ENFORCED)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                .build()
+
+            setSound(ringtoneSound, ringtoneAttributes)
+        }
+
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.createNotificationChannel(channel)
     }
 
-    val notificationManager = NotificationManagerCompat.from(context)
-    notificationManager.cancel(INCOMING_VIDEO_CALL_NOTIFICATION_ID)
+    fun cancel(context: Context) {
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.cancel(INCOMING_VIDEO_CALL_NOTIFICATION_ID)
+    }
+}
+
+@Composable
+fun VideoCallScreen(
+    activeVideoCallModel: ActiveVideoCallModel,
+    callerDisplayName: String? = "HelloDoctor Médico",
+    isConnected: Boolean = false
+){
+    if (isConnected) ActiveVideoCallScreen(activeVideoCallModel)
+    else IncomingVideoCallScreen(activeVideoCallModel, callerDisplayName)
 }
 
 @Composable
@@ -89,17 +130,19 @@ fun IncomingVideoCallScreen(
     callerDisplayName: String? = "HelloDoctor Médico",
     isPreview: Boolean? = false
 ) {
-    if (activeVideoCallModel.isConnected) {
-        ActiveVideoCallScreen(activeVideoCallModel = activeVideoCallModel)
-    } else {
-        Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
-            if (isPreview != true) LocalParticipantAndroidView()
-            Column(
-                verticalArrangement = Arrangement.Bottom,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(2.dp)
-            ) {
-                IncomingVideoCallControls(activeVideoCallModel)
+    AnimatedVisibility(visible = true) {
+        if (activeVideoCallModel.isConnected) {
+            ActiveVideoCallScreen(activeVideoCallModel = activeVideoCallModel)
+        } else {
+            Surface(modifier = Modifier.fillMaxSize(), color = Color.Black) {
+                if (isPreview != true) LocalParticipantAndroidView()
+                Column(
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(2.dp)
+                ) {
+                    IncomingVideoCallControls(activeVideoCallModel)
+                }
             }
         }
     }
@@ -116,7 +159,7 @@ fun ActiveVideoCallScreen(activeVideoCallModel: ActiveVideoCallModel, isPreview:
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        cancelIncomingCallNotification(context)
+        IncomingVideoCallNotification.cancel(context)
 
         if (!activeVideoCallModel.isConnected) {
             activeVideoCallModel.doConnect(context)
@@ -130,11 +173,13 @@ fun ActiveVideoCallScreen(activeVideoCallModel: ActiveVideoCallModel, isPreview:
                 .background(Blue500)
                 .fillMaxSize()
                 .zIndex(0f))
-            LocalParticipantPortal(content = {
-                Box {
-                    if (isPreview != true) LocalParticipantAndroidView()
-                }
-            })
+            AnimatedVisibility(visible = activeVideoCallModel.isMicrophoneEnabled) {
+                LocalParticipantPortal(content = {
+                    Box {
+                        if (isPreview != true) LocalParticipantAndroidView()
+                    }
+                })
+            }
         }
         Column(
             verticalArrangement = Arrangement.Bottom,
