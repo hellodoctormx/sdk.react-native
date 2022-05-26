@@ -7,8 +7,11 @@ import usersServiceApi from "../api/users";
 
 let isCallsServiceBootstrapped = false;
 
-export async function bootstrap(navigator) {
-    console.info("[connectionService:bootstrap:START]", {isCallsServiceBootstrapped});
+export function bootstrap(navigator) {
+    if (Platform.OS === "android") {
+        return;
+    }
+
     if (isCallsServiceBootstrapped) {
         console.info("[bootstrap] not bootstrapping: already bootstrapped");
         return;
@@ -25,13 +28,9 @@ export async function bootstrap(navigator) {
 
         throw error;
     }
-
-    console.info("[connectionService:bootstrap:DONE]");
 }
 
-export async function teardown() {
-    console.info("[connectionService:teardown]");
-
+export function teardown() {
     auth.signOut();
 
     removeCallKeepListeners();
@@ -44,7 +43,7 @@ export async function teardown() {
     usersServiceApi.unregisterApnsToken().catch(console.warn);
 }
 
-export async function checkIsCallKeepConfigured() {
+export function checkIsCallKeepConfigured() {
     return Platform.OS === "ios";
 }
 
@@ -53,34 +52,25 @@ let videoConsultationsSnapshotListener = null;
 let hasRegisteredCallKeepListeners = false;
 
 export function registerCallKeepListeners() {
-    console.info("[connectionService:registerCallKeepListeners]", {hasRegisteredCallKeepListeners});
-
     if (hasRegisteredCallKeepListeners) {
         return;
     }
 
     RNCallKeep.addEventListener("answerCall", CallKeepEventHandlers.handleAnswerCall);
-    RNCallKeep.addEventListener("didDisplayIncomingCall", CallKeepEventHandlers.handleDidDisplayIncomingCall);
-    RNCallKeep.addEventListener("didReceiveStartCallAction", CallKeepEventHandlers.handleDidReceiveStartCallAction);
     RNCallKeep.addEventListener("didPerformSetMutedCallAction", CallKeepEventHandlers.handleDidPerformSetMutedCallAction);
     RNCallKeep.addEventListener("didToggleHoldCallAction", CallKeepEventHandlers.handleDidToggleHoldCallAction);
     RNCallKeep.addEventListener("endCall", CallKeepEventHandlers.handleEndCall);
     RNCallKeep.addEventListener("didLoadWithEvents", CallKeepEventHandlers.handleDidLoadWithEvents);
-    RNCallKeep.addEventListener("didChangeAudioRoute", CallKeepEventHandlers.handleDidChangeAudioRoute);
 
     if (Platform.OS === "ios") {
         setupPushKitEvents();
     }
 
     hasRegisteredCallKeepListeners = true;
-
-    console.info("[connectionService:registerCallKeepListeners:DONE]");
 }
 
 export function removeCallKeepListeners() {
     RNCallKeep.removeEventListener("answerCall");
-    RNCallKeep.removeEventListener("didDisplayIncomingCall");
-    RNCallKeep.removeEventListener("didReceiveStartCallAction");
     RNCallKeep.removeEventListener("didPerformSetMutedCallAction");
     RNCallKeep.removeEventListener("didToggleHoldCallAction");
     RNCallKeep.removeEventListener("endCall");

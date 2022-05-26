@@ -207,7 +207,7 @@ function HDVideoCallView(props) {
             handleParticipantAudioEvent
         );
 
-        connectionManager.handleIncomingVideoCallAnswered(videoRoomSID);
+        connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
 
         return () => {
             console.info("[VideoCallModal] removed connectedToRoomListener")
@@ -254,9 +254,7 @@ function HDVideoCallView(props) {
             props.onEndCall(consultationID, videoRoomSID);
         }
 
-        await AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag, didHandleOnEndCall: true});
-
-        connectionManager.endVideoCall(videoRoomSID);
+        await connectionManager.endVideoCall(videoRoomSID);
     }
 
     return (
