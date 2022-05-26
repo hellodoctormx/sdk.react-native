@@ -14,6 +14,7 @@ buildscript {
 
     repositories {
         google()
+        mavenCentral()
     }
 
     dependencies {
@@ -26,11 +27,17 @@ buildscript {
     }
 }
 
+//plugins {
+//    id 'com.android.library' version '7.2.0'
+//    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
+//    id 'org.jetbrains.kotlin.multiplatform' version '1.6.10'
+//    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+//}
 plugins {
-    id 'com.android.library' version '7.2.0'
-    id 'org.jetbrains.kotlin.android' version '1.6.10' apply false
-    id 'org.jetbrains.kotlin.multiplatform' version '1.6.10'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.6.10'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android' apply false
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 kotlin {
@@ -42,7 +49,9 @@ kotlin {
 }
 
 android {
+    namespace "com.hellodoctormx.reactnative"
     compileSdk 32
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -58,6 +67,6 @@ android {
 dependencies {
     implementation "com.facebook.react:react-native:+"
     implementation "com.twilio:video-android:7.1.1"
-    implementation "com.hellodoctormx.sdk:hellodoctor-native-sdk:1.1.1"
+    implementation "com.hellodoctormx.sdk:hellodoctor-native-sdk:0.1.0"
     // TODO After bringing in Native SDK as a remote dependency, this might not be needed anymore
 }

@@ -10,10 +10,6 @@ class VideoServiceAPI {
         this.http = new Http(videoServiceHost)
     }
 
-    startConsultationVideoCall(consultationID) {
-        return this.http.post(`/start-consultation-call`, {consultationID});
-    }
-
     requestVideoCallAccess(videoRoomSID) {
         return this.http.get(`/access-token?videoRoomSID=${videoRoomSID}`);
     }

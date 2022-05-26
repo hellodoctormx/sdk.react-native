@@ -1,5 +1,5 @@
 //
-//  HDVideoModule.swift
+//  RNHDVideoModule.swift
 //  RNHelloDoctor
 //
 //  Created by HelloDoctor on 3/29/22.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-@objc(HDVideoModule)
-class HDVideoModule: NSObject {
+@objc(RNHDVideoModule)
+class RNHDVideoModule: NSObject {
     @objc
     static func requiresMainQueueSetup() -> Bool {
         return true

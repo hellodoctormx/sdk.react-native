@@ -3,7 +3,7 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(HDVideoModule, NSObject)
+@interface RCT_EXTERN_MODULE(RNHDVideoModule, NSObject)
 
 RCT_EXTERN_METHOD(
   connect: (NSString*)roomName

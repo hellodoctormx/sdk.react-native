@@ -17,7 +17,7 @@ import {HDCollapsibleView} from "./HDCollapsibleView";
 import {alpha, hdColors} from "../utils/colors";
 import * as connectionService from "../telecom/connectionService";
 import RNCallKeep from "../callkeep";
-import {getCurrentUser} from "../users/auth";
+import {getCurrentUser} from "../users/currentUser";
 import HDTouchableButton from "./HDTouchableButton";
 
 const HDCallKeepModule = NativeModules.RNCallKeep;

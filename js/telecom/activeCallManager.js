@@ -3,8 +3,8 @@ import notifee from "@notifee/react-native";
 
 const {RNHDVideoModule} = NativeModules;
 
-export function displayIncomingCallNotification(videoRoomSID, callerDisplayName) {
-    return RNHDVideoModule.displayIncomingCallNotification(videoRoomSID, callerDisplayName);
+export function displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL) {
+    return RNHDVideoModule.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
 }
 
 export function connect(videoRoomSID, accessToken) {
