@@ -1,9 +1,9 @@
-package com.hellodoctormx.sdk
+package com.hellodoctormx.reactnative
 
 import android.content.Intent
 import com.facebook.react.bridge.*
-import com.hellodoctormx.sdk.video.IncomingVideoCallActivity
-import com.hellodoctormx.sdk.video.IncomingVideoCallNotification.display
+import com.hellodoctormx.sdk.HelloDoctorClient
+import com.hellodoctormx.sdk.video.IncomingVideoCallNotification
 import com.hellodoctormx.sdk.video.VideoCallController
 import com.hellodoctormx.sdk.video.VideoCallController.Companion.getInstance
 import javax.annotation.Nonnull
@@ -28,7 +28,7 @@ class RNHDVideoModule internal constructor(reactContext: ReactApplicationContext
         callerDisplayName: String?,
         promise: Promise
     ) {
-        display<IncomingVideoCallActivity>(this.reactApplicationContext, videoRoomSID, callerDisplayName)
+        IncomingVideoCallNotification.display(this.reactApplicationContext, videoRoomSID, callerDisplayName)
         promise.resolve("")
     }
 

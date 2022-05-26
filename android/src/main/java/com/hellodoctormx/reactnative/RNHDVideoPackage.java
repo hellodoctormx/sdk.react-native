@@ -1,4 +1,4 @@
-package com.hellodoctormx.sdk;
+package com.hellodoctormx.reactnative;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
