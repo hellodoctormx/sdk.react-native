@@ -254,9 +254,7 @@ function HDVideoCallView(props) {
             props.onEndCall(consultationID, videoRoomSID);
         }
 
-        await AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag, didHandleOnEndCall: true});
-
-        connectionManager.endVideoCall(videoRoomSID);
+        await connectionManager.endVideoCall(videoRoomSID);
     }
 
     return (

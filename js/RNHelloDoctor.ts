@@ -60,9 +60,9 @@ export default class RNHelloDoctor {
 
     // VIDEO CALL FUNCTIONS
     static handleIncomingVideoCallNotification(videoCallPayload) {
-        const {videoRoomSID, callerDisplayName} = videoCallPayload;
+        const {videoRoomSID, callerDisplayName, callerPhotoURL} = videoCallPayload;
 
-        return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName);
+        return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
     }
 
     static handleIncomingVideoCallNotificationRejected() {

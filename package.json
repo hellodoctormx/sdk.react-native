@@ -1,6 +1,6 @@
 {
   "name": "@hellodoctor/react-native-sdk",
-  "version": "0.3.4",
+  "version": "0.3.6",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
