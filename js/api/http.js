@@ -66,14 +66,17 @@ export default class Http {
     async refreshAccessToken() {
         const currentUser = getCurrentUser();
 
-        if (!currentUser?.isThirdParty) {
+        if (!currentUser?.refreshToken) {
             return;
         }
 
-        if (currentUser === null || currentUser.refreshToken === null) {
+        if (currentUser?.uid === null && !currentUser.refreshToken) {
             throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
+        } else if (!currentUser?.refreshToken) {
+            return;
         }
 
+        console.debug(`[refreshAccessToken]`, {currentUser})
         const authenticationResponse = await this.post(`/users/${currentUser.uid}/_authenticate`, {refreshToken: currentUser.refreshToken});
         currentUser.jwt = authenticationResponse.jwt
         currentUser.refreshToken = authenticationResponse.refreshToken

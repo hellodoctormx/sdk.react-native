@@ -11,19 +11,18 @@ import {getCurrentUser} from "./users/currentUser";
 
 export default class RNHelloDoctor {
     static appName: string = null
+    static videoNavigationConfig: HDVideoNavigationConfig = null
 
     static configure(appName, apiKey, videoNavigationConfig?: HDVideoNavigationConfig) {
         RNHelloDoctor.appName = appName;
+        RNHelloDoctor.videoNavigationConfig = videoNavigationConfig;
 
         Http.API_KEY = apiKey;
-
-        if (videoNavigationConfig) {
-            connectionService.bootstrap(videoNavigationConfig);
-        }
     }
 
     static async signIn(userID, deviceID, serverAuthToken) {
-        await auth.signIn(userID, deviceID, serverAuthToken)
+        await auth.signIn(userID, deviceID, serverAuthToken);
+        connectionService.bootstrap(RNHelloDoctor.videoNavigationConfig);
     }
 
     static async signInWithJWT(userID, deviceID, jwt) {
@@ -51,7 +50,7 @@ export default class RNHelloDoctor {
             return;
         }
 
-        return usersAPI.updateThirdPartyUserMessagingToken(currentUser.uid, currentUser.deviceID, token)
+        return usersAPI.updateThirdPartyUserMessagingToken(currentUser.deviceID, token)
     }
 
     // SCHEDULING FUNCTIONS
@@ -61,21 +60,17 @@ export default class RNHelloDoctor {
 
     // VIDEO CALL FUNCTIONS
     static handleIncomingVideoCallNotification(videoCallPayload) {
-        console.info("[HDVideoCalls:handleIncomingVideoCallNotification]", {videoCallPayload});
         const {videoRoomSID, callerDisplayName} = videoCallPayload;
 
         return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName);
     }
 
     static handleIncomingVideoCallNotificationRejected() {
-        console.info("[HDVideoCalls:handleIncomingVideoCallNotificationRejected]");
-
         activeCallManager.stopNotificationAlerts();
 
         const incomingCall = connectionManager.getIncomingCall();
 
         if (!incomingCall) {
-            console.info("[HDVideoCalls:handleIncomingVideoCallNotificationRejected] cannot reject incoming call: none found");
             return;
         }
 

@@ -20,7 +20,7 @@ class UsersServiceAPI {
     }
 
     // deprecated
-    updateThirdPartyUserMessagingToken(userID, deviceID, fcmToken) {
+    updateThirdPartyUserMessagingToken(deviceID, fcmToken) {
         return this.http.put(`/devices/${deviceID}`, {fcmToken});
     }
 
@@ -30,11 +30,6 @@ class UsersServiceAPI {
     }
 
     async registerApnsToken(deviceID, apnsToken) {
-        if (!deviceID) {
-            console.warn("[registerApnsToken can't register token: no device ID available");
-            return;
-        }
-
         return this.http.put(`/devices/${deviceID}`, {apnsToken});
     }
 

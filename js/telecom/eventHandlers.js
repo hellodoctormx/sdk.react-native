@@ -7,6 +7,7 @@ import * as connectionManager from "./connectionManager";
 import {endVideoCall, tryCancelVideoCallNotification} from "./connectionManager";
 import * as activeCallManager from "./activeCallManager";
 import * as connectionService from "./connectionService";
+import {getCurrentUser} from "../users/currentUser";
 
 let _navigator = null;
 
@@ -181,7 +182,8 @@ let answerablePushKitCallUUID = null;
 
 export class PushKitEventHandlers {
     static handleOnRegister(token) {
-        usersServiceApi.registerApnsToken(token).catch(error => console.warn(`[VoipPushNotification:EVENT:register:registerApnsToken]`, error));
+        const currentUser = getCurrentUser();
+        usersServiceApi.registerApnsToken(currentUser.deviceID, token).catch(error => console.warn(`[VoipPushNotification:EVENT:register:registerApnsToken]`, error));
     }
 
     static handleOnNotification(notification) {
