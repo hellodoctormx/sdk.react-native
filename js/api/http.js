@@ -1,10 +1,13 @@
-import {getCurrentUser, refreshAccessToken} from "../users/auth";
+import {getCurrentUser} from "../users/currentUser";
+
+export const publicApiHost = "https://public-api-pusuheofiq-uc.a.run.app";
+// export const publicApiHost = "http://192.168.100.26:3010";
 
 export default class Http {
     static API_KEY: string = "";
 
     constructor(host) {
-        this.host = host;
+        this.host = host || publicApiHost;
     }
 
     async post(path, data) {
@@ -33,7 +36,7 @@ export default class Http {
         let response = await doFetch()
 
         if (response.status === 401) {
-            await refreshAccessToken()
+            await this.refreshAccessToken()
 
             response = await doFetch()
         }
@@ -59,6 +62,23 @@ export default class Http {
 
         return requestHeaders;
     }
+
+    async refreshAccessToken() {
+        const currentUser = getCurrentUser();
+
+        if (!currentUser?.isThirdParty) {
+            return;
+        }
+
+        if (currentUser === null || currentUser.refreshToken === null) {
+            throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
+        }
+
+        const authenticationResponse = await this.post(`/users/${currentUser.uid}/_authenticate`, {refreshToken: currentUser.refreshToken});
+        currentUser.jwt = authenticationResponse.jwt
+        currentUser.refreshToken = authenticationResponse.refreshToken
+    }
+
 }
 
 export const nullSafeJsonResponse = response => {

@@ -207,7 +207,7 @@ function HDVideoCallView(props) {
             handleParticipantAudioEvent
         );
 
-        connectionManager.handleIncomingVideoCallAnswered(videoRoomSID);
+        connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
 
         return () => {
             console.info("[VideoCallModal] removed connectedToRoomListener")
