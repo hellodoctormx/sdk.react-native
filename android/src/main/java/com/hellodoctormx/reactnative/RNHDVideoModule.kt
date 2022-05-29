@@ -1,5 +1,6 @@
 package com.hellodoctormx.reactnative
 
+import android.app.Activity
 import android.content.Intent
 import com.facebook.react.bridge.*
 import com.hellodoctormx.sdk.HelloDoctorClient
@@ -25,7 +26,7 @@ class RNHDVideoModule internal constructor(reactContext: ReactApplicationContext
     @ReactMethod
     fun displayIncomingCallNotification(
         videoRoomSID: String,
-        callerDisplayName: String?,
+        callerDisplayName: String,
         promise: Promise
     ) {
         IncomingVideoCallNotification.display(this.reactApplicationContext, videoRoomSID, callerDisplayName)
@@ -71,7 +72,6 @@ class RNHDVideoModule internal constructor(reactContext: ReactApplicationContext
     override fun onHostResume() {}
     override fun onHostPause() {}
     override fun onHostDestroy() {}
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {}
 
     companion object {
         var TAG = "RNHDVideoModule"
@@ -82,5 +82,18 @@ class RNHDVideoModule internal constructor(reactContext: ReactApplicationContext
         videoCallController = getInstance(
             reactContext!!
         )
+    }
+
+    override fun onActivityResult(
+        activity: Activity?,
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        TODO("Not yet implemented")
     }
 }
