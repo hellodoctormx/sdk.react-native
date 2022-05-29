@@ -9,9 +9,14 @@ import com.hellodoctormx.sdk.video.VideoCallController
 import com.hellodoctormx.sdk.video.VideoCallController.Companion.getInstance
 import javax.annotation.Nonnull
 
-class RNHDVideoModule internal constructor(reactContext: ReactApplicationContext?) :
+class RNHDVideoModule(reactContext: ReactApplicationContext?) :
     ReactContextBaseJavaModule(reactContext), ActivityEventListener, LifecycleEventListener {
     private val videoCallController: VideoCallController
+
+    init {
+        HelloDoctorClient.createVideoCallNotificationChannel(this.reactApplicationContext)
+    }
+
     @Nonnull
     override fun getName(): String {
         return TAG
@@ -27,9 +32,16 @@ class RNHDVideoModule internal constructor(reactContext: ReactApplicationContext
     fun displayIncomingCallNotification(
         videoRoomSID: String,
         callerDisplayName: String,
+        callerProfilePhotoURL: String?,
         promise: Promise
     ) {
-        IncomingVideoCallNotification.display(this.reactApplicationContext, videoRoomSID, callerDisplayName)
+        IncomingVideoCallNotification.display(this.reactApplicationContext, videoRoomSID, callerDisplayName, callerProfilePhotoURL)
+        promise.resolve("")
+    }
+
+    @ReactMethod
+    fun cancelIncomingCallNotification(promise: Promise) {
+        IncomingVideoCallNotification.cancel(this.reactApplicationContext)
         promise.resolve("")
     }
 
