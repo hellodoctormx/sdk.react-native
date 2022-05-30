@@ -1,4 +1,4 @@
-import {NativeModules} from "react-native";
+import {NativeModules, Platform} from "react-native";
 import Http from "./api/http";
 import consultationsAPI from "./api/consultations";
 import usersAPI from "./api/users";
@@ -22,7 +22,9 @@ export default class RNHelloDoctor {
 
         Http.API_KEY = apiKey;
 
-        await RNHelloDoctorModule.configure(apiKey, serviceHost);
+        if (Platform.OS === "android") {
+            await RNHelloDoctorModule.configure(apiKey, serviceHost);
+        }
     }
 
     static async signIn(userID, deviceID, serverAuthToken) {
@@ -32,6 +34,7 @@ export default class RNHelloDoctor {
 
     static async signInWithJWT(userID, deviceID, jwt) {
         await auth.signInWithJWT(userID, deviceID, jwt);
+        connectionService.bootstrap(RNHelloDoctor.videoNavigationConfig);
     }
 
     static teardown() {
