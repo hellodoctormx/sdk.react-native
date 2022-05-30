@@ -1,3 +1,4 @@
+import {NativeModules} from "react-native";
 import Http from "./api/http";
 import consultationsAPI from "./api/consultations";
 import usersAPI from "./api/users";
@@ -9,15 +10,19 @@ import * as eventHandlers from "./telecom/eventHandlers";
 import * as auth from "./users/auth";
 import {getCurrentUser} from "./users/currentUser";
 
+const {RNHelloDoctorModule} = NativeModules;
+
 export default class RNHelloDoctor {
     static appName: string = null
     static videoNavigationConfig: HDVideoNavigationConfig = null
 
-    static configure(appName, apiKey, videoNavigationConfig?: HDVideoNavigationConfig) {
+    static async configure(appName, apiKey, serviceHost, videoNavigationConfig?: HDVideoNavigationConfig) {
         RNHelloDoctor.appName = appName;
         RNHelloDoctor.videoNavigationConfig = videoNavigationConfig;
 
         Http.API_KEY = apiKey;
+
+        await RNHelloDoctorModule.configure(apiKey, serviceHost);
     }
 
     static async signIn(userID, deviceID, serverAuthToken) {

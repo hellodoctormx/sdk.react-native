@@ -15,7 +15,7 @@ public class RNHDVideoPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(@NonNull ReactApplicationContext reactContext) {
         List<NativeModule> nativeModules = new ArrayList<>();
-        nativeModules.add(new RNHDVideoModule(reactContext));
+        nativeModules.add(new RNHelloDoctorModule(reactContext));
 
         return nativeModules;
     }
