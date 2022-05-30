@@ -3,7 +3,33 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(RNHDVideoModule, NSObject)
+@interface RCT_EXTERN_MODULE(RNHelloDoctorModule, NSObject)
+
+RCT_EXTERN_METHOD(
+  configure: (NSString*)apiKey
+  serviceHost: (NSString*)serviceHost
+  resolve: (RCTPromiseResolveBlock)resolve
+  reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  signIn: (NSString*)userID
+  serverAuthToken: (NSString*)serverAuthToken
+  resolve: (RCTPromiseResolveBlock)resolve
+  reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  signInWithJWT: (NSString*)userID
+  bearerToken: (NSString*)bearerToken
+  resolve: (RCTPromiseResolveBlock)resolve
+  reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
+  cancelIncomingCallNotification: (NSString*)resolve
+  reject: (RCTPromiseRejectBlock)reject
+)
 
 RCT_EXTERN_METHOD(
   connect: (NSString*)roomName
@@ -22,6 +48,14 @@ RCT_EXTERN_METHOD(getRemoteParticipants: (RCTPromiseResolveBlock)resolve
 )
 
 RCT_EXTERN_METHOD(disconnect: (RCTPromiseResolveBlock)resolve
+                  reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(startLocalCapture: (RCTPromiseResolveBlock)resolve
+                  reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(stopLocalCapture: (RCTPromiseResolveBlock)resolve
                   reject: (RCTPromiseRejectBlock)reject
 )
 

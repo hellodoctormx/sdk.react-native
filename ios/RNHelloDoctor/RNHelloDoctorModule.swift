@@ -7,13 +7,40 @@
 
 import Foundation
 
-@objc(RNHDVideoModule)
-class RNHDVideoModule: NSObject {
+@objc(RNHelloDoctorModule)
+class RNHelloDoctorModule: NSObject {
     @objc
     static func requiresMainQueueSetup() -> Bool {
         return true
     }
 
+    @objc(configure:serviceHost:resolve:reject:)
+    func configure(_ apiKey:String, serviceHost:String, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
+        NSLog("`configure` is a no-op on ios")
+        NSLog("[apiKey:\(apiKey)] [serviceHost:\(serviceHost)")
+        resolve("no-op")
+    }
+    
+    @objc(signIn:serverAuthToken:resolve:reject:)
+    func signIn(_ userID:String, serverAuthToken:String, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
+        NSLog("`signIn` is a no-op on ios")
+        NSLog("[userID:\(userID)] [serverAuthToken:\(serverAuthToken)")
+        resolve("no-op")
+    }
+    
+    @objc(signInWithJWT:bearerToken:resolve:reject:)
+    func signInWithJWT(_ userID:String, bearerToken:String, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
+        NSLog("`signInWithJWT` is a no-op on ios")
+        NSLog("[apiKey:\(userID)] [serviceHost:\(bearerToken)")
+        resolve("no-op")
+    }
+    
+    @objc(cancelIncomingCallNotification:reject:)
+    func cancelIncomingCallNotification(_ resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
+        NSLog("`cancelIncomingCallNotification` is a no-op on ios")
+        resolve("no-op")
+    }
+    
     @objc(connect:accessToken:resolve:reject:)
     func connect(_ roomName:String, accessToken:String, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
         let hdVideo = HDVideo.getInstance()

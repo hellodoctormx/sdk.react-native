@@ -31,7 +31,7 @@ export function startLocalCapture() {
 }
 
 export function stopLocalCapture() {
-    return RNHelloDoctorModule.startLocalCapture();
+    return RNHelloDoctorModule.stopLocalCapture();
 }
 
 export function setLocalVideoPublished(published) {
