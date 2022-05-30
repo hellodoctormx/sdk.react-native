@@ -7,9 +7,12 @@ import com.hellodoctormx.sdk.HelloDoctorClient
 import com.hellodoctormx.sdk.video.IncomingVideoCallNotification
 import com.hellodoctormx.sdk.video.VideoCallController
 import com.hellodoctormx.sdk.video.VideoCallController.Companion.getInstance
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.annotation.Nonnull
 
-class RNHDVideoModule(reactContext: ReactApplicationContext?) :
+class RNHelloDoctorModule(reactContext: ReactApplicationContext?) :
     ReactContextBaseJavaModule(reactContext), ActivityEventListener, LifecycleEventListener {
     private val videoCallController: VideoCallController
 
@@ -20,6 +23,22 @@ class RNHDVideoModule(reactContext: ReactApplicationContext?) :
     @Nonnull
     override fun getName(): String {
         return TAG
+    }
+
+    @ReactMethod
+    fun configure(apiKey: String, serviceHost: String, promise: Promise) {
+        HelloDoctorClient.configure(apiKey, serviceHost)
+        promise.resolve("")
+    }
+
+    @ReactMethod
+    fun signIn(userID: String, serverAuthToken: String, promise: Promise) {
+        val context = this.reactApplicationContext
+
+        CoroutineScope(Dispatchers.Main.immediate).launch {
+            HelloDoctorClient.signIn(context, userID, serverAuthToken)
+            promise.resolve("")
+        }
     }
 
     @ReactMethod
@@ -86,8 +105,8 @@ class RNHDVideoModule(reactContext: ReactApplicationContext?) :
     override fun onHostDestroy() {}
 
     companion object {
-        var TAG = "RNHDVideoModule"
-        private val instance: RNHDVideoModule? = null
+        var TAG = "RNHelloDoctorModule"
+        private val instance: RNHelloDoctorModule? = null
     }
 
     init {

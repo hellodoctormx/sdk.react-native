@@ -2,7 +2,7 @@ import {NativeModules} from "react-native";
 import usersAPI from "../api/users";
 import {getCurrentUser} from "./currentUser";
 
-const {RNHDVideoModule} = NativeModules;
+const {RNHelloDoctorModule} = NativeModules;
 
 export async function signIn(userID: string, deviceID: string, serverAuthToken: string) {
     const authenticationResponse = await usersAPI.authenticateUser(userID, serverAuthToken)
@@ -14,6 +14,8 @@ export async function signIn(userID: string, deviceID: string, serverAuthToken: 
     currentUser.isThirdParty = true;
     currentUser.refreshToken = authenticationResponse.refreshToken
 
+    await RNHelloDoctorModule.signIn(userID, serverAuthToken);
+
     return currentUser
 }
 
@@ -24,7 +26,7 @@ export async function signInWithJWT(userID: string, deviceID: string, jwt: strin
     currentUser.deviceID = deviceID;
     currentUser.isThirdParty = false;
 
-    await RNHDVideoModule.signInWithJWT(userID, jwt);
+    await RNHelloDoctorModule.signInWithJWT(userID, jwt);
 
     return currentUser
 }

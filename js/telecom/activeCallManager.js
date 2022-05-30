@@ -1,57 +1,57 @@
 import {AppState, NativeModules, Platform, Vibration} from "react-native";
 import notifee from "@notifee/react-native";
 
-const {RNHDVideoModule} = NativeModules;
+const {RNHelloDoctorModule} = NativeModules;
 
 export function displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL) {
-    return RNHDVideoModule.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
+    return RNHelloDoctorModule.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
 }
 
 export function connect(videoRoomSID, accessToken) {
-    return RNHDVideoModule.connect(videoRoomSID, accessToken);
+    return RNHelloDoctorModule.connect(videoRoomSID, accessToken);
 }
 
 export function isConnectedToRoom(videoRoomSID) {
-    return RNHDVideoModule.isConnectedToRoom(videoRoomSID).then(isConnected => {
+    return RNHelloDoctorModule.isConnectedToRoom(videoRoomSID).then(isConnected => {
         console.debug(`got response: (${isConnected})`);
         return isConnected == 1 || isConnected === true;
     }); // TODO figure out casting responses jesus
 }
 
 export function getRemoteParticipantIdentities() {
-    return RNHDVideoModule.getRemoteParticipantIdentities();
+    return RNHelloDoctorModule.getRemoteParticipantIdentities();
 }
 
 export function disconnect() {
-    return RNHDVideoModule.disconnect();
+    return RNHelloDoctorModule.disconnect();
 }
 
 export function startLocalCapture() {
-    return RNHDVideoModule.startLocalCapture();
+    return RNHelloDoctorModule.startLocalCapture();
 }
 
 export function stopLocalCapture() {
-    return RNHDVideoModule.startLocalCapture();
+    return RNHelloDoctorModule.startLocalCapture();
 }
 
 export function setLocalVideoPublished(published) {
-    return RNHDVideoModule.setVideoPublished(published);
+    return RNHelloDoctorModule.setVideoPublished(published);
 }
 
 export function setLocalVideoEnabled(enabled) {
-    return RNHDVideoModule.setVideoEnabled(enabled);
+    return RNHelloDoctorModule.setVideoEnabled(enabled);
 }
 
 export function setLocalAudioEnabled(enabled) {
-    return RNHDVideoModule.setAudioEnabled(enabled);
+    return RNHelloDoctorModule.setAudioEnabled(enabled);
 }
 
 export function setSpeakerEnabled(enabled) {
-    return RNHDVideoModule.setSpeakerPhone(enabled);
+    return RNHelloDoctorModule.setSpeakerPhone(enabled);
 }
 
 export function flipCamera() {
-    return RNHDVideoModule.flipCamera();
+    return RNHelloDoctorModule.flipCamera();
 }
 
 export async function startNotificationAlerts() {
@@ -60,7 +60,7 @@ export async function startNotificationAlerts() {
     }
 
     const doNotificationAlerts = () => new Promise(resolve => {
-        RNHDVideoModule.startRingtone();
+        RNHelloDoctorModule.startRingtone();
         Vibration.vibrate([800, 1600], true);
     });
 
@@ -79,5 +79,5 @@ export function stopNotificationAlerts() {
     notifee.stopForegroundService()
 
     Vibration.cancel();
-    RNHDVideoModule.stopRingtone()
+    RNHelloDoctorModule.stopRingtone()
 }
