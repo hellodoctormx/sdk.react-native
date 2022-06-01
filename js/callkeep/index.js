@@ -48,6 +48,8 @@ class RNCallKeep {
     return this._setupIOS(options.ios);
   };
 
+  setSettings = (settings) => RNCallKeepModule.setSettings(settings[isIOS ? 'ios' : 'android']);
+
   registerPhoneAccount = (options) => {
     if (isIOS) {
       return;
@@ -78,15 +80,15 @@ class RNCallKeep {
   };
 
   displayIncomingCall = (
-    uuid,
-    handle,
-    localizedCallerName = '',
-    handleType = 'number',
-    hasVideo = false,
-    options = null
+      uuid,
+      handle,
+      localizedCallerName = '',
+      handleType = 'number',
+      hasVideo = false,
+      options = null
   ) => {
     if (!isIOS) {
-      RNCallKeepModule.displayIncomingCall(uuid, handle, localizedCallerName);
+      RNCallKeepModule.displayIncomingCall(uuid, handle, localizedCallerName, hasVideo);
       return;
     }
 
@@ -97,15 +99,15 @@ class RNCallKeep {
     let supportsUngrouping = !!(options?.ios?.supportsUngrouping ?? true);
 
     RNCallKeepModule.displayIncomingCall(
-      uuid,
-      handle,
-      handleType,
-      hasVideo,
-      localizedCallerName,
-      supportsHolding,
-      supportsDTMF,
-      supportsGrouping,
-      supportsUngrouping
+        uuid,
+        handle,
+        handleType,
+        hasVideo,
+        localizedCallerName,
+        supportsHolding,
+        supportsDTMF,
+        supportsGrouping,
+        supportsUngrouping
     );
   };
 
@@ -115,7 +117,7 @@ class RNCallKeep {
 
   startCall = (uuid, handle, contactIdentifier, handleType = 'number', hasVideo = false) => {
     if (!isIOS) {
-      RNCallKeepModule.startCall(uuid, handle, contactIdentifier);
+      RNCallKeepModule.startCall(uuid, handle, contactIdentifier, hasVideo);
       return;
     }
 
@@ -202,10 +204,10 @@ class RNCallKeep {
   setAudioRoute = (uuid, inputName) => RNCallKeepModule.setAudioRoute(uuid, inputName);
 
   checkIfBusy = () =>
-    isIOS ? RNCallKeepModule.checkIfBusy() : Promise.reject('RNCallKeep.checkIfBusy was called from unsupported OS');
+      isIOS ? RNCallKeepModule.checkIfBusy() : Promise.reject('RNCallKeep.checkIfBusy was called from unsupported OS');
 
   checkSpeaker = () =>
-    isIOS ? RNCallKeepModule.checkSpeaker() : Promise.reject('RNCallKeep.checkSpeaker was called from unsupported OS');
+      isIOS ? RNCallKeepModule.checkSpeaker() : Promise.reject('RNCallKeep.checkSpeaker was called from unsupported OS');
 
   setAvailable = (state) => {
     if (isIOS) {
@@ -266,21 +268,21 @@ class RNCallKeep {
     console.warn('RNCallKeep.reportUpdatedCall is deprecated, use RNCallKeep.updateDisplay instead');
 
     return isIOS
-      ? RNCallKeepModule.reportUpdatedCall(uuid, localizedCallerName)
-      : Promise.reject('RNCallKeep.reportUpdatedCall was called from unsupported OS');
+        ? RNCallKeepModule.reportUpdatedCall(uuid, localizedCallerName)
+        : Promise.reject('RNCallKeep.reportUpdatedCall was called from unsupported OS');
   };
 
   _setupIOS = async (options) =>
-    new Promise((resolve, reject) => {
-      if (!options.appName) {
-        reject('RNCallKeep.setup: option "appName" is required');
-      }
-      if (typeof options.appName !== 'string') {
-        reject('RNCallKeep.setup: option "appName" should be of type "string"');
-      }
+      new Promise((resolve, reject) => {
+        if (!options.appName) {
+          reject('RNCallKeep.setup: option "appName" is required');
+        }
+        if (typeof options.appName !== 'string') {
+          reject('RNCallKeep.setup: option "appName" should be of type "string"');
+        }
 
-      resolve(RNCallKeepModule.setup(options));
-    });
+        resolve(RNCallKeepModule.setup(options));
+      });
 
   _setupAndroid = async (options) => {
     RNCallKeepModule.setup(options);
@@ -310,25 +312,25 @@ class RNCallKeep {
   };
 
   _alert = async (options, condition) =>
-    new Promise((resolve, reject) => {
-      if (!condition) {
-        return resolve(false);
-      }
+      new Promise((resolve, reject) => {
+        if (!condition) {
+          return resolve(false);
+        }
 
-      Alert.alert(
-        options.alertTitle,
-        options.alertDescription,
-        [
-          {
-            text: options.cancelButton,
-            onPress: reject,
-            style: 'cancel',
-          },
-          { text: options.okButton, onPress: () => resolve(true) },
-        ],
-        { cancelable: true }
-      );
-    });
+        Alert.alert(
+            options.alertTitle,
+            options.alertDescription,
+            [
+              {
+                text: options.cancelButton,
+                onPress: reject,
+                style: 'cancel',
+              },
+              { text: options.okButton, onPress: () => resolve(true) },
+            ],
+            { cancelable: true },
+        );
+      });
 
   backToForeground() {
     if (isIOS) {
@@ -339,10 +341,11 @@ class RNCallKeep {
   }
 
   getInitialEvents() {
-    if (isIOS) {
-      return RNCallKeepModule.getInitialEvents()
-    }
-    return Promise.resolve([])
+    return RNCallKeepModule.getInitialEvents();
+  }
+
+  clearInitialEvents() {
+    return RNCallKeepModule.clearInitialEvents();
   }
 }
 
