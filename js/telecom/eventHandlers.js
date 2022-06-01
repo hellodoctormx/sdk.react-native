@@ -17,11 +17,9 @@ export function registerVideoCallNavigator(navigator) {
 
 export function tryNavigateOnIncomingCall(consultationID, videoRoomSID) {
     if (AppState.currentState === "active" && _navigator.onIncomingCall) {
-        console.debug("[tryNavigateOnIncomingCall:YES]")
         _navigator.onIncomingCall(consultationID, videoRoomSID);
         return true;
     } else {
-        console.debug("[tryNavigateOnIncomingCall:NO]")
         return false
     }
 }
