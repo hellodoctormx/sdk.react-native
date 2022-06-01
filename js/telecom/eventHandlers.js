@@ -40,9 +40,7 @@ export function navigateOnRejectCall() {
     _navigator.onEndCall();
 }
 
-export async function handleIncomingVideoCallEndedRemotely(callData) {
-    const {videoRoomSID} = callData;
-
+export async function handleIncomingVideoCallEndedRemotely(videoRoomSID) {
     const call = connectionManager.getIncomingCall();
 
     if (!call) {
@@ -56,7 +54,7 @@ export async function handleIncomingVideoCallEndedRemotely(callData) {
         RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
     }
 
-    await endVideoCall(call.videoRoomSID);
+    await endVideoCall(videoRoomSID);
 
     tryCancelVideoCallNotification(videoRoomSID);
 

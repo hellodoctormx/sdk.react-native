@@ -17,17 +17,10 @@ export function bootstrap(navigator) {
         return;
     }
 
+    registerCallKeepListeners();
+    registerVideoCallNavigator(navigator);
+
     isCallsServiceBootstrapped = true;
-
-    try {
-        registerCallKeepListeners();
-        registerVideoCallNavigator(navigator);
-    } catch(error) {
-        console.warn("[connectionService.bootstrap] error occurred during bootstrapping", error);
-        isCallsServiceBootstrapped = false;
-
-        throw error;
-    }
 }
 
 export function teardown() {

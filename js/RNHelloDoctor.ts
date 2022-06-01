@@ -89,8 +89,8 @@ export default class RNHelloDoctor {
         connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
     }
 
-    static handleIncomingVideoCallEndedRemotely(videoCallPayload) {
-        return eventHandlers.handleIncomingVideoCallEndedRemotely(videoCallPayload);
+    static handleIncomingVideoCallEndedRemotely(videoRoomSID) {
+        return eventHandlers.handleIncomingVideoCallEndedRemotely(videoRoomSID);
     }
 
     static startVideoCall(videoRoomSID) {
