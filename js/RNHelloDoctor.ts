@@ -42,6 +42,10 @@ export default class RNHelloDoctor {
     }
 
     // USER FUNCTIONS
+    static getCurrentUser() {
+        return getCurrentUser()
+    }
+
     static createUser(accountPayload) {
         return usersAPI.createUser(accountPayload)
     }
