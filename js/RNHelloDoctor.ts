@@ -14,27 +14,25 @@ const {RNHelloDoctorModule} = NativeModules;
 
 export default class RNHelloDoctor {
     static appName: string = null
-    static videoNavigationConfig: HDVideoNavigationConfig = null
 
     static async configure(appName, apiKey, serviceHost, videoNavigationConfig?: HDVideoNavigationConfig) {
         RNHelloDoctor.appName = appName;
-        RNHelloDoctor.videoNavigationConfig = videoNavigationConfig;
 
         Http.API_KEY = apiKey;
 
         if (Platform.OS === "android") {
             await RNHelloDoctorModule.configure(apiKey, serviceHost);
+        } else {
+            connectionService.bootstrap(videoNavigationConfig);
         }
     }
 
     static async signIn(userID, deviceID, serverAuthToken) {
         await auth.signIn(userID, deviceID, serverAuthToken);
-        connectionService.bootstrap(RNHelloDoctor.videoNavigationConfig);
     }
 
     static async signInWithJWT(userID, deviceID, jwt) {
         await auth.signInWithJWT(userID, deviceID, jwt);
-        connectionService.bootstrap(RNHelloDoctor.videoNavigationConfig);
     }
 
     static teardown() {
