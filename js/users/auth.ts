@@ -4,13 +4,12 @@ import {getCurrentUser} from "./currentUser";
 
 const {RNHelloDoctorModule} = NativeModules;
 
-export async function signIn(userID: string, deviceID: string, serverAuthToken: string) {
+export async function signIn(userID: string, serverAuthToken: string) {
     const authenticationResponse = await usersAPI.authenticateUser(userID, serverAuthToken)
 
     const currentUser = getCurrentUser();
     currentUser.jwt = authenticationResponse.bearerToken
     currentUser.uid = userID;
-    currentUser.deviceID = deviceID;
     currentUser.isThirdParty = true;
     currentUser.refreshToken = authenticationResponse.refreshToken
 
@@ -19,11 +18,10 @@ export async function signIn(userID: string, deviceID: string, serverAuthToken: 
     return currentUser
 }
 
-export async function signInWithJWT(userID: string, deviceID: string, jwt: string) {
+export async function signInWithJWT(userID: string, jwt: string) {
     const currentUser = getCurrentUser();
     currentUser.jwt = jwt
     currentUser.uid = userID;
-    currentUser.deviceID = deviceID;
     currentUser.isThirdParty = false;
 
     await RNHelloDoctorModule.signInWithJWT(userID, jwt);
@@ -35,7 +33,6 @@ export function signOut() {
     const currentUser = getCurrentUser();
     currentUser.jwt = null;
     currentUser.uid = null;
-    currentUser.deviceID = null;
     currentUser.refreshToken = null;
 }
 

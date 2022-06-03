@@ -10,7 +10,6 @@ export function getCurrentUser() {
 export interface HDUser {
     uid: string
     jwt?: string
-    deviceID?: string
     isThirdParty: boolean
     refreshToken?: String
 }

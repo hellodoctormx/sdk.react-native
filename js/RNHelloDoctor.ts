@@ -28,16 +28,16 @@ export default class RNHelloDoctor {
         }
     }
 
-    static async signIn(userID, deviceID, serverAuthToken) {
-        await auth.signIn(userID, deviceID, serverAuthToken);
+    static async signIn(userID, serverAuthToken) {
+        await auth.signIn(userID, serverAuthToken);
 
         if (Platform.OS === "ios") {
             connectionService.bootstrap();
         }
     }
 
-    static async signInWithJWT(userID, deviceID, jwt) {
-        await auth.signInWithJWT(userID, deviceID, jwt);
+    static async signInWithJWT(userID, jwt) {
+        await auth.signInWithJWT(userID, jwt);
 
         if (Platform.OS === "ios") {
             connectionService.bootstrap();
