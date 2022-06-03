@@ -1,5 +1,4 @@
-import {AppState, NativeModules, Platform, Vibration} from "react-native";
-import notifee from "@notifee/react-native";
+import {NativeModules} from "react-native";
 
 const {RNHelloDoctorModule} = NativeModules;
 
@@ -52,32 +51,4 @@ export function setSpeakerEnabled(enabled) {
 
 export function flipCamera() {
     return RNHelloDoctorModule.flipCamera();
-}
-
-export async function startNotificationAlerts() {
-    if (Platform.OS !== "android") {
-        return;
-    }
-
-    const doNotificationAlerts = () => new Promise(resolve => {
-        RNHelloDoctorModule.startRingtone();
-        Vibration.vibrate([800, 1600], true);
-    });
-
-    if (AppState.currentState === "active") {
-        await doNotificationAlerts();
-    } else {
-        notifee.registerForegroundService(doNotificationAlerts);
-    }
-}
-
-export function stopNotificationAlerts() {
-    if (Platform.OS !== "android") {
-        return;
-    }
-
-    notifee.stopForegroundService()
-
-    Vibration.cancel();
-    RNHelloDoctorModule.stopRingtone()
 }

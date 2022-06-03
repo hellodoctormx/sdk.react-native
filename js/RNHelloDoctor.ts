@@ -9,16 +9,17 @@ import * as connectionService from "./telecom/connectionService";
 import * as eventHandlers from "./telecom/eventHandlers";
 import * as auth from "./users/auth";
 import {getCurrentUser} from "./users/currentUser";
+import HDConfig, {HDConfigOptions} from "./HDConfig";
 
 const {RNHelloDoctorModule} = NativeModules;
 
 export default class RNHelloDoctor {
     static appName: string = null
-    static videoNavigationConfig: HDVideoNavigationConfig = null
 
-    static async configure(appName, apiKey, serviceHost, videoNavigationConfig?: HDVideoNavigationConfig) {
+    static async configure(appName, apiKey, serviceHost, config?: HDConfigOptions) {
         RNHelloDoctor.appName = appName;
-        RNHelloDoctor.videoNavigationConfig = videoNavigationConfig;
+
+        Object.assign(HDConfig, config);
 
         Http.API_KEY = apiKey;
 
@@ -31,7 +32,7 @@ export default class RNHelloDoctor {
         await auth.signIn(userID, deviceID, serverAuthToken);
 
         if (Platform.OS === "ios") {
-            connectionService.bootstrap(RNHelloDoctor.videoNavigationConfig);
+            connectionService.bootstrap();
         }
     }
 
@@ -39,7 +40,7 @@ export default class RNHelloDoctor {
         await auth.signInWithJWT(userID, deviceID, jwt);
 
         if (Platform.OS === "ios") {
-            connectionService.bootstrap(RNHelloDoctor.videoNavigationConfig);
+            connectionService.bootstrap();
         }
     }
 
@@ -60,17 +61,6 @@ export default class RNHelloDoctor {
         return usersAPI.deleteUser(userID)
     }
 
-    static updateMessagingToken(token) {
-        const currentUser = getCurrentUser()
-
-        if (currentUser === null) {
-            console.warn("[HDUsers:updateMessagingToken] can't update: no current user");
-            return;
-        }
-
-        return usersAPI.updateThirdPartyUserMessagingToken(currentUser.deviceID, token)
-    }
-
     // SCHEDULING FUNCTIONS
     static getConsultations(limit) {
         return consultationsAPI.getUserConsultations(limit);
@@ -84,8 +74,6 @@ export default class RNHelloDoctor {
     }
 
     static handleIncomingVideoCallNotificationRejected() {
-        activeCallManager.stopNotificationAlerts();
-
         const incomingCall = connectionManager.getIncomingCall();
 
         if (!incomingCall) {
@@ -112,10 +100,4 @@ export default class RNHelloDoctor {
             .requestVideoCallAccess(videoRoomSID)
             .then(response => response.accessToken);
     }
-}
-
-interface HDVideoNavigationConfig {
-    onAnswerCall: Function,
-    onEndCall: Function,
-    onIncomingCall?: Function
 }

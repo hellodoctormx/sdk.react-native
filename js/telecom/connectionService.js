@@ -2,12 +2,11 @@ import {Platform} from "react-native";
 import VoipPushNotification from "react-native-voip-push-notification";
 import RNCallKeep from "../callkeep";
 import * as auth from "../users/auth";
-import {CallKeepEventHandlers, PushKitEventHandlers, registerVideoCallNavigator} from "./eventHandlers";
-import usersServiceApi from "../api/users";
+import {CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
 
 let isCallsServiceBootstrapped = false;
 
-export function bootstrap(navigator) {
+export function bootstrap() {
     if (Platform.OS === "android") {
         return;
     }
@@ -18,7 +17,6 @@ export function bootstrap(navigator) {
     }
 
     registerCallEventListeners();
-    registerVideoCallNavigator(navigator);
 
     isCallsServiceBootstrapped = true;
 }
@@ -27,20 +25,7 @@ export function teardown() {
     auth.signOut();
 
     removeCallKeepListeners();
-
-    if (videoConsultationsSnapshotListener !== null) {
-        videoConsultationsSnapshotListener();
-        videoConsultationsSnapshotListener = null;
-    }
-
-    usersServiceApi.unregisterApnsToken().catch(console.warn);
 }
-
-export function checkIsCallKeepConfigured() {
-    return Platform.OS === "ios";
-}
-
-let videoConsultationsSnapshotListener = null;
 
 let hasRegisteredCallEventListeners = false;
 
