@@ -28,16 +28,6 @@ export function getIncomingCall() {
     return _.find(calls, c => c.status === "incoming") || getActiveCall();
 }
 
-export function registerCallStatusListener(videoRoomSID, listener) {
-    callListeners.push({videoRoomSID, listener});
-
-    const call = calls.find(c => c.videoRoomSID === videoRoomSID);
-
-    if (call) {
-        listener(call.status);
-    }
-}
-
 function notifyCallStatusListeners(videoRoomSID, status) {
     callListeners.filter(l => l.videoRoomSID === videoRoomSID).forEach(l => l.listener(status));
 }
