@@ -13,6 +13,10 @@ const getNewCallUUID = async () => {
     return callUUID.toLowerCase();
 }
 
+export function getCallByUUID(uuid) {
+    return calls.find(c => c.uuid = uuid);
+}
+
 export function getActiveCall() {
     return _.find(calls, c => c.status === "in-progress");
 }
