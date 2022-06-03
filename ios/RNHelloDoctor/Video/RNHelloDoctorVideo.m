@@ -39,6 +39,10 @@
     NSString *callerDisplayName = payload.dictionaryPayload[@"callerDisplayName"];
     NSString *videoRoomSID = payload.dictionaryPayload[@"videoRoomSID"];
 
+    if (callerDisplayName == (id)[NSNull null] || callerDisplayName.length == 0) {
+        callerDisplayName = @"Médico de HelloDoctor";
+    }
+
     [RNVoipPushNotificationManager didReceiveIncomingPushWithPayload:payload forType:(NSString *)type];
 
     [RNCallKeep reportNewIncomingCall:uuid handle:videoRoomSID handleType:@"generic" hasVideo:true localizedCallerName:callerDisplayName supportsHolding:true supportsDTMF:false supportsGrouping:false supportsUngrouping:false fromPushKit:YES payload:nil withCompletionHandler:completion];
