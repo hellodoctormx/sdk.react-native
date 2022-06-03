@@ -1,30 +1,29 @@
-import {getCurrentUser, refreshAccessToken} from "../users/auth";
+import {getCurrentUser} from "../users/currentUser";
+import HDConfig from "../HDConfig";
 
 export default class Http {
     static API_KEY: string = "";
 
-    constructor(host) {
-        this.host = host;
+    async get(path) {
+        return this.doRequest(path, 'GET')
     }
 
     async post(path, data) {
-        return this.doRequest(`${this.host}${path}`, 'POST', data)
+        return this.doRequest(path, 'POST', data)
     }
 
     async put(path, data) {
-        return this.doRequest(`${this.host}${path}`, 'PUT', data)
-    }
-
-    async get(path) {
-        return this.doRequest(`${this.host}${path}`, 'GET')
+        return this.doRequest(path, 'PUT', data)
     }
 
     async delete(path) {
-        return this.doRequest(`${this.host}${path}`, 'DELETE')
+        return this.doRequest(path, 'DELETE')
     }
 
     async doRequest(path, method, data) {
-        const doFetch = () => fetch(path, {
+        const url = `${HDConfig.serviceHost}${path}`;
+
+        const doFetch = () => fetch(url, {
             method,
             body: JSON.stringify(data),
             headers: this.getRequestHeaders()
@@ -33,7 +32,7 @@ export default class Http {
         let response = await doFetch()
 
         if (response.status === 401) {
-            await refreshAccessToken()
+            await this.refreshAccessToken()
 
             response = await doFetch()
         }
@@ -59,6 +58,25 @@ export default class Http {
 
         return requestHeaders;
     }
+
+    async refreshAccessToken() {
+        const currentUser = getCurrentUser();
+
+        if (!currentUser?.refreshToken) {
+            return;
+        }
+
+        if (currentUser?.uid === null && !currentUser.refreshToken) {
+            throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
+        } else if (!currentUser?.refreshToken) {
+            return;
+        }
+
+        const authenticationResponse = await this.post(`/users/${currentUser.uid}/_authenticate`, {refreshToken: currentUser.refreshToken});
+        currentUser.jwt = authenticationResponse.jwt
+        currentUser.refreshToken = authenticationResponse.refreshToken
+    }
+
 }
 
 export const nullSafeJsonResponse = response => {

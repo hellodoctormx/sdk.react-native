@@ -1,6 +1,6 @@
 import _ from "lodash";
 import React from "react";
-import {Animated, AppRegistry, Dimensions, Platform, RootTagContext, Text, View} from "react-native";
+import {Animated, Dimensions, Platform, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import withVideoCallPermissions from "./withVideoCallPermissions";
@@ -8,14 +8,10 @@ import HDVideoCallActions from "./HDVideoCallActions";
 import {hdVideoEvents, LocalVideoView, RemoteVideoView} from "./native";
 import * as activeCallManager from "../telecom/activeCallManager";
 import * as connectionManager from "../telecom/connectionManager";
-import RNHelloDoctor from "../../index";
-import {tryCancelVideoCallNotification} from "../telecom/connectionManager";
 
 
 function HDVideoCallView(props) {
     const {consultationID, videoRoomSID, accessToken} = props;
-
-    const rootTag = React.useContext(RootTagContext);
 
     const [remoteParticipantSID, setRemoteParticipantSID] = React.useState(null);
     const [remoteVideoState, setRemoteVideoState] = React.useState(null);
@@ -207,7 +203,7 @@ function HDVideoCallView(props) {
             handleParticipantAudioEvent
         );
 
-        connectionManager.handleIncomingVideoCallAnswered(videoRoomSID);
+        connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
 
         return () => {
             console.info("[VideoCallModal] removed connectedToRoomListener")
@@ -254,9 +250,7 @@ function HDVideoCallView(props) {
             props.onEndCall(consultationID, videoRoomSID);
         }
 
-        await AppRegistry.runApplication(RNHelloDoctor.appName, {rootTag, didHandleOnEndCall: true});
-
-        connectionManager.endVideoCall(videoRoomSID);
+        await connectionManager.endVideoCall(videoRoomSID);
     }
 
     return (

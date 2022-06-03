@@ -1,49 +1,53 @@
-import type {HDUser} from "../../index";
-import usersServiceApi from "../api/users";
+import {NativeModules} from "react-native";
+import usersAPI from "../api/users";
+import {getCurrentUser} from "./currentUser";
 
-let _currentUser: HDUser = null
-let _refreshToken: string = null
+const {RNHelloDoctorModule} = NativeModules;
 
-export async function signIn(userID: string, deviceID: string, jwt?: string, serverAuthToken?: string) {
-    _currentUser = {
-        uid: userID,
-        deviceID: deviceID,
-        isThirdParty: !!serverAuthToken
-    }
+export async function signIn(userID: string, serverAuthToken: string) {
+    const authenticationResponse = await usersAPI.authenticateUser(userID, serverAuthToken)
 
-    if (jwt) {
-        _currentUser.jwt = jwt
-    } else if (serverAuthToken) {
-        const authenticationResponse = await usersServiceApi.authenticateThirdPartyUser(userID, serverAuthToken)
-        _currentUser.jwt = authenticationResponse.jwt
-        _refreshToken = authenticationResponse.refreshToken
-    } else {
-        throw new Error('either jwt or serverAuthToken must be provided')
-    }
+    const currentUser = getCurrentUser();
+    currentUser.jwt = authenticationResponse.bearerToken
+    currentUser.uid = userID;
+    currentUser.isThirdParty = true;
+    currentUser.refreshToken = authenticationResponse.refreshToken
 
-    return _currentUser
+    await RNHelloDoctorModule.signIn(userID, serverAuthToken);
+
+    return currentUser
+}
+
+export async function signInWithJWT(userID: string, jwt: string) {
+    const currentUser = getCurrentUser();
+    currentUser.jwt = jwt
+    currentUser.uid = userID;
+    currentUser.isThirdParty = false;
+
+    await RNHelloDoctorModule.signInWithJWT(userID, jwt);
+
+    return currentUser
 }
 
 export function signOut() {
-    _currentUser = null
-    _refreshToken = null
+    const currentUser = getCurrentUser();
+    currentUser.jwt = null;
+    currentUser.uid = null;
+    currentUser.refreshToken = null;
 }
 
 export async function refreshAccessToken() {
-    if (!_currentUser?.isThirdParty) {
+    const currentUser = getCurrentUser();
+
+    if (!currentUser?.isThirdParty) {
         return;
     }
 
-    console.debug("[refreshAccessToken]", {_refreshToken});
-    if (_currentUser === null || _refreshToken === null) {
+    if (currentUser === null || currentUser.refreshToken === null) {
         throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
     }
 
-    const authenticationResponse = await usersServiceApi.authenticateThirdPartyUser(_currentUser.uid, _refreshToken)
-    _currentUser.jwt = authenticationResponse.jwt
-    _refreshToken = authenticationResponse.refreshToken
-}
-
-export function getCurrentUser() {
-    return _currentUser || null
+    const authenticationResponse = await usersAPI.authenticateUser(currentUser.uid, currentUser.refreshToken)
+    currentUser.jwt = authenticationResponse.jwt
+    currentUser.refreshToken = authenticationResponse.refreshToken
 }
