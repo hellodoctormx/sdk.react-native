@@ -17,7 +17,7 @@ export function bootstrap(navigator) {
         return;
     }
 
-    registerCallKeepListeners();
+    registerCallEventListeners();
     registerVideoCallNavigator(navigator);
 
     isCallsServiceBootstrapped = true;
@@ -42,10 +42,10 @@ export function checkIsCallKeepConfigured() {
 
 let videoConsultationsSnapshotListener = null;
 
-let hasRegisteredCallKeepListeners = false;
+let hasRegisteredCallEventListeners = false;
 
-export function registerCallKeepListeners() {
-    if (hasRegisteredCallKeepListeners) {
+export function registerCallEventListeners() {
+    if (hasRegisteredCallEventListeners) {
         return;
     }
 
@@ -55,11 +55,9 @@ export function registerCallKeepListeners() {
     RNCallKeep.addEventListener("endCall", CallKeepEventHandlers.handleEndCall);
     RNCallKeep.addEventListener("didLoadWithEvents", CallKeepEventHandlers.handleDidLoadWithEvents);
 
-    if (Platform.OS === "ios") {
-        setupPushKitEvents();
-    }
+    setupPushKitEvents();
 
-    hasRegisteredCallKeepListeners = true;
+    hasRegisteredCallEventListeners = true;
 }
 
 export function removeCallKeepListeners() {
@@ -75,7 +73,7 @@ export function removeCallKeepListeners() {
         VoipPushNotification.removeEventListener("didLoadWithEvents");
     }
 
-    hasRegisteredCallKeepListeners = false;
+    hasRegisteredCallEventListeners = false;
 }
 
 function setupPushKitEvents() {
