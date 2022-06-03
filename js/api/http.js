@@ -1,33 +1,29 @@
 import {getCurrentUser} from "../users/currentUser";
-
-export const publicApiHost = "https://public-api-pusuheofiq-uc.a.run.app";
-// export const publicApiHost = "http://192.168.100.26:3010";
+import HDConfig from "../HDConfig";
 
 export default class Http {
     static API_KEY: string = "";
 
-    constructor(host) {
-        this.host = host || publicApiHost;
+    async get(path) {
+        return this.doRequest(path, 'GET')
     }
 
     async post(path, data) {
-        return this.doRequest(`${this.host}${path}`, 'POST', data)
+        return this.doRequest(path, 'POST', data)
     }
 
     async put(path, data) {
-        return this.doRequest(`${this.host}${path}`, 'PUT', data)
-    }
-
-    async get(path) {
-        return this.doRequest(`${this.host}${path}`, 'GET')
+        return this.doRequest(path, 'PUT', data)
     }
 
     async delete(path) {
-        return this.doRequest(`${this.host}${path}`, 'DELETE')
+        return this.doRequest(path, 'DELETE')
     }
 
     async doRequest(path, method, data) {
-        const doFetch = () => fetch(path, {
+        const url = `${HDConfig.serviceHost}${path}`;
+
+        const doFetch = () => fetch(url, {
             method,
             body: JSON.stringify(data),
             headers: this.getRequestHeaders()
@@ -76,7 +72,6 @@ export default class Http {
             return;
         }
 
-        console.debug(`[refreshAccessToken]`, {currentUser})
         const authenticationResponse = await this.post(`/users/${currentUser.uid}/_authenticate`, {refreshToken: currentUser.refreshToken});
         currentUser.jwt = authenticationResponse.jwt
         currentUser.refreshToken = authenticationResponse.refreshToken

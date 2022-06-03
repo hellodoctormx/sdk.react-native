@@ -1,41 +1,17 @@
-import React from "react";
 import {AppState} from "react-native";
 import videoServiceApi from "../api/video";
-import usersServiceApi from "../api/users";
 import RNCallKeep from "../callkeep";
 import * as connectionManager from "./connectionManager";
 import {endVideoCall, tryCancelVideoCallNotification} from "./connectionManager";
 import * as activeCallManager from "./activeCallManager";
-import * as connectionService from "./connectionService";
-import {getCurrentUser} from "../users/currentUser";
-
-let _navigator = null;
-
-export function registerVideoCallNavigator(navigator) {
-    _navigator = navigator;
-}
-
-export function tryNavigateOnIncomingCall(consultationID, videoRoomSID) {
-    if (AppState.currentState === "active" && _navigator.onIncomingCall) {
-        _navigator.onIncomingCall(consultationID, videoRoomSID);
-        return true;
-    } else {
-        return false
-    }
-}
+import HDConfig from "../HDConfig";
 
 export function navigateOnAnswerCall(consultationID, videoRoomSID, accessToken) {
-    _navigator.onAnswerCall(consultationID, videoRoomSID, accessToken);
+    HDConfig.onAnswerCall(consultationID, videoRoomSID, accessToken);
 }
 
 export function navigateOnEndCall(consultationID, videoRoomSID) {
-    activeCallManager.stopNotificationAlerts(); // just in case
-    _navigator.onEndCall(consultationID, videoRoomSID);
-}
-
-export function navigateOnRejectCall() {
-    activeCallManager.stopNotificationAlerts();
-    _navigator.onEndCall();
+    HDConfig.onEndCall(consultationID, videoRoomSID);
 }
 
 export async function handleIncomingVideoCallEndedRemotely(videoRoomSID) {
@@ -46,17 +22,11 @@ export async function handleIncomingVideoCallEndedRemotely(videoRoomSID) {
         return;
     }
 
-    const isCallKeepConfigured = connectionService.checkIsCallKeepConfigured();
-
-    if (isCallKeepConfigured) {
-        RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
-    }
+    RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
 
     await endVideoCall(videoRoomSID);
 
     tryCancelVideoCallNotification(videoRoomSID);
-
-    activeCallManager.stopNotificationAlerts();
 }
 
 let appStateChangeEventSubscriber = null;
@@ -178,8 +148,7 @@ let answerablePushKitCallUUID = null;
 
 export class PushKitEventHandlers {
     static handleOnRegister(token) {
-        const currentUser = getCurrentUser();
-        usersServiceApi.registerApnsToken(currentUser.deviceID, token).catch(error => console.warn(`[VoipPushNotification:EVENT:register:registerApnsToken]`, error));
+        HDConfig.ios.onRegisterPushKitToken(token);
     }
 
     static handleOnNotification(notification) {
