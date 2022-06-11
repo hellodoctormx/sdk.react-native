@@ -1,6 +1,7 @@
 import {NativeModules, Platform} from "react-native";
 import Http from "./api/http";
 import consultationsAPI from "./api/consultations";
+import schedulingAPI from "./api/scheduling";
 import usersAPI from "./api/users";
 import videoAPI from "./api/video";
 import * as activeCallManager from "./telecom/activeCallManager";
@@ -61,7 +62,15 @@ export default class RNHelloDoctor {
         return usersAPI.deleteUser(userID)
     }
 
-    // SCHEDULING FUNCTIONS
+    // SCHEDULING & CONSULTATION FUNCTIONS
+    static getAvailability(requestMode, specialty, fromTime, toTime) {
+        return schedulingAPI.getAvailability(requestMode, specialty, fromTime, toTime);
+    }
+
+    static requestConsultation(requestMode, specialty, startTime, reason) {
+        return schedulingAPI.requestConsultation(requestMode, specialty, startTime, reason);
+    }
+
     static getConsultations(limit) {
         return consultationsAPI.getUserConsultations(limit);
     }
