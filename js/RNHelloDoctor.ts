@@ -17,15 +17,15 @@ const {RNHelloDoctorModule} = NativeModules;
 export default class RNHelloDoctor {
     static appName: string = null
 
-    static async configure(appName, apiKey, serviceHost, config?: HDConfigOptions) {
-        RNHelloDoctor.appName = appName;
+    static async configure(config?: HDConfigOptions) {
+        RNHelloDoctor.appName = config.appName;
 
         Object.assign(HDConfig, config);
 
-        Http.API_KEY = apiKey;
+        Http.API_KEY = config.apiKey;
 
         if (Platform.OS === "android") {
-            await RNHelloDoctorModule.configure(apiKey, serviceHost);
+            await RNHelloDoctorModule.configure(config.apiKey, config.serviceHost);
         }
     }
 
