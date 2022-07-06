@@ -17,6 +17,8 @@
 #import <AVFoundation/AVAudioSession.h>
 #import <CallKit/CallKit.h>
 
+#import "RNHelloDoctor-Swift.h"
+
 #ifdef DEBUG
 static int const OUTGOING_CALL_WAKEUP_DELAY = 10;
 #else

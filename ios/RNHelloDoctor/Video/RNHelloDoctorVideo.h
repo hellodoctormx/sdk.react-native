@@ -11,6 +11,9 @@
 #import <PushKit/PushKit.h>
 
 @interface RNHelloDoctorVideo : NSObject
+
+@property (class, nonatomic) NSString* apnsToken;
+
 + (void)configure:(NSString *)appName;
 
 // --- RNHelloDoctorVideoDelegate helper methods

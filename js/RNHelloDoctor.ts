@@ -14,6 +14,10 @@ import HDConfig, {HDConfigOptions} from "./HDConfig";
 
 const {RNHelloDoctorModule} = NativeModules;
 
+function deprecated() {
+
+}
+
 export default class RNHelloDoctor {
     static appName: string = null
 
@@ -24,8 +28,13 @@ export default class RNHelloDoctor {
 
         Http.API_KEY = config.apiKey;
 
-        if (Platform.OS === "android") {
-            await RNHelloDoctorModule.configure(config.apiKey, config.serviceHost);
+        switch (Platform.OS) {
+            case "android":
+                await RNHelloDoctorModule.configure(config.apiKey, config.serviceHost);
+                break;
+            case "ios":
+                await RNHelloDoctorModule.getAPNSToken().then(HDConfig.ios.onRegisterPushKitToken)
+                break;
         }
     }
 
@@ -79,7 +88,7 @@ export default class RNHelloDoctor {
     static handleIncomingVideoCallNotification(videoCallPayload) {
         const {videoRoomSID, callerDisplayName, callerPhotoURL} = videoCallPayload;
 
-        return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
+        return eventHandlers.handleIncomingVideoCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL)
     }
 
     static handleIncomingVideoCallNotificationRejected() {
@@ -92,8 +101,13 @@ export default class RNHelloDoctor {
         connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
     }
 
+    // deprecated: use handleVideoCallEndedNotification
     static handleIncomingVideoCallEndedRemotely(videoRoomSID) {
         return eventHandlers.handleIncomingVideoCallEndedRemotely(videoRoomSID);
+    }
+
+    static handleVideoCallEndedNotification(videoRoomSID) {
+        return eventHandlers.handleVideoCallEndedNotification(videoRoomSID);
     }
 
     static startVideoCall(videoRoomSID) {

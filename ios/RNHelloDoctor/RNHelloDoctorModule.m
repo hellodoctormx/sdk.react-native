@@ -6,6 +6,11 @@
 @interface RCT_EXTERN_MODULE(RNHelloDoctorModule, NSObject)
 
 RCT_EXTERN_METHOD(
+  getAPNSToken: (RCTPromiseResolveBlock)resolve
+  reject: (RCTPromiseRejectBlock)reject
+)
+
+RCT_EXTERN_METHOD(
   configure: (NSString*)apiKey
   serviceHost: (NSString*)serviceHost
   resolve: (RCTPromiseResolveBlock)resolve
@@ -27,7 +32,7 @@ RCT_EXTERN_METHOD(
 )
 
 RCT_EXTERN_METHOD(
-  cancelIncomingCallNotification: (NSString*)resolve
+  cancelIncomingCallNotification: (RCTPromiseResolveBlock)resolve
   reject: (RCTPromiseRejectBlock)reject
 )
 

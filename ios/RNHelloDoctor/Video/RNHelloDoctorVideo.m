@@ -12,6 +12,16 @@
 
 @implementation RNHelloDoctorVideo
 
+static NSString* _apnsToken;
+
++ (NSString*) apnsToken {
+    return _apnsToken;
+}
+
++ (void) setApnsToken:(NSString*) apnsToken {
+    _apnsToken = apnsToken;
+}
+
 + (void)configure:(NSString *)appName
 {
     [RNCallKeep setup:@{
@@ -25,7 +35,18 @@
 // --- Handle updated push credentials
 + (void)pushRegistry:(PKPushRegistry *)registry didUpdatePushCredentials:(PKPushCredentials *)credentials forType:(PKPushType)type {
   // Register VoIP push token (a property of PKPushCredentials) with server
-  [RNVoipPushNotificationManager didUpdatePushCredentials:credentials forType:(NSString *)type];
+    NSUInteger voipTokenLength = credentials.token.length;
+    if (voipTokenLength == 0) {
+        return;
+    }
+
+    NSMutableString *hexString = [NSMutableString string];
+    const unsigned char *bytes = credentials.token.bytes;
+    for (NSUInteger i = 0; i < voipTokenLength; i++) {
+        [hexString appendFormat:@"%02x", bytes[i]];
+    }
+
+    [RNHelloDoctorVideo setApnsToken:[hexString copy]];
 }
 
 + (void)pushRegistry:(PKPushRegistry *)registry didInvalidatePushTokenForType:(PKPushType)type

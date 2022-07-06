@@ -1,10 +1,12 @@
-import {AppState} from "react-native";
+import {AppState, NativeModules, Platform} from "react-native";
 import videoServiceApi from "../api/video";
 import RNCallKeep from "../callkeep";
 import * as connectionManager from "./connectionManager";
 import {endVideoCall, tryCancelVideoCallNotification} from "./connectionManager";
 import * as activeCallManager from "./activeCallManager";
 import HDConfig from "../HDConfig";
+
+const {RNHelloDoctorModule} = NativeModules
 
 export function navigateOnAnswerCall(consultationID, videoRoomSID, accessToken) {
     HDConfig.onAnswerCall(consultationID, videoRoomSID, accessToken);
@@ -14,6 +16,13 @@ export function navigateOnEndCall(consultationID, videoRoomSID) {
     HDConfig.onEndCall(consultationID, videoRoomSID);
 }
 
+export async function handleIncomingVideoCallNotification(videoRoomSID: string, callerDisplayName: string, callerPhotoURL: string) {
+    await connectionManager.registerIncomingVideoCall(null, videoRoomSID, null, {displayName: callerDisplayName})
+
+    return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
+}
+
+// deprecated: use handleVideoCallEndedNotification
 export async function handleIncomingVideoCallEndedRemotely(videoRoomSID) {
     const call = connectionManager.getIncomingCall();
 
@@ -27,6 +36,27 @@ export async function handleIncomingVideoCallEndedRemotely(videoRoomSID) {
     await endVideoCall(videoRoomSID);
 
     tryCancelVideoCallNotification(videoRoomSID);
+}
+
+export async function handleVideoCallEndedNotification(videoRoomSID) {
+    tryCancelVideoCallNotification(videoRoomSID);
+
+    const call = connectionManager.getIncomingCall();
+
+    if (!call) {
+        RNCallKeep.endAllCalls()
+        throw new Error("unknown_call")
+    }
+
+    if (call.status === "incoming") {
+        throw new Error("missed_call")
+    }
+
+    if (Platform.OS === "ios") {
+        RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
+
+        await endVideoCall(videoRoomSID);
+    }
 }
 
 let appStateChangeEventSubscriber = null;
@@ -135,10 +165,10 @@ export class CallKeepEventHandlers {
         const canAnswerCall = registeredCall?.status === "incoming";
 
         if (canAnswerCall) {
-            // This call was answered from the call UI and we need to go to the call NOW
+            // This call was answered from the call UI, and we need to go to the call NOW
             await doAnswerCall(registeredCall.uuid);
         } else if (!registeredCall) {
-            // Very likely PushKit displayed the call but it hasn't yet been registered. Let PushKit know to navigate to this call
+            // Very likely PushKit displayed the call, but it hasn't yet been registered. Let PushKit know to navigate to this call
             answerablePushKitCallUUID = answeredCallUUID;
         }
     }
@@ -152,13 +182,15 @@ export class PushKitEventHandlers {
     }
 
     static handleOnNotification(notification) {
-        console.info("[VoipPushNotification:EVENT:notification]", notification);
+        console.info("[PushKitEventHandlers:handleOnNotification]", notification);
 
         connectionManager.registerPushKitCall(notification)
-            .catch(error => console.warn(`[VoipPushNotification:EVENT:notification:registerPushKitCall]`, error));
+            .catch(error => console.warn(`[PushKitEventHandlers:handleOnNotification:registerPushKitCall]`, error));
     }
 
     static handleOnDidLoadWithEvents(events) {
+        console.debug("[PushKitEventHandlers:handleOnDidLoadWithEvents]")
+        events.forEach((event) => console.debug("[PushKitEventHandlers:handleOnDidLoadWithEvents:EVENT]", event))
         const incomingCallNotificationEvent = events.find(e => !!e.data?.videoRoomSID);
 
         if (!incomingCallNotificationEvent) {

@@ -1,9 +1,11 @@
 import uuid from "react-native-uuid-generator";
-import _ from "lodash";
 import notifee from "@notifee/react-native";
 import RNCallKeep from "../callkeep";
 import VideoService from "../api/video";
 import {navigateOnEndCall} from "./eventHandlers";
+import {NativeModules, Platform} from "react-native";
+
+const {RNHelloDoctorModule} = NativeModules;
 
 const calls = [];
 
@@ -18,11 +20,11 @@ export function getCallByUUID(uuid) {
 }
 
 export function getActiveCall() {
-    return _.find(calls, c => c.status === "in-progress");
+    return calls.find(c => c.status === "in-progress");
 }
 
 export function getIncomingCall() {
-    return _.find(calls, c => c.status === "incoming") || getActiveCall();
+    return calls.find(c => c.status === "incoming") || getActiveCall();
 }
 
 export async function registerIncomingVideoCall(uuid, videoRoomSID, consultationID, caller) {
@@ -55,15 +57,19 @@ export function handleIncomingVideoCallStarted(videoRoomSID) {
 const incomingCallNotificationIDs = {};
 
 export function tryCancelVideoCallNotification(videoRoomSID) {
-    const incomingCallNotificationID = incomingCallNotificationIDs[videoRoomSID];
+    if (Platform.OS === "android") {
+        RNHelloDoctorModule.cancelIncomingCallNotification();
+    } else {
+        const incomingCallNotificationID = incomingCallNotificationIDs[videoRoomSID];
 
-    if (incomingCallNotificationID) {
-        notifee.cancelNotification(incomingCallNotificationID).catch(console.warn);
+        if (incomingCallNotificationID) {
+            notifee.cancelNotification(incomingCallNotificationID).catch(console.warn);
+        }
     }
 }
 
 export async function endVideoCall(videoRoomSID) {
-    const call = _.find(calls, c => c.videoRoomSID === videoRoomSID);
+    const call = calls.find(c => c.videoRoomSID === videoRoomSID);
 
     if (!call) {
         console.warn(`no call found for room ${videoRoomSID}`);
@@ -85,7 +91,7 @@ export async function endVideoCall(videoRoomSID) {
 }
 
 export async function rejectVideoCall(videoRoomSID) {
-    const call = _.find(calls, c => c.videoRoomSID === videoRoomSID);
+    const call = calls.find(c => c.videoRoomSID === videoRoomSID);
 
     if (!call) {
         console.warn(`no call found for room ${videoRoomSID}`);
