@@ -93,39 +93,6 @@ RCT_EXPORT_MODULE()
     sharedProvider = nil;
 }
 
-// Override method of RCTEventEmitter
-- (NSArray<NSString *> *)supportedEvents
-{
-    return @[
-        RNCallKeepDidReceiveStartCallAction,
-        RNCallKeepPerformAnswerCallAction,
-        RNCallKeepPerformEndCallAction,
-        RNCallKeepDidActivateAudioSession,
-        RNCallKeepDidDeactivateAudioSession,
-        RNCallKeepDidDisplayIncomingCall,
-        RNCallKeepDidPerformSetMutedCallAction,
-        RNCallKeepPerformPlayDTMFCallAction,
-        RNCallKeepDidToggleHoldAction,
-        RNCallKeepProviderReset,
-        RNCallKeepCheckReachability,
-        RNCallKeepDidChangeAudioRoute,
-        RNCallKeepDidLoadWithEvents
-    ];
-}
-
-- (void)startObserving
-{
-    _hasListeners = YES;
-    if ([_delayedEvents count] > 0) {
-        [self sendEventWithName:RNCallKeepDidLoadWithEvents body:_delayedEvents];
-    }
-}
-
-- (void)stopObserving
-{
-    _hasListeners = FALSE;
-}
-
 - (void)onAudioRouteChange:(NSNotification *)notification
 {
     NSDictionary *info = notification.userInfo;
@@ -136,23 +103,14 @@ RCT_EXPORT_MODULE()
         return;
     }
 
-    [self sendEventWithName:RNCallKeepDidChangeAudioRoute body:@{
+    [self sendEventWithNameWrapper:RNCallKeepDidChangeAudioRoute body:@{
         @"output": output,
         @"reason": @(reason),
     }];
 }
 
 - (void)sendEventWithNameWrapper:(NSString *)name body:(id)body {
-    if (_hasListeners) {
-        [self sendEventWithName:name body:body];
-    } else {
-        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-            name, @"name",
-            body, @"data",
-            nil
-        ];
-        [_delayedEvents addObject:dictionary];
-    }
+    [HDEventEmitter dispatchWithName:name body:body];
 }
 
 + (void)initCallKitProvider {

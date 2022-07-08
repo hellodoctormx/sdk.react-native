@@ -87,64 +87,27 @@ export default function HDVideoCallActions(props) {
         }
     }
 
-    const PortraitLayout = () => (
-        <Animated.View style={{flex: 1, opacity: controlsOpacity, justifyContent: "flex-end"}}>
-            {didRemoteParticipantDisconnect && (
-                <View style={{marginBottom: 48, padding: 24, margin: 12, backgroundColor: "#000000", opacity: 0.6, borderRadius: 48}}>
-                    <Text style={{fontSize: 20, color: "white", textAlign: "center"}}>Tu doctor se ha desconectado</Text>
-                </View>
-            )}
-            <View style={{padding: 18, backgroundColor: alpha("#000000", 0.8), borderRadius: 64, margin: 18}}>
-                <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around"}}>
-                    <ToggleAction onPress={props.onEndCall} disabled={areControlsHidden} size={64} color={"#C52723"} icon={"call"} iconStyle={{transform: [{ rotate: "135deg"}]}}/>
-                    <ToggleAction onPress={toggleLocalVideoState} disabled={areControlsHidden} size={54} icon={toggleLocalVideoStateIconName}/>
-                    <ToggleAction onPress={toggleLocalAudioState} disabled={areControlsHidden} size={54} icon={toggleLocalAudioStateIconName}/>
-                    <ToggleAction onPress={flipCameraDirection} disabled={areControlsHidden} size={54} icon={"ios-camera-reverse"}/>
-                </View>
-            </View>
-            <Animated.View style={{height: Animated.multiply(controlsOpacity, 64)}}/>
-        </Animated.View>
-    );
-
-    const LandscapeLayout = () => (
-        <Animated.View style={{flex: 1, opacity: controlsOpacity, alignItems: "flex-end"}}>
-            <View style={{flex: 1, alignItems: "center", justifyContent: "space-around", backgroundColor: "#000000"}}>
-                <TouchableOpacity onPress={toggleLocalVideoState} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 12}}>
-                    <Icon name={toggleLocalVideoStateIconName} size={42} color={"white"}/>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={toggleLocalAudioState} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 12}}>
-                    <Icon name={toggleLocalAudioStateIconName} size={42} color={"white"}/>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={flipCameraDirection} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 12}}>
-                    <Icon name={"ios-camera-reverse"} size={42} color={"white"}/>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={props.onEndCall} disabled={areControlsHidden} style={{flex: 1, justifyContent: "center", padding: 24}}>
-                    <View style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 64,
-                        width: 64,
-                        borderRadius: 64,
-                        backgroundColor: "#C52723"}}>
-                        <Icon name={"phone"} color={"white"} size={40} style={{transform: [{ rotate: "135deg"}]}} />
-                    </View>
-                </TouchableOpacity>
-                <View style={{height: 64}}/>
-            </View>
-        </Animated.View>
-    );
-
     const {height: screenHeight, width: screenWidth} = Dimensions.get("screen");
 
     return (
         <TouchableWithoutFeedback onPress={toggleControls} style={{zIndex: 2, elevation: 3, position: "absolute"}}>
             <View style={{zIndex: 100, width: screenWidth, height: screenHeight}}>
-                <PortraitLayout layout={"portrait"}/>
-                {/*<LayoutDependentView>*/}
-                {/*    <LandscapeLayout layout={"landscape"}/>*/}
-                {/*</LayoutDependentView>*/}
+                <Animated.View style={{flex: 1, opacity: controlsOpacity, justifyContent: "flex-end"}}>
+                    {didRemoteParticipantDisconnect && (
+                        <View style={{marginBottom: 48, padding: 24, margin: 12, backgroundColor: "#000000", opacity: 0.6, borderRadius: 48}}>
+                            <Text style={{fontSize: 20, color: "white", textAlign: "center"}}>Tu doctor se ha desconectado</Text>
+                        </View>
+                    )}
+                    <View style={{padding: 18, backgroundColor: alpha("#000000", 0.8), borderRadius: 64, margin: 18}}>
+                        <View style={{flexDirection: "row", alignItems: "center", justifyContent: "space-around"}}>
+                            <ToggleAction onPress={props.onEndCall} disabled={areControlsHidden} size={64} color={"#C52723"} icon={"call"} iconStyle={{transform: [{ rotate: "135deg"}]}}/>
+                            <ToggleAction onPress={toggleLocalVideoState} disabled={areControlsHidden} size={54} icon={toggleLocalVideoStateIconName}/>
+                            <ToggleAction onPress={toggleLocalAudioState} disabled={areControlsHidden} size={54} icon={toggleLocalAudioStateIconName}/>
+                            <ToggleAction onPress={flipCameraDirection} disabled={areControlsHidden} size={54} icon={"ios-camera-reverse"}/>
+                        </View>
+                    </View>
+                    <Animated.View style={{height: Animated.multiply(controlsOpacity, 64)}}/>
+                </Animated.View>
             </View>
         </TouchableWithoutFeedback>
     );

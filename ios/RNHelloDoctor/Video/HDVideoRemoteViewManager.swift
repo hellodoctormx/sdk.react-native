@@ -9,8 +9,8 @@ import Foundation
 import TwilioVideo
 import UIKit
 
-@objc(HDVideoRemoteView)
-class HDVideoRemoteView: RCTViewManager {
+@objc(HDVideoRemoteViewManager)
+class HDVideoRemoteViewManager: RCTViewManager {
     @objc
     override static func requiresMainQueueSetup() -> Bool {
         return true

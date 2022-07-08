@@ -31,6 +31,8 @@ import TwilioVideo
 
     var localParticipantView: VideoView!
     var remoteParticipantView: VideoView?
+    
+    var eventEmitter = RNHelloDoctorModule()
 
     static var instance: HDVideo?
 
@@ -319,7 +321,7 @@ import TwilioVideo
                     "participantIdentity": participant.identity
                 ]
 
-                EventEmitter.dispatch(name: "participantVideoEvent", body:payload)
+                 HDEventEmitter.dispatch(name: "participantVideoEvent", body:payload)
 
                 return true
             }
@@ -360,7 +362,7 @@ extension HDVideo : RoomDelegate {
 
         self.room = room
         let participantIDs = room.remoteParticipants.map({ $0.identity })
-        EventEmitter.dispatch(name: "connectedToRoom", body:["connected": "yes", "participants": participantIDs])
+        HDEventEmitter.dispatch(name: "connectedToRoom", body:["connected": "yes", "participants": participantIDs])
 
         for remoteParticipant in room.remoteParticipants {
             if let remoteParticipantVideoView = participantVideoViews[remoteParticipant.identity] {
@@ -401,7 +403,7 @@ extension HDVideo : RoomDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantRoomConnectionEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantRoomConnectionEvent", body:payload)
 
         logMessage(messageText: "Participant \(participant.identity) connected with \(participant.remoteAudioTracks.count) audio and \(participant.remoteVideoTracks.count) video tracks")
     }
@@ -414,7 +416,7 @@ extension HDVideo : RoomDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantRoomConnectionEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantRoomConnectionEvent", body:payload)
     }
 }
 
@@ -431,7 +433,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantVideoEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantVideoEvent", body:payload)
 
         if let remoteView = participantVideoViews[participant.identity] {
             _ = tryRenderRemoteParticipant(videoView: remoteView, participant: participant)
@@ -462,7 +464,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantVideoEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantVideoEvent", body:payload)
 
         if let remoteView = participantVideoViews[participant.identity] {
             _ = tryRenderRemoteParticipant(videoView: remoteView, participant: participant)
@@ -480,7 +482,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantVideoEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantVideoEvent", body:payload)
 
         for renderer in videoTrack.renderers {
 //            videoTrack.removeRenderer(renderer);
@@ -509,7 +511,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantVideoEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantVideoEvent", body:payload)
     }
 
     func remoteParticipantDidDisableVideoTrack(participant: RemoteParticipant, publication: RemoteVideoTrackPublication) {
@@ -520,7 +522,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantVideoEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantVideoEvent", body:payload)
     }
 
     func remoteParticipantDidEnableAudioTrack(participant: RemoteParticipant, publication: RemoteAudioTrackPublication) {
@@ -531,7 +533,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantAudioEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantAudioEvent", body:payload)
     }
 
     func remoteParticipantDidDisableAudioTrack(participant: RemoteParticipant, publication: RemoteAudioTrackPublication) {
@@ -542,7 +544,7 @@ extension HDVideo : RemoteParticipantDelegate {
             "participantIdentity": participant.identity
         ]
 
-        EventEmitter.dispatch(name: "participantAudioEvent", body:payload)
+        HDEventEmitter.dispatch(name: "participantAudioEvent", body:payload)
     }
 
     func didFailToSubscribeToAudioTrack(publication: RemoteAudioTrackPublication, error: Error, participant: RemoteParticipant) {

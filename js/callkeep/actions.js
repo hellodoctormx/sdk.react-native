@@ -1,7 +1,8 @@
 import { NativeModules, NativeEventEmitter, Platform } from 'react-native';
 
 const RNCallKeepModule = NativeModules.RNCallKeep;
-const eventEmitter = new NativeEventEmitter(NativeModules.RNCallKeep);
+console.debug("NativeModules.RNHelloDoctorModule", NativeModules.RNHelloDoctorModule)
+const eventEmitter = new NativeEventEmitter(NativeModules.RNHelloDoctorModule);
 
 const RNCallKeepDidReceiveStartCallAction = 'RNCallKeepDidReceiveStartCallAction';
 const RNCallKeepPerformAnswerCallAction = 'RNCallKeepPerformAnswerCallAction';
@@ -45,17 +46,21 @@ const didActivateAudioSession = handler =>
 const didDeactivateAudioSession = handler =>
   eventEmitter.addListener(RNCallKeepDidDeactivateAudioSession, handler);
 
-const didDisplayIncomingCall = handler => eventEmitter.addListener(RNCallKeepDidDisplayIncomingCall, data => {
-  // On Android the payload parameter is sent a String
-  // As it requires too much code on Android to convert it to WritableMap, let's do it here.
-  if (data.payload && typeof data.payload === 'string') {
-    try {
-      data.payload = JSON.parse(data.payload);
-    } catch (_) {
+const didDisplayIncomingCall = handler => {
+  console.debug("[VIDEO:didDisplayIncomingCall:REGISTERED]")
+  return eventEmitter.addListener(RNCallKeepDidDisplayIncomingCall, data => {
+    console.debug("[VIDEO:didDisplayIncomingCall:HANDLING]", data)
+    // On Android the payload parameter is sent a String
+    // As it requires too much code on Android to convert it to WritableMap, let's do it here.
+    if (data.payload && typeof data.payload === "string") {
+      try {
+        data.payload = JSON.parse(data.payload);
+      } catch (_) {
+      }
     }
-  }
-  handler(data);
-});
+    handler(data);
+  });
+}
 
 const didPerformSetMutedCallAction = handler =>
   eventEmitter.addListener(RNCallKeepDidPerformSetMutedCallAction, (data) => handler(data));

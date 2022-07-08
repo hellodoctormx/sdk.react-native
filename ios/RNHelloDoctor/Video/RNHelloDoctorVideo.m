@@ -6,6 +6,7 @@
  */
 
 #import "RNHelloDoctorVideo.h"
+#import "RNHelloDoctor-Swift.h"
 
 #import "RNCallKeep.h"
 #import "RNVoipPushNotificationManager.h"
@@ -64,9 +65,9 @@ static NSString* _apnsToken;
         callerDisplayName = @"Médico de HelloDoctor";
     }
 
-    [RNVoipPushNotificationManager didReceiveIncomingPushWithPayload:payload forType:(NSString *)type];
-
     [RNCallKeep reportNewIncomingCall:uuid handle:videoRoomSID handleType:@"generic" hasVideo:true localizedCallerName:callerDisplayName supportsHolding:true supportsDTMF:false supportsGrouping:false supportsUngrouping:false fromPushKit:YES payload:nil withCompletionHandler:completion];
+
+    [HDEventEmitter dispatchWithName:@"incomingPushKitVideoCall" body:payload.dictionaryPayload];
 }
 
 @end

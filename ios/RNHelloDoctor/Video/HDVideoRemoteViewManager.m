@@ -10,7 +10,7 @@
 #import <React/RCTEventEmitter.h>
 #import <React/RCTViewManager.h>
 
-@interface RCT_EXTERN_MODULE(HDVideoRemoteView, RCTViewManager)
+@interface RCT_EXTERN_MODULE(HDVideoRemoteViewManager, RCTViewManager)
 
 RCT_EXPORT_VIEW_PROPERTY(participantSID, NSString)
 

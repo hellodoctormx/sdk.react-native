@@ -1,5 +1,5 @@
 import _ from "lodash";
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Animated, Dimensions, Platform, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -10,12 +10,12 @@ import * as activeCallManager from "../telecom/activeCallManager";
 import * as connectionManager from "../telecom/connectionManager";
 
 
-function HDVideoCallView(props) {
+export default function HDVideoCallView(props) {
     const {consultationID, videoRoomSID, accessToken} = props;
 
-    const [remoteParticipantSID, setRemoteParticipantSID] = React.useState(null);
-    const [remoteVideoState, setRemoteVideoState] = React.useState(null);
-    const [remoteAudioState, setRemoteAudioState] = React.useState(null);
+    const [remoteParticipantSID, setRemoteParticipantSID] = React.useState();
+    const [remoteVideoState, setRemoteVideoState] = React.useState();
+    const [remoteAudioState, setRemoteAudioState] = React.useState();
 
     const accessTokenRef = React.useRef("");
     const participantsRef = React.useRef([]);
@@ -64,9 +64,9 @@ function HDVideoCallView(props) {
         )
     };
 
-    const didRenderRemoteParticipantRef = React.useRef(false);
-    const renderAttemptsRef = React.useRef(0);
-    const remoteParticipantRenderCheckTimeoutRef = React.useRef(0);
+    const didRenderRemoteParticipantRef = useRef(false);
+    const renderAttemptsRef = useRef(0);
+    const remoteParticipantRenderCheckTimeoutRef = useRef(0);
 
     const doSetRemoteParticipantSID = remoteParticipantSID => {
         didRenderRemoteParticipantRef.current = false;
@@ -86,7 +86,7 @@ function HDVideoCallView(props) {
             if (!didRenderRemoteParticipantRef.current && renderAttemptsRef.current < 10) {
                 console.info("[HDVideoCallView:doSetRemoteParticipantSID:RETRYING]", renderAttemptsRef.current);
                 renderAttemptsRef.current = renderAttemptsRef.current + 1;
-                setRemoteParticipantSID(null);
+                setRemoteParticipantSID();
                 setTimeout(() => doSetRemoteParticipantSID(remoteParticipantSID), 500);
             }
         }, 1000);
@@ -95,7 +95,7 @@ function HDVideoCallView(props) {
     const handleConnectedToRoomEvent = event => {
         console.info("[handleConnectedToRoomEvent]", event);
 
-        // remoteParticipantIdentity may be null if local participant is first to connect
+        // remoteParticipantIdentity may be undefined if local participant is first to connect
         const {participants} = event;
 
         participantsRef.current = participants;
@@ -155,7 +155,7 @@ function HDVideoCallView(props) {
             case "disconnected":
             case "unpublished":
             case "unsubscribed":
-                handleParticipantDisconnectedEvent();
+                handleParticipantDisconnectedEvent(participantIdentity);
                 break;
             case "disabledVideo":
                 setRemoteVideoState("disabled");
@@ -240,7 +240,10 @@ function HDVideoCallView(props) {
         // a render cycle before it's ready to be used, which HDVideo.connect expects the LocalVideoView to be ready.
         // Adding this small timeout as a stop-gap measure to allow the LocalVideoView time to get ready.
         // TODO A better way to order the sequence of events necessary for a video call
-        setTimeout(tryConnect, 200);
+        // setTimeout(tryConnect, 200);
+        if (accessToken) {
+            tryConnect()
+        }
     }, [accessToken])
 
     const videoCallStatus = !remoteParticipantSID ? "waiting" : "in-progress";
@@ -254,7 +257,7 @@ function HDVideoCallView(props) {
     }
 
     return (
-        <React.Fragment>
+        <View style={{flex: 1}}>
             <View style={{flex: 1, backgroundColor: "black"}}>
                 <View>
                     <RemoteVideoView participantSID={remoteParticipantSID} style={{height: "100%", width: "100%"}}/>
@@ -283,8 +286,8 @@ function HDVideoCallView(props) {
                     videoCallStatus={videoCallStatus}
                 />
             </View>
-        </React.Fragment>
+        </View>
     )
 }
 
-export default withVideoCallPermissions(HDVideoCallView);
+// export default withVideoCallPermissions(HDVideoCallView);

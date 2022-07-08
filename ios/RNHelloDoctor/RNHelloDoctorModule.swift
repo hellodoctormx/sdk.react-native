@@ -6,12 +6,42 @@
 //
 
 import Foundation
+import React
 
 @objc(RNHelloDoctorModule)
-class RNHelloDoctorModule: NSObject {
+class RNHelloDoctorModule: RCTEventEmitter {
+    private var hasListeners = false
+    private var delayedEvents: Array<Dictionary<String, Any?>> = []
+
+    override init() {
+        super.init()
+        HDEventEmitter.sharedInstance.registerEventEmitter(eventEmitter: self)
+    }
+
     @objc
-    static func requiresMainQueueSetup() -> Bool {
+    override static func requiresMainQueueSetup() -> Bool {
         return true
+    }
+
+    @objc override func startObserving() -> Void {
+        hasListeners = true
+
+        if (!delayedEvents.isEmpty) {
+            sendEvent(withName: "RNCallKeepDidLoadWithEvents", body: delayedEvents)
+            delayedEvents.removeAll()
+        }
+    }
+
+    @objc override func stopObserving() -> Void {
+        hasListeners = false
+    }
+
+    func dispatch(name: String, body: Any?) {
+        if (hasListeners) {
+            sendEvent(withName: name, body: body)
+        } else {
+            delayedEvents.append([name: body])
+        }
     }
 
     @objc(getAPNSToken:reject:)
@@ -118,5 +148,9 @@ class RNHelloDoctorModule: NSObject {
         hdVideo.flipCamera()
 
         resolve("flipped camera")
+    }
+
+    @objc open override func supportedEvents() -> [String] {
+        return HDEventEmitter.sharedInstance.allEvents
     }
 }

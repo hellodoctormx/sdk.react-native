@@ -37,17 +37,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var react_native_1 = require("react-native");
-var http_1 = require("./api/http");
-var consultations_1 = require("./api/consultations");
-var scheduling_1 = require("./api/scheduling");
-var users_1 = require("./api/users");
-var video_1 = require("./api/video");
-var connectionManager = require("./telecom/connectionManager");
-var connectionService = require("./telecom/connectionService");
-var eventHandlers = require("./telecom/eventHandlers");
-var auth = require("./users/auth");
-var currentUser_1 = require("./users/currentUser");
-var HDConfig_1 = require("./HDConfig");
 var RNHelloDoctorModule = react_native_1.NativeModules.RNHelloDoctorModule;
 function deprecated() {
 }
@@ -56,114 +45,25 @@ var RNHelloDoctor = /** @class */ (function () {
     }
     RNHelloDoctor.configure = function (config) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        RNHelloDoctor.appName = config.appName;
-                        Object.assign(HDConfig_1.default, config);
-                        http_1.default.API_KEY = config.apiKey;
-                        _a = react_native_1.Platform.OS;
-                        switch (_a) {
-                            case "android": return [3 /*break*/, 1];
-                            case "ios": return [3 /*break*/, 3];
-                        }
-                        return [3 /*break*/, 5];
-                    case 1: return [4 /*yield*/, RNHelloDoctorModule.configure(config.apiKey, config.serviceHost)];
-                    case 2:
-                        _b.sent();
-                        return [3 /*break*/, 5];
-                    case 3: return [4 /*yield*/, RNHelloDoctorModule.getAPNSToken().then(HDConfig_1.default.ios.onRegisterPushKitToken)];
-                    case 4:
-                        _b.sent();
-                        return [3 /*break*/, 5];
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    RNHelloDoctor.signIn = function (userID, serverAuthToken) {
-        return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, auth.signIn(userID, serverAuthToken)];
-                    case 1:
-                        _a.sent();
-                        if (react_native_1.Platform.OS === "ios") {
-                            connectionService.bootstrap();
-                        }
-                        return [2 /*return*/];
-                }
+                // RNHelloDoctor.appName = config.appName;
+                //
+                // Object.assign(HDConfig, config);
+                //
+                // Http.API_KEY = config.apiKey;
+                //
+                // switch (Platform.OS) {
+                //     case "android":
+                //         // await RNHelloDoctorModule.configure(config.apiKey, config.serviceHost);
+                //         break;
+                //     case "ios":
+                //         await RNHelloDoctorModule.getAPNSToken().then(HDConfig.ios.onRegisterPushKitToken)
+                //         break;
+                // }
+                console.debug("[RNHelloDoctor.configure:DONE]");
+                return [2 /*return*/];
             });
         });
-    };
-    RNHelloDoctor.signInWithJWT = function (userID, jwt) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, auth.signInWithJWT(userID, jwt)];
-                    case 1:
-                        _a.sent();
-                        if (react_native_1.Platform.OS === "ios") {
-                            connectionService.bootstrap();
-                        }
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    RNHelloDoctor.teardown = function () {
-        connectionService.teardown();
-    };
-    // USER FUNCTIONS
-    RNHelloDoctor.getCurrentUser = function () {
-        return (0, currentUser_1.getCurrentUser)();
-    };
-    RNHelloDoctor.createUser = function (accountPayload) {
-        return users_1.default.createUser(accountPayload);
-    };
-    RNHelloDoctor.deleteUser = function (userID) {
-        return users_1.default.deleteUser(userID);
-    };
-    // SCHEDULING & CONSULTATION FUNCTIONS
-    RNHelloDoctor.getAvailability = function (requestMode, specialty, fromTime, toTime) {
-        return scheduling_1.default.getAvailability(requestMode, specialty, fromTime, toTime);
-    };
-    RNHelloDoctor.requestConsultation = function (requestMode, specialty, startTime, reason) {
-        return scheduling_1.default.requestConsultation(requestMode, specialty, startTime, reason);
-    };
-    RNHelloDoctor.getConsultations = function (limit) {
-        return consultations_1.default.getUserConsultations(limit);
-    };
-    // VIDEO CALL FUNCTIONS
-    RNHelloDoctor.handleIncomingVideoCallNotification = function (videoCallPayload) {
-        var videoRoomSID = videoCallPayload.videoRoomSID, callerDisplayName = videoCallPayload.callerDisplayName, callerPhotoURL = videoCallPayload.callerPhotoURL;
-        return eventHandlers.handleIncomingVideoCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
-    };
-    RNHelloDoctor.handleIncomingVideoCallNotificationRejected = function () {
-        var incomingCall = connectionManager.getIncomingCall();
-        if (!incomingCall) {
-            return;
-        }
-        connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
-    };
-    // deprecated: use handleVideoCallEndedNotification
-    RNHelloDoctor.handleIncomingVideoCallEndedRemotely = function (videoRoomSID) {
-        return eventHandlers.handleIncomingVideoCallEndedRemotely(videoRoomSID);
-    };
-    RNHelloDoctor.handleVideoCallEndedNotification = function (videoRoomSID) {
-        return eventHandlers.handleVideoCallEndedNotification(videoRoomSID);
-    };
-    RNHelloDoctor.startVideoCall = function (videoRoomSID) {
-        connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
-    };
-    RNHelloDoctor.endVideoCall = function (videoRoomSID) {
-        return connectionManager.endVideoCall(videoRoomSID);
-    };
-    RNHelloDoctor.getVideoCallAccessToken = function (videoRoomSID) {
-        return video_1.default
-            .requestVideoCallAccess(videoRoomSID)
-            .then(function (response) { return response.accessToken; });
     };
     RNHelloDoctor.appName = null;
     return RNHelloDoctor;

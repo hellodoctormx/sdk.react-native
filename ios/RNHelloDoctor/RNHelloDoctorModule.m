@@ -1,9 +1,9 @@
+#import "RNHelloDoctorModule.h"
 
-#import <Foundation/Foundation.h>
-#import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(RNHelloDoctorModule, NSObject)
+@interface RCT_EXTERN_MODULE(RNHelloDoctorModule, RCTEventEmitter)
+
+RCT_EXTERN_METHOD(supportedEvents)
 
 RCT_EXTERN_METHOD(
   getAPNSToken: (RCTPromiseResolveBlock)resolve
@@ -89,3 +89,4 @@ RCT_EXTERN_METHOD(flipCamera: (RCTPromiseResolveBlock)resolve
 )
 
 @end
+
