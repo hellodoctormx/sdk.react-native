@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.getCurrentUser=getCurrentUser;var _currentUser={uid:"",isThirdParty:true};function getCurrentUser(){return _currentUser;}

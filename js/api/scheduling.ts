@@ -1,11 +1,11 @@
 import Http from "./http";
 
 class SchedulingAPI extends Http {
-    getAvailability(requestMode, specialty, fromTime, toTime) {
+    getAvailability(requestMode: string, specialty: string, fromTime: string, toTime: string) {
         return this.get(`/scheduling/availability?requestMode=${requestMode}&specialty=${specialty}&fromTime=${fromTime}&toTime=${toTime}`);
     }
 
-    requestConsultation(requestMode, specialty, startTime, reason) {
+    requestConsultation(requestMode: string, specialty: string, startTime: string, reason: string) {
         return this.post(`/scheduling/_request`, {
             requestMode,
             specialty,

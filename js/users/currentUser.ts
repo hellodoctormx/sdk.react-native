@@ -11,5 +11,5 @@ export interface HDUser {
     uid: string
     jwt?: string
     isThirdParty: boolean
-    refreshToken?: String
+    refreshToken?: string
 }

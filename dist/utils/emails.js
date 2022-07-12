@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.isValidEmail=isValidEmail;function isValidEmail(email){return /\w+.*@\w+\.\w{2,}/.test(email);}

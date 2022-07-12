@@ -1,27 +1,27 @@
 import _ from "lodash";
-import React from "react";
-import {Animated, Dimensions, Pressable, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
+import React, {useEffect, useRef, useState} from "react";
+import {Animated, Dimensions, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as activeCallManager from "../telecom/activeCallManager";
-import {hdVideoEvents} from "./native";
+import {hdEventEmitter} from "./native";
 import {alpha} from "../utils/colors";
 
 export default function HDVideoCallActions(props) {
-    const [areControlsHidden, setAreControlsHidden] = React.useState(false);
-    const [isLocalVideoEnabled, setIsLocalVideoEnabled] = React.useState(true);
-    const [isLocalAudioEnabled, setIsLocalAudioEnabled] = React.useState(true);
-    const [didRemoteParticipantDisconnect, setDidRemoteParticipantDisconnect] = React.useState(false);
-    const [currentCameraDirection, setCurrentCameraDirection] = React.useState("front");
-    const [videoCallStatus, setVideoCallStatus] = React.useState(props.videoCallStatus);
+    const [areControlsHidden, setAreControlsHidden] = useState(false);
+    const [isLocalVideoEnabled, setIsLocalVideoEnabled] = useState(true);
+    const [isLocalAudioEnabled, setIsLocalAudioEnabled] = useState(true);
+    const [didRemoteParticipantDisconnect, setDidRemoteParticipantDisconnect] = useState(false);
+    const [currentCameraDirection, setCurrentCameraDirection] = useState("front");
+    const [videoCallStatus, setVideoCallStatus] = useState(props.videoCallStatus);
 
     const toggleLocalVideoStateIconName = isLocalVideoEnabled ? "videocam" : "videocam-outline";
     const toggleLocalAudioStateIconName = isLocalAudioEnabled ? "mic" : "mic-off-outline";
 
-    const automaticCloseHandleRef = React.useRef(0);
-    const controlsOpacity = React.useRef(new Animated.Value(1)).current;
+    const automaticCloseHandleRef = useRef(0);
+    const controlsOpacity = useRef(new Animated.Value(1)).current;
 
-    React.useEffect(() =>  {
-        const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", event => {
+    useEffect(() =>  {
+        const connectedToRoomListener = hdEventEmitter.addListener("connectedToRoom", event => {
             const videoCallStatus = _.isEmpty(event.participants) ? "waiting" : "in-progress";
 
             setVideoCallStatus(videoCallStatus);
@@ -29,7 +29,7 @@ export default function HDVideoCallActions(props) {
             setTimeout(hideControls, 6000);
         });
 
-        const participantConnectionEventListener = hdVideoEvents.addListener("participantRoomConnectionEvent", event => {
+        const participantConnectionEventListener = hdEventEmitter.addListener("participantRoomConnectionEvent", event => {
             if (event.action === "connected") {
                 setVideoCallStatus("in-progress");
                 setDidRemoteParticipantDisconnect(false);

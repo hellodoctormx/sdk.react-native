@@ -1,7 +1,7 @@
 import Http from "./http";
 
 class ConsultationsAPI extends Http {
-    getUserConsultations(limit) {
+    getUserConsultations(limit: number) {
         return this.get(`/consultations?limit=${limit}`);
     }
 }

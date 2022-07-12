@@ -2,21 +2,31 @@ export interface HDConfigOptions {
     appName: string
     apiKey?: string
     serviceHost: string
-    onAnswerCall: Function
-    onEndCall: Function
-    onIncomingCall?: Function
+    onAnswerCall: (consultationID: string, videoRoomSID: string, accessToken: string) => void
+    onEndCall: (consultationID: string, videoRoomSID: string) => void
+    onIncomingCall?: () => void
     ios: {
-        onRegisterPushKitToken: Function
+        onRegisterPushKitToken: (token: string) => void
     }
 }
 
 const config: HDConfigOptions = {
     appName: "",
-    serviceHost: null,
-    onAnswerCall: null,
-    onEndCall: null,
-    onIncomingCall: null,
-    ios: null
+    serviceHost: "",
+    onAnswerCall: () => {
+        throw "not_implemented"
+    },
+    onEndCall: () => {
+        throw "not_implemented"
+    },
+    onIncomingCall: () => {
+        throw "not_implemented"
+    },
+    ios: {
+        onRegisterPushKitToken: () => {
+            throw "not_implemented"
+        }
+    }
 }
 
 export default config;

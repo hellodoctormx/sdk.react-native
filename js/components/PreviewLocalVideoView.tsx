@@ -1,9 +1,9 @@
-import React from "react";
+import * as React from "react";
 import {Animated, Dimensions} from "react-native";
 import withVideoCallPermissions from "./withVideoCallPermissions";
 import {LocalVideoView} from "./native";
 
-function PreviewLocalVideoView() {
+function PreviewLocalVideoView(): JSX.Element {
     const [isEnabled, setIsEnabled] = React.useState(false);
 
     const doEnablePreview = () => setIsEnabled(true);

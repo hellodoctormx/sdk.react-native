@@ -16,7 +16,7 @@ const getNewCallUUID = async () => {
 }
 
 export function getCallByUUID(uuid) {
-    return calls.find(c => c.uuid = uuid);
+    return calls.find(c => c.uuid === uuid);
 }
 
 export function getActiveCall() {

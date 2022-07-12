@@ -29,7 +29,6 @@ class HDVideoView: UIView {
     }
 
     override func didSetProps(_ changedProps: [String]!) {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.addParticipantView(view: self.videoView, sid: self.participantSID as String)
+        HDVideo.instance.addParticipantView(view: self.videoView, sid: self.participantSID as String)
     }
 }

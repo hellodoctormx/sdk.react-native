@@ -1,6 +1,6 @@
 {
   "name": "@hellodoctor/react-native-sdk",
-  "version": "0.5.10",
+  "version": "0.6.0",
   "private": false,
   "scripts": {
     "android": "react-native run-android",
@@ -34,20 +34,25 @@
     "react-native-voip-push-notification": "^3.3.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.18.6",
     "@babel/core": "^7.17.8",
     "@babel/runtime": "^7.17.8",
     "@react-native-community/eslint-config": "^3.0.1",
+    "@types/react": "^18.0.15",
+    "@types/react-native": "^0.69.2",
     "babel-jest": "^27.5.1",
+    "babel-plugin-module-resolver": "^4.1.0",
     "eslint": "^8.11.0",
     "jest": "^27.5.1",
-    "metro-react-native-babel-preset": "^0.69.1",
-    "react-test-renderer": "17.0.2"
+    "metro-react-native-babel-preset": "^0.71.3",
+    "react-test-renderer": "17.0.2",
+    "typescript": "^4.7.4"
   },
   "jest": {
     "preset": "react-native"
   },
   "description": "HelloDoctor public SDK for React Native applications",
-  "main": "index.ts",
+  "main": "index.js",
   "repository": "git@github.com:hellodoctormx/sdk.react-native.git",
   "author": "Daniel Sarfati <daniel@hellodoctor.com.mx>",
   "license": "GPL-3.0 License"

@@ -31,9 +31,9 @@ export async function signInWithJWT(userID: string, jwt: string) {
 
 export function signOut() {
     const currentUser = getCurrentUser();
-    currentUser.jwt = null;
-    currentUser.uid = null;
-    currentUser.refreshToken = null;
+    currentUser.uid = ""
+    currentUser.jwt = undefined
+    currentUser.refreshToken = undefined
 }
 
 export async function refreshAccessToken() {
@@ -47,7 +47,7 @@ export async function refreshAccessToken() {
         throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
     }
 
-    const authenticationResponse = await usersAPI.authenticateUser(currentUser.uid, currentUser.refreshToken)
+    const authenticationResponse = await usersAPI.authenticateUser(currentUser.uid, currentUser.refreshToken!)
     currentUser.jwt = authenticationResponse.jwt
     currentUser.refreshToken = authenticationResponse.refreshToken
 }

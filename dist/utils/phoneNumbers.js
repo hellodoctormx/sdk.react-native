@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.checkIsValidPhoneNumber=checkIsValidPhoneNumber;function checkIsValidPhoneNumber(phoneNumber){return /\+\d{9,}/.test(phoneNumber);}

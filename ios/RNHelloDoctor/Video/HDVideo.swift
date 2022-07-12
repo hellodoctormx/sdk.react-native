@@ -32,9 +32,9 @@ import TwilioVideo
     var localParticipantView: VideoView!
     var remoteParticipantView: VideoView?
     
-    var eventEmitter = RNHelloDoctorModule()
+    var eventEmitter = RNHelloDoctorModule.getInstance()
 
-    static var instance: HDVideo?
+    static let instance = HDVideo()
 
     deinit {
         DispatchQueue.main.async {
@@ -47,16 +47,6 @@ import TwilioVideo
             self.localVideoTrack = nil
             self.localAudioTrack = nil
         }
-
-        HDVideo.instance = nil
-    }
-
-    @objc static func getInstance() -> HDVideo {
-        while (instance == nil) {
-            instance = HDVideo()
-        }
-
-        return instance!
     }
 
     @objc func setLocalView(view:VideoView) {

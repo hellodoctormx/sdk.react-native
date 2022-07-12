@@ -65,9 +65,9 @@ static NSString* _apnsToken;
         callerDisplayName = @"Médico de HelloDoctor";
     }
 
-    [RNCallKeep reportNewIncomingCall:uuid handle:videoRoomSID handleType:@"generic" hasVideo:true localizedCallerName:callerDisplayName supportsHolding:true supportsDTMF:false supportsGrouping:false supportsUngrouping:false fromPushKit:YES payload:nil withCompletionHandler:completion];
-
     [HDEventEmitter dispatchWithName:@"incomingPushKitVideoCall" body:payload.dictionaryPayload];
+
+    [RNCallKeep reportNewIncomingCall:uuid handle:videoRoomSID handleType:@"generic" hasVideo:true localizedCallerName:callerDisplayName supportsHolding:true supportsDTMF:false supportsGrouping:false supportsUngrouping:false fromPushKit:YES payload:nil withCompletionHandler:completion];
 }
 
 @end

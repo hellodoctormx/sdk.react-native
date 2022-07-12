@@ -12,10 +12,22 @@ import React
 class RNHelloDoctorModule: RCTEventEmitter {
     private var hasListeners = false
     private var delayedEvents: Array<Dictionary<String, Any?>> = []
-
+    
+    private static var instance: RNHelloDoctorModule?
+    
     override init() {
         super.init()
         HDEventEmitter.sharedInstance.registerEventEmitter(eventEmitter: self)
+        
+        RNHelloDoctorModule.instance = self
+    }
+    
+    static func getInstance() -> RNHelloDoctorModule {
+        if (RNHelloDoctorModule.instance == nil) {
+            RNHelloDoctorModule.instance = RNHelloDoctorModule()
+        }
+        
+        return RNHelloDoctorModule.instance!
     }
 
     @objc
@@ -36,11 +48,11 @@ class RNHelloDoctorModule: RCTEventEmitter {
         hasListeners = false
     }
 
-    func dispatch(name: String, body: Any?) {
+    func dispatch(name: String, body: Dictionary<String, Any>?) {
         if (hasListeners) {
             sendEvent(withName: name, body: body)
         } else {
-            delayedEvents.append([name: body])
+            delayedEvents.append(["name": name, "data": body])
         }
     }
 
@@ -78,74 +90,63 @@ class RNHelloDoctorModule: RCTEventEmitter {
 
     @objc(connect:accessToken:resolve:reject:)
     func connect(_ roomName:String, accessToken:String, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.connect(roomName: roomName, accessToken: accessToken)
+        HDVideo.instance.connect(roomName: roomName, accessToken: accessToken)
 
         resolve("connected")
     }
 
     @objc(isConnectedToRoom:resolve:reject:)
     func isConnectedTo(_ roomName: String, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-
-        let isConnected = hdVideo.isConnectedTo(roomName: roomName)
+        let isConnected = HDVideo.instance.isConnectedTo(roomName: roomName)
 
         resolve("\(isConnected)")
     }
 
     @objc(getRemoteParticipants:reject:)
     func getRemoteParticipants(_ resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-
-        let remoteParticipants = hdVideo.getRemoteParticipants()
+        let remoteParticipants = HDVideo.instance.getRemoteParticipants()
 
         resolve(remoteParticipants)
     }
 
     @objc(disconnect:reject:)
     func disconnect(_ resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.disconnect()
+        HDVideo.instance.disconnect()
 
         resolve("disconnected")
     }
 
     @objc(setVideoPublished:resolve:reject:)
     func setVideoPublished(_ isPublished: Bool, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.setLocalVideoPublished(published: isPublished)
+        HDVideo.instance.setLocalVideoPublished(published: isPublished)
 
         resolve("set local video published: \(isPublished)")
     }
 
     @objc(setVideoEnabled:resolve:reject:)
     func setVideoEnabled(_ isEnabled: Bool, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.setLocalVideoEnabled(enabled: isEnabled)
+        HDVideo.instance.setLocalVideoEnabled(enabled: isEnabled)
 
         resolve("set local video enabled: \(isEnabled)")
     }
 
     @objc(setAudioEnabled:resolve:reject:)
     func setAudioEnabled(_ isEnabled: Bool, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.setLocalAudioEnabled(enabled: isEnabled)
+        HDVideo.instance.setLocalAudioEnabled(enabled: isEnabled)
 
         resolve("set local audio enabled: \(isEnabled)")
     }
 
     @objc(setSpeakerPhone:resolve:reject:)
     func setSpeakerPhone(_ isEnabled: Bool, resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.setSpeakerEnabled(enabled: isEnabled)
+        HDVideo.instance.setSpeakerEnabled(enabled: isEnabled)
 
         resolve("set speaker enabled: \(isEnabled)")
     }
 
     @objc(flipCamera:reject:)
     func flipCamera(_ resolve:@escaping RCTPromiseResolveBlock, reject:@escaping RCTPromiseRejectBlock) -> Void {
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.flipCamera()
+        HDVideo.instance.flipCamera()
 
         resolve("flipped camera")
     }

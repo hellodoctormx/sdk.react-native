@@ -1,11 +1,10 @@
-import {EventSubscription, NativeEventEmitter, NativeModules, Platform} from "react-native";
+import {EmitterSubscription, EventSubscription, NativeEventEmitter, NativeModules, Platform} from "react-native";
 import VoipPushNotification from "react-native-voip-push-notification";
 import * as auth from "../users/auth";
-import {CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
+import {CallEvent, CallKeepEventHandlers, PushKitEventHandlers} from "./eventHandlers";
+import {hdEventEmitter} from "../components/native";
 
 let isCallsServiceBootstrapped = false;
-
-const eventEmitter = new NativeEventEmitter(NativeModules.RNHelloDoctorModule);
 
 const RNCallKeepPerformAnswerCallAction = 'RNCallKeepPerformAnswerCallAction';
 const RNCallKeepPerformEndCallAction = 'RNCallKeepPerformEndCallAction';
@@ -37,31 +36,30 @@ export function teardown(): void {
 
 let hasRegisteredCallEventListeners = false;
 
-function handleDidChangeAudioRoute(events) {
-    console.debug("[handleDidChangeAudioRoute]", {events})
+function handleDidChangeAudioRoute(event: CallEvent) {
+    console.debug("[handleDidChangeAudioRoute]", {event})
 }
 
-const eventSubscriptions = []
+const eventSubscriptions: EmitterSubscription[] = []
 
-function addEventListener(event, listener) {
-    eventSubscriptions.push(eventEmitter.addListener(event, listener))
+function addEventListener(event: string, listener: (args: any) => void) {
+    eventSubscriptions.push(hdEventEmitter.addListener(event, listener))
 }
 
 export function registerCallEventListeners(): void {
-    console.debug("[registerCallEventListeners]", {hasRegisteredCallEventListeners})
+    console.debug("[registerCallEventListeners:EMITTER]", {hasRegisteredCallEventListeners})
     if (hasRegisteredCallEventListeners) {
         return;
     }
 
-    eventEmitter.addListener(RNCallKeepPerformAnswerCallAction, CallKeepEventHandlers.handleAnswerCall)
-    eventEmitter.addListener(RNCallKeepPerformEndCallAction, CallKeepEventHandlers.handleEndCall)
-    eventEmitter.addListener(RNCallKeepDidPerformSetMutedCallAction, CallKeepEventHandlers.handleDidPerformSetMutedCallAction)
-    eventEmitter.addListener(RNCallKeepDidToggleHoldAction, CallKeepEventHandlers.handleDidToggleHoldCallAction)
-    eventEmitter.addListener(RNCallKeepDidLoadWithEvents, CallKeepEventHandlers.handleDidLoadWithEvents)
+    addEventListener(RNCallKeepPerformAnswerCallAction, CallKeepEventHandlers.handleAnswerCall)
+    addEventListener(RNCallKeepPerformEndCallAction, CallKeepEventHandlers.handleEndCall)
+    addEventListener(RNCallKeepDidPerformSetMutedCallAction, CallKeepEventHandlers.handleDidPerformSetMutedCallAction)
+    addEventListener(RNCallKeepDidToggleHoldAction, CallKeepEventHandlers.handleDidToggleHoldCallAction)
+    addEventListener(RNCallKeepDidLoadWithEvents, CallKeepEventHandlers.handleDidLoadWithEvents)
     addEventListener(RNCallKeepDidChangeAudioRoute, handleDidChangeAudioRoute)
 
-    VoipPushNotification.addEventListener("register", PushKitEventHandlers.handleOnRegister);
-    VoipPushNotification.addEventListener("notification", PushKitEventHandlers.handleOnNotification);
+    addEventListener("incomingPushKitVideoCall", PushKitEventHandlers.handleOnNotification);
     VoipPushNotification.addEventListener("didLoadWithEvents", PushKitEventHandlers.handleOnDidLoadWithEvents);
 
     hasRegisteredCallEventListeners = true;
@@ -73,8 +71,6 @@ export function removeCallKeepListeners(): void {
         .map((subscription: EventSubscription) => subscription.remove())
         .forEach((index) => eventSubscriptions.pop())
 
-    VoipPushNotification.removeEventListener("register");
-    VoipPushNotification.removeEventListener("notification");
     VoipPushNotification.removeEventListener("didLoadWithEvents");
 
     hasRegisteredCallEventListeners = false;

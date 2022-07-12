@@ -1,31 +1,29 @@
 import _ from "lodash";
 import React, {useEffect, useRef, useState} from "react";
-import {Animated, Dimensions, Platform, Text, View} from "react-native";
+import {Animated, Dimensions, NativeModules, NativeEventEmitter, Platform, Text, View} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import withVideoCallPermissions from "./withVideoCallPermissions";
-import HDVideoCallActions from "./HDVideoCallActions";
-import {hdVideoEvents, LocalVideoView, RemoteVideoView} from "./native";
 import * as activeCallManager from "../telecom/activeCallManager";
 import * as connectionManager from "../telecom/connectionManager";
-
+import HDVideoCallActions from "./HDVideoCallActions";
+import {hdEventEmitter, LocalVideoView, RemoteVideoView} from "./native";
 
 export default function HDVideoCallView(props) {
     const {consultationID, videoRoomSID, accessToken} = props;
 
-    const [remoteParticipantSID, setRemoteParticipantSID] = React.useState();
-    const [remoteVideoState, setRemoteVideoState] = React.useState();
-    const [remoteAudioState, setRemoteAudioState] = React.useState();
+    const [remoteParticipantSID, setRemoteParticipantSID] = useState();
+    const [remoteVideoState, setRemoteVideoState] = useState();
+    const [remoteAudioState, setRemoteAudioState] = useState();
 
-    const accessTokenRef = React.useRef("");
-    const participantsRef = React.useRef([]);
+    const accessTokenRef = useRef("");
+    const participantsRef = useRef([]);
 
     const {height: screenHeight, width: screenWidth} = Dimensions.get("screen");
 
-    const localVideoWidthRef = React.useRef(new Animated.Value(screenWidth));
-    const localVideoHeightRef = React.useRef(new Animated.Value(screenHeight));
-    const localVideoBottomRef = React.useRef(new Animated.Value(0));
-    const localVideoLeftRef = React.useRef(new Animated.Value(0));
+    const localVideoWidthRef = useRef(new Animated.Value(screenWidth));
+    const localVideoHeightRef = useRef(new Animated.Value(screenHeight));
+    const localVideoBottomRef = useRef(new Animated.Value(0));
+    const localVideoLeftRef = useRef(new Animated.Value(0));
 
     const aspectRatio = 1.4;
     const insetVideoHeight = screenHeight / 4;
@@ -95,13 +93,13 @@ export default function HDVideoCallView(props) {
     const handleConnectedToRoomEvent = event => {
         console.info("[handleConnectedToRoomEvent]", event);
 
-        // remoteParticipantIdentity may be undefined if local participant is first to connect
         const {participants} = event;
 
         participantsRef.current = participants;
 
         const remoteParticipantIdentity = _.first(participants);
 
+        // remoteParticipantIdentity may be undefined if local participant is first to connect
         if (remoteParticipantIdentity) {
             doMinimizeLocalVideoView();
             doSetRemoteParticipantSID(remoteParticipantIdentity);
@@ -183,22 +181,22 @@ export default function HDVideoCallView(props) {
         }
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         console.info(`[VideoCallModal:MOUNT]`, {videoRoomSID});
 
-        const connectedToRoomListener = hdVideoEvents.addListener("connectedToRoom", handleConnectedToRoomEvent);
+        const connectedToRoomListener = hdEventEmitter.addListener("connectedToRoom", handleConnectedToRoomEvent);
 
-        const participantRoomConnectionEventListener = hdVideoEvents.addListener(
+        const participantRoomConnectionEventListener = hdEventEmitter.addListener(
             "participantRoomConnectionEvent",
             handleParticipantRoomConnectionEvent
         );
 
-        const participantVideoEventListener = hdVideoEvents.addListener(
+        const participantVideoEventListener = hdEventEmitter.addListener(
             "participantVideoEvent",
             handleParticipantVideoEvent
         );
 
-        const participantAudioEventListener = hdVideoEvents.addListener(
+        const participantAudioEventListener = hdEventEmitter.addListener(
             "participantAudioEvent",
             handleParticipantAudioEvent
         );
@@ -235,7 +233,7 @@ export default function HDVideoCallView(props) {
             .catch(error => console.warn(`error connecting to video room ${videoRoomSID}: ${JSON.stringify(error)}`))
     }
 
-    React.useEffect(() => {
+    useEffect(() => {
         // Ok this is kinda bullshit but basically - at least on iOS - the LocalVideoView can sometimes take longer than
         // a render cycle before it's ready to be used, which HDVideo.connect expects the LocalVideoView to be ready.
         // Adding this small timeout as a stop-gap measure to allow the LocalVideoView time to get ready.

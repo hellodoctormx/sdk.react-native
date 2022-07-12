@@ -13,11 +13,10 @@ public class HDEventEmitter: NSObject {
     }
 
     @objc
-    public static func dispatch(name: String, body: Any?) {
+    public static func dispatch(name: String, body: Dictionary<String, Any>?) {
         HDEventEmitter.eventEmitter.dispatch(name: name, body: body)
     }
 
-    /// All Events which must be support by React Native.
     var allEvents: [String] = {
         return [
             "localViewStatus",

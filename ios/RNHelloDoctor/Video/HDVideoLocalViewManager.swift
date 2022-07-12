@@ -24,8 +24,7 @@ class HDVideoLocalViewManager: RCTViewManager {
         
         container.addSubview(inner)
         
-        let hdVideo = HDVideo.getInstance()
-        hdVideo.setLocalView(view:inner)
+        HDVideo.instance.setLocalView(view:inner)
         
         return container
     }

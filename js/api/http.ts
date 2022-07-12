@@ -29,7 +29,7 @@ export default class Http {
             headers: this.getRequestHeaders()
         })
 
-        let response = await doFetch()
+        let response: Response = await doFetch()
 
         if (response.status === 401) {
             await this.refreshAccessToken()
@@ -43,7 +43,7 @@ export default class Http {
     getRequestHeaders() {
         const currentUser = getCurrentUser();
 
-        const requestHeaders = {
+        const requestHeaders: Record<string, string> = {
             "Content-Type": "application/json",
         }
 
@@ -79,15 +79,11 @@ export default class Http {
 
 }
 
-export const nullSafeJsonResponse = response => {
+export const nullSafeJsonResponse = (response: Response) => {
     if (response.status < 200 || response.status >= 300) {
         console.warn(`[Http.nullSafeJsonResponse:BAD_STATUS:${response.status}]`, response);
-        throw new Error(response.status);
+        throw new Error(response.statusText);
     }
 
-    if (response.headers.get("Content-Type").match("^application/json.*")) {
-        return response.json();
-    } else {
-        return response.data;
-    }
+    return response.json();
 };
