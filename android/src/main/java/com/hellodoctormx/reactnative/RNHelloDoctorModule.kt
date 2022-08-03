@@ -65,6 +65,12 @@ class RNHelloDoctorModule(reactContext: ReactApplicationContext?) :
     }
 
     @ReactMethod
+    fun rejectIncomingCallNotification(promise: Promise) {
+        IncomingVideoCallNotification.reject(this.reactApplicationContext)
+        promise.resolve("")
+    }
+
+    @ReactMethod
     fun startLocalCapture(promise: Promise) {
         videoCallController.startLocalCapture()
         promise.resolve("")

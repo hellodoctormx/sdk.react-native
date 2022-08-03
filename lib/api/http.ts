@@ -1,7 +1,7 @@
 import {getCurrentUser} from "../users/currentUser";
 import HDConfig from "../HDConfig";
 
-export default class Http {
+export class HelloDoctorHTTPClient {
     static API_KEY: string = "";
 
     async get(path: string) {
@@ -52,8 +52,8 @@ export default class Http {
             requestHeaders["X-User-UID"] = currentUser.uid
         }
 
-        if (!!Http.API_KEY) {
-            requestHeaders["X-Api-Key"] = Http.API_KEY
+        if (!!HelloDoctorHTTPClient.API_KEY) {
+            requestHeaders["X-Api-Key"] = HelloDoctorHTTPClient.API_KEY
         }
 
         return requestHeaders;

@@ -1,0 +1,1 @@
+Object.defineProperty(exports,"__esModule",{value:true});exports.ConsultationType=void 0;var ConsultationType;exports.ConsultationType=ConsultationType;(function(ConsultationType){ConsultationType["VIDEO"]="video";ConsultationType["CHAT"]="chat";})(ConsultationType||(exports.ConsultationType=ConsultationType={}));

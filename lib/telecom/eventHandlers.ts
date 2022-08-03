@@ -6,6 +6,8 @@ import {endVideoCall, tryCancelVideoCallNotification} from "./connectionManager"
 import * as activeCallManager from "./activeCallManager";
 import HDConfig from "../HDConfig";
 
+const {RNHelloDoctorModule} = NativeModules;
+
 export function navigateOnAnswerCall(consultationID: string, videoRoomSID: string, accessToken: string) {
     HDConfig.onAnswerCall(consultationID, videoRoomSID, accessToken);
 }
@@ -37,7 +39,11 @@ export async function handleIncomingVideoCallEndedRemotely(videoRoomSID: string)
 }
 
 export async function handleVideoCallEndedNotification(videoRoomSID: string) {
-    tryCancelVideoCallNotification(videoRoomSID);
+    if (Platform.OS === "android") {
+        await RNHelloDoctorModule
+            .rejectIncomingCallNotification()
+            .catch((error) => console.warn(`[handleIncomingVideoCallEndedRemotely:tryCancelVideoCallNotification]`, error));
+    }
 
     const call = connectionManager.getIncomingCall();
 

@@ -12,6 +12,7 @@ export interface HDConfigOptions {
 
 const config: HDConfigOptions = {
     appName: "",
+    apiKey: undefined,
     serviceHost: "",
     onAnswerCall: () => {
         throw "not_implemented"

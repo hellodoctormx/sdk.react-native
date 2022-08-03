@@ -1,30 +1,16 @@
-import {NativeModule, NativeModules, Platform} from "react-native"
-import Http from "./api/http"
-import consultationsAPI from "./api/consultations"
-import schedulingAPI from "./api/scheduling"
+import {NativeModules, Platform} from "react-native"
+import {HelloDoctorHTTPClient} from "./api/http"
 import usersAPI from "./api/users"
 import videoAPI from "./api/video"
 import * as connectionManager from "./telecom/connectionManager"
 import * as connectionService from "./telecom/connectionService"
 import * as eventHandlers from "./telecom/eventHandlers"
 import * as auth from "./users/auth"
+import * as schedulingService from "./services/scheduling.service"
 import {getCurrentUser} from "./users/currentUser"
 import HDConfig, {HDConfigOptions} from "./HDConfig"
 
 const {RNHelloDoctorModule} = NativeModules
-
-interface RNHelloDoctorModuleInterface extends NativeModule {
-    configure: (apiKey?: string, serviceHost?: string) => Promise<void>
-    getAPNSToken: () => Promise<string>
-    signIn: (userID: string, serverAuthToken: string) => void
-    signInWithJWT: (userID: string, jwt: string) => void
-}
-
-declare module "react-native" {
-    interface NativeModulesStatic {
-        RNHelloDoctorModule: RNHelloDoctorModuleInterface
-    }
-}
 
 export default class RNHelloDoctor {
     static appName: string
@@ -34,7 +20,7 @@ export default class RNHelloDoctor {
 
         Object.assign(HDConfig, config)
 
-        Http.API_KEY = config.apiKey!
+        HelloDoctorHTTPClient.API_KEY = config.apiKey!
 
         switch (Platform.OS) {
             case "android":
@@ -83,16 +69,16 @@ export default class RNHelloDoctor {
     }
 
     // SCHEDULING & CONSULTATION FUNCTIONS
-    static getAvailability(requestMode: string, specialty: string, fromTime: string, toTime: string) {
-        return schedulingAPI.getAvailability(requestMode, specialty, fromTime, toTime)
+    static getAvailability(requestMode: string, specialty: string, start: Date, end: Date) {
+        return schedulingService.getAvailability(requestMode, specialty, start, end)
     }
 
-    static requestConsultation(requestMode: string, specialty: string, startTime: string, reason: string) {
-        return schedulingAPI.requestConsultation(requestMode, specialty, startTime, reason)
+    static requestConsultation(requestMode: string, specialty: string, requestedTime: Date, reason: string) {
+        return schedulingService.requestConsultation(requestMode, specialty, requestedTime, reason)
     }
 
     static getConsultations(limit: number) {
-        return consultationsAPI.getUserConsultations(limit)
+        return schedulingService.getUserConsultations(limit)
     }
 
     // VIDEO CALL FUNCTIONS
@@ -132,6 +118,6 @@ export default class RNHelloDoctor {
     static getVideoCallAccessToken(videoRoomSID: string) {
         return videoAPI
             .requestVideoCallAccess(videoRoomSID)
-            .then(response => response.accessToken)
+            .then((response: {accessToken: string}) => response.accessToken)
     }
 }
