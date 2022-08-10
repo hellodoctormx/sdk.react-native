@@ -1,5 +1,5 @@
-import {HelloDoctorHTTPClient} from "../api/http";
-import {SchedulingAvailability} from "../types";
+import {HelloDoctorHTTPClient} from '../api/http';
+import {SchedulingAvailability} from '../types';
 
 type GetAvailabilityResponse = {
     availableTimes: Array<ResponseAvailability>
@@ -26,7 +26,7 @@ export function getAvailability(requestMode: string, specialty: string, startTim
 }
 
 export function requestConsultation(requestMode: string, specialty: string, startTime: Date, reason: string): Promise<void> {
-    return httpClient.post("/scheduling/_request", {requestMode, specialty, startTime, reason})
+    return httpClient.post('/scheduling/_request', {requestMode, specialty, startTime, reason});
 }
 
 export function getUserConsultations(limit: number) {

@@ -1,6 +1,6 @@
 import {AppState, NativeEventSubscription, NativeModules, Platform} from "react-native";
 import videoServiceApi from "../api/video";
-import RNCallKeep from "../callkeep";
+import RNCallKeep from "./callkeep";
 import * as connectionManager from "./connectionManager";
 import {endVideoCall, tryCancelVideoCallNotification} from "./connectionManager";
 import * as activeCallManager from "./activeCallManager";
