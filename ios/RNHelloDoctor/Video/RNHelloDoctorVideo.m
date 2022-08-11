@@ -57,7 +57,7 @@ static NSString* _apnsToken;
 
 // --- Handle incoming pushes
 + (void)pushRegistry:(PKPushRegistry *)registry didReceiveIncomingPushWithPayload:(PKPushPayload *)payload forType:(PKPushType)type withCompletionHandler:(void (^)(void))completion {
-    NSString *uuid = payload.dictionaryPayload[@"uuid"];
+    NSString *callUUID = payload.dictionaryPayload[@"callUUID"];
     NSString *callerDisplayName = payload.dictionaryPayload[@"callerDisplayName"];
     NSString *videoRoomSID = payload.dictionaryPayload[@"videoRoomSID"];
 
@@ -67,7 +67,7 @@ static NSString* _apnsToken;
 
     [HDEventEmitter dispatchWithName:@"incomingPushKitVideoCall" body:payload.dictionaryPayload];
 
-    [RNCallKeep reportNewIncomingCall:uuid handle:videoRoomSID handleType:@"generic" hasVideo:true localizedCallerName:callerDisplayName supportsHolding:true supportsDTMF:false supportsGrouping:false supportsUngrouping:false fromPushKit:YES payload:nil withCompletionHandler:completion];
+    [RNCallKeep reportNewIncomingCall:callUUID handle:videoRoomSID handleType:@"generic" hasVideo:true localizedCallerName:callerDisplayName supportsHolding:true supportsDTMF:false supportsGrouping:false supportsUngrouping:false fromPushKit:YES payload:nil withCompletionHandler:completion];
 }
 
 @end
