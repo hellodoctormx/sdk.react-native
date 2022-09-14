@@ -2,9 +2,10 @@ import {AppState, NativeEventSubscription, NativeModules, Platform} from 'react-
 import videoServiceApi from '../api/video';
 import RNCallKeep from './callkeep';
 import * as connectionManager from './connectionManager';
-import {endVideoCall, tryCancelVideoCallNotification} from './connectionManager';
+import {endVideoCall} from './connectionManager';
 import * as activeCallManager from './activeCallManager';
-import HDConfig from '../HDConfig';
+import HDConfig from '../config';
+import {PushKitCallNotification} from '../types';
 
 const {RNHelloDoctorModule} = NativeModules;
 
@@ -16,26 +17,10 @@ export function navigateOnEndCall(consultationID: string, videoRoomSID: string) 
     HDConfig.onEndCall(consultationID, videoRoomSID);
 }
 
-export async function handleIncomingVideoCallNotification(videoRoomSID: string, callerDisplayName: string, callerPhotoURL?: string) {
-    await connectionManager.registerIncomingVideoCall(null, videoRoomSID, null, {displayName: callerDisplayName});
+export async function handleIncomingVideoCallNotification(videoRoomSID: string, consultationID: string, callerDisplayName: string, callerPhotoURL?: string) {
+    await connectionManager.registerVideoCall(undefined, videoRoomSID, consultationID, {displayName: callerDisplayName});
 
     return activeCallManager.displayIncomingCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
-}
-
-// deprecated: use handleVideoCallEndedNotification
-export async function handleIncomingVideoCallEndedRemotely(videoRoomSID: string) {
-    const call = connectionManager.getIncomingCall();
-
-    if (!call) {
-        console.warn(`no call found for room ${videoRoomSID}`);
-        return;
-    }
-
-    RNCallKeep.reportEndCallWithUUID(call.uuid, 2);
-
-    await endVideoCall(videoRoomSID);
-
-    tryCancelVideoCallNotification(videoRoomSID);
 }
 
 export async function handleVideoCallEndedNotification(videoRoomSID: string) {
@@ -50,6 +35,11 @@ export async function handleVideoCallEndedNotification(videoRoomSID: string) {
     if (!call) {
         RNCallKeep.endAllCalls();
         throw new Error('unknown_call');
+    }
+
+    if (Platform.OS === 'android') {
+        navigateOnEndCall(call.consultationID, videoRoomSID);
+        return;
     }
 
     if (call.status === 'incoming') {
@@ -131,7 +121,9 @@ export class CallKeepEventHandlers {
 
         activeCallManager.setLocalAudioEnabled(event.muted)
             .catch((error: Error) => console.warn(`error muting call: ${error}`))
-            .then(() => call.isCallMuted = event.muted);
+            .then(() => {
+                call.isCallMuted = event.muted;
+            });
     }
 
     static handleDidToggleHoldCallAction(event: CallEvent) {
@@ -144,12 +136,12 @@ export class CallKeepEventHandlers {
 
         activeCallManager.setLocalVideoEnabled(!event.hold)
             .catch((error: Error) => console.warn(`error holding call: ${error}`))
-            .then(() => call.isCallHeld = event.hold);
+            .then(() => {
+                call.isCallHeld = event.hold;
+            });
     }
 
     static async handleEndCall(event: CallEvent) {
-        console.debug('[CallKeepEventHandlers:handleEndCall]', {callUUID: event.callUUID});
-
         const call = connectionManager.getCallByUUID(event.callUUID);
 
         if (!call) {
@@ -197,35 +189,21 @@ export class CallKeepEventHandlers {
 
 let answerablePushKitCallUUID: string;
 
-export type PushKitCallNotification = {
-    uuid?: string
-    videoRoomSID: string
-    callerDisplayName: string
-    consultationID?: string
-    callerPhotoURL?: string
-    callerEmail?: string
-    callerPhoneNumber?: string
-}
-
 type PushKitEvent = {
     data: PushKitCallNotification
 }
 
 export class PushKitEventHandlers {
     static handleOnRegister(token: string) {
-        console.info('[PushKitEventHandlers:handleOnRegister]', token);
         HDConfig.ios.onRegisterPushKitToken(token);
     }
 
     static handleOnNotification(notification: PushKitCallNotification) {
-        console.info('[PushKitEventHandlers:handleOnNotification]', notification);
-
         connectionManager.registerPushKitCall(notification)
             .catch(error => console.warn('[PushKitEventHandlers:handleOnNotification:registerPushKitCall]', error));
     }
 
     static handleOnDidLoadWithEvents(events: PushKitEvent[]) {
-        console.debug('[PushKitEventHandlers:handleOnDidLoadWithEvents]');
         events.forEach((event) => console.debug('[PushKitEventHandlers:handleOnDidLoadWithEvents:EVENT]', event));
         const incomingCallNotificationEvent = events.find(e => !!e.data?.videoRoomSID);
 
@@ -234,9 +212,9 @@ export class PushKitEventHandlers {
         }
 
         const incomingCallData = incomingCallNotificationEvent.data;
-        const {uuid} = incomingCallNotificationEvent.data;
+        const {callUUID} = incomingCallNotificationEvent.data;
 
-        const existingIncomingCall = connectionManager.getCallByUUID(uuid);
+        const existingIncomingCall = connectionManager.getCallByUUID(callUUID);
 
         if (existingIncomingCall) {
             return;
@@ -244,16 +222,16 @@ export class PushKitEventHandlers {
 
         connectionManager.registerPushKitCall(incomingCallData).catch(console.warn);
 
-        if (answerablePushKitCallUUID === uuid) {
+        if (answerablePushKitCallUUID === callUUID) {
             // This call was displayed by PushKit while the app was in a quit state. The user then answered the call, the
             // event for which has already been handled by CallKeepEventHandlers.handleDidLoadWithEvents. However, that
             // event payload only includes the callUUID, so without the call having been registered beforehand it
             // could not be answered. Instead, it registers it as `answerablePushKitCallUUID`, in anticipation of this
             // very function right here to handle the answering.
-            doAnswerCall(uuid)
+            doAnswerCall(callUUID)
                 .catch((error) => console.warn('[PushKitEventHandlers:handleOnDidLoadWithEvents:doAnswerCall]', error))
                 .finally(() => {
-                    answerablePushKitCallUUID = ''
+                    answerablePushKitCallUUID = '';
                 });
         }
     }

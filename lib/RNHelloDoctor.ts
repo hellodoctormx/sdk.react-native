@@ -7,16 +7,17 @@ import * as connectionService from './telecom/connectionService';
 import * as eventHandlers from './telecom/eventHandlers';
 import * as auth from './users/auth';
 import * as schedulingService from './services/scheduling.service';
-import {getCurrentUser} from './users/currentUser';
-import HDConfig, {HDConfigOptions} from './HDConfig';
+import * as currentUser from './users/currentUser';
+import HDConfig from './config';
+import {ConfigOptions, VideoCallNotification} from './types';
 
 const {RNHelloDoctorModule} = NativeModules;
 
-export default class RNHelloDoctor {
-    static appName: string;
+export let appName: string;
 
-    static async configure(config: HDConfigOptions) {
-        RNHelloDoctor.appName = config.appName;
+export namespace RNHelloDoctor {
+    export async function configure(config: ConfigOptions) {
+        appName = config.appName;
 
         Object.assign(HDConfig, config);
 
@@ -31,11 +32,10 @@ export default class RNHelloDoctor {
             break;
         }
 
-        console.debug('[RNHelloDoctor.configure:DONE]');
         return;
     }
 
-    static async signIn(userID: string, serverAuthToken: string) {
+    export async function signIn(userID: string, serverAuthToken: string) {
         await auth.signIn(userID, serverAuthToken);
 
         if (Platform.OS === 'ios') {
@@ -43,7 +43,7 @@ export default class RNHelloDoctor {
         }
     }
 
-    static async signInWithJWT(userID: string, jwt: string) {
+    export async function signInWithJWT(userID: string, jwt: string) {
         await auth.signInWithJWT(userID, jwt);
 
         if (Platform.OS === 'ios') {
@@ -51,73 +51,71 @@ export default class RNHelloDoctor {
         }
     }
 
-    static teardown() {
+    export function teardown() {
         connectionService.teardown();
     }
 
-    // USER FUNCTIONS
-    static getCurrentUser() {
-        return getCurrentUser();
-    }
-
-    static createUser(accountPayload: Record<string, any>) {
-        return usersAPI.createUser(accountPayload);
-    }
-
-    static deleteUser(userID: string) {
-        return usersAPI.deleteUser(userID);
-    }
-
-    // SCHEDULING & CONSULTATION FUNCTIONS
-    static getAvailability(requestMode: string, specialty: string, start: Date, end: Date) {
-        return schedulingService.getAvailability(requestMode, specialty, start, end);
-    }
-
-    static requestConsultation(requestMode: string, specialty: string, requestedTime: Date, reason: string) {
-        return schedulingService.requestConsultation(requestMode, specialty, requestedTime, reason);
-    }
-
-    static getConsultations(limit: number) {
-        return schedulingService.getUserConsultations(limit);
-    }
-
-    // VIDEO CALL FUNCTIONS
-    static handleIncomingVideoCallNotification(videoCallPayload: eventHandlers.PushKitCallNotification) {
-        const {videoRoomSID, callerDisplayName, callerPhotoURL} = videoCallPayload;
-
-        return eventHandlers.handleIncomingVideoCallNotification(videoRoomSID, callerDisplayName, callerPhotoURL);
-    }
-
-    static handleIncomingVideoCallNotificationRejected() {
-        const incomingCall = connectionManager.getIncomingCall();
-
-        if (!incomingCall) {
-            return;
+    export namespace users {
+        export function getCurrentUser() {
+            return currentUser.getCurrentUser();
         }
 
-        connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
+        export function authenticate(userID: string, serverAuthToken: string) {
+            return usersAPI.authenticateUser(userID, serverAuthToken);
+        }
     }
 
-    // deprecated: use handleVideoCallEndedNotification
-    static handleIncomingVideoCallEndedRemotely(videoRoomSID: string) {
-        return eventHandlers.handleIncomingVideoCallEndedRemotely(videoRoomSID);
+    export namespace consultations {
+        export function getAvailability(requestMode: string, specialty: string, start: Date, end: Date) {
+            return schedulingService.getAvailability(requestMode, specialty, start, end);
+        }
+
+        export function requestConsultation(requestMode: string, specialty: string, requestedTime: Date, reason: string) {
+            return schedulingService.requestConsultation(requestMode, specialty, requestedTime, reason);
+        }
+
+        export function getConsultations(limit: number) {
+            return schedulingService.getUserConsultations(limit);
+        }
     }
 
-    static handleVideoCallEndedNotification(videoRoomSID: string) {
-        return eventHandlers.handleVideoCallEndedNotification(videoRoomSID);
-    }
+    export namespace video {
+        export function handleIncomingVideoCallNotification(videoCallPayload: VideoCallNotification) {
+            const {videoRoomSID, consultationID, callerDisplayName, callerPhotoURL} = videoCallPayload;
 
-    static startVideoCall(videoRoomSID: string) {
-        connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
-    }
+            return eventHandlers.handleIncomingVideoCallNotification(videoRoomSID, consultationID, callerDisplayName, callerPhotoURL);
+        }
 
-    static endVideoCall(videoRoomSID: string) {
-        return connectionManager.endVideoCall(videoRoomSID);
-    }
+        export function handleIncomingVideoCallNotificationRejected() {
+            const incomingCall = connectionManager.getIncomingCall();
 
-    static getVideoCallAccessToken(videoRoomSID: string) {
-        return videoAPI
-            .requestVideoCallAccess(videoRoomSID)
-            .then((response: {accessToken: string}) => response.accessToken);
+            if (!incomingCall) {
+                return;
+            }
+
+            connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
+        }
+
+        export function registerVideoCall(videoRoomSID: string, consultationID: string, callerDisplayName: string): Promise<any> {
+            return connectionManager.registerVideoCall(undefined, videoRoomSID, consultationID, {displayName: callerDisplayName});
+        }
+
+        export function handleVideoCallEndedNotification(videoRoomSID: string) {
+            return eventHandlers.handleVideoCallEndedNotification(videoRoomSID);
+        }
+
+        export function startVideoCall(videoRoomSID: string) {
+            connectionManager.handleIncomingVideoCallStarted(videoRoomSID);
+        }
+
+        export function endVideoCall(videoRoomSID: string) {
+            return connectionManager.endVideoCall(videoRoomSID);
+        }
+
+        export function getVideoCallAccessToken(videoRoomSID: string) {
+            return videoAPI
+                .requestVideoCallAccess(videoRoomSID)
+                .then((response: {accessToken: string}) => response.accessToken);
+        }
     }
 }

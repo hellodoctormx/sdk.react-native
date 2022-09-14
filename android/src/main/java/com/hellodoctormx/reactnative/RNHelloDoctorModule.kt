@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import com.facebook.react.bridge.*
 import com.hellodoctormx.sdk.HelloDoctorClient
+import com.hellodoctormx.sdk.video.IncomingVideoCallActivity
 import com.hellodoctormx.sdk.video.IncomingVideoCallNotification
 import com.hellodoctormx.sdk.video.VideoCallController
 import com.hellodoctormx.sdk.video.VideoCallController.Companion.getInstance
@@ -45,6 +46,24 @@ class RNHelloDoctorModule(reactContext: ReactApplicationContext?) :
     fun signInWithJWT(userID: String, jwt: String, promise: Promise) {
         HelloDoctorClient.signInWithJWT(userID, jwt)
         promise.resolve("")
+    }
+
+    @ReactMethod
+    fun startVideoCallScreen(
+        videoRoomSID: String,
+        accessToken: String?,
+        consultationID: String,
+        promise: Promise
+    ) {
+        val intent = Intent(this.reactApplicationContext, IncomingVideoCallActivity::class.java).apply {
+            action = "com.hellodoctormx.sdk.action.INCOMING_VIDEO_CALL_ANSWERED"
+            putExtra("VIDEO_ROOM_SID", videoRoomSID)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+
+        this.reactApplicationContext.startActivity(intent)
+
+        promise.resolve("started")
     }
 
     @ReactMethod

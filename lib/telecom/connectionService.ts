@@ -1,4 +1,4 @@
-import {EmitterSubscription, EventSubscription, NativeEventEmitter, NativeModules, Platform} from 'react-native';
+import {EmitterSubscription, EventSubscription, Platform} from 'react-native';
 import VoipPushNotification from 'react-native-voip-push-notification';
 import * as auth from '../users/auth';
 import {CallEvent, CallKeepEventHandlers, PushKitEventHandlers} from './eventHandlers';

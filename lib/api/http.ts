@@ -1,23 +1,23 @@
-import {getCurrentUser} from "../users/currentUser";
-import HDConfig from "../HDConfig";
+import {getCurrentUser} from '../users/currentUser';
+import HDConfig from '../HDConfig';
 
 export class HelloDoctorHTTPClient {
-    static API_KEY: string = "";
+    static API_KEY: string = '';
 
     async get(path: string) {
-        return this.doRequest(path, 'GET')
+        return this.doRequest(path, 'GET');
     }
 
     async post(path: string, data?: Record<string, any>) {
-        return this.doRequest(path, 'POST', data)
+        return this.doRequest(path, 'POST', data);
     }
 
     async put(path: string, data?: Record<string, any>) {
-        return this.doRequest(path, 'PUT', data)
+        return this.doRequest(path, 'PUT', data);
     }
 
     async delete(path: string) {
-        return this.doRequest(path, 'DELETE')
+        return this.doRequest(path, 'DELETE');
     }
 
     async doRequest(path: string, method: string, data?: Record<string, any>) {
@@ -26,34 +26,34 @@ export class HelloDoctorHTTPClient {
         const doFetch = () => fetch(url, {
             method,
             body: JSON.stringify(data),
-            headers: this.getRequestHeaders()
-        })
+            headers: this.getRequestHeaders(),
+        });
 
-        let response: Response = await doFetch()
+        let response: Response = await doFetch();
 
         if (response.status === 401) {
-            await this.refreshAccessToken()
+            await this.refreshAccessToken();
 
-            response = await doFetch()
+            response = await doFetch();
         }
 
-        return nullSafeJsonResponse(response)
+        return nullSafeJsonResponse(response);
     }
 
     getRequestHeaders() {
         const currentUser = getCurrentUser();
 
         const requestHeaders: Record<string, string> = {
-            "Content-Type": "application/json",
-        }
+            'Content-Type': 'application/json',
+        };
 
         if (currentUser !== null) {
-            requestHeaders["Authorization"] = `Bearer ${currentUser.jwt}`
-            requestHeaders["X-User-UID"] = currentUser.uid
+            requestHeaders.Authorization = `Bearer ${currentUser.jwt}`;
+            requestHeaders['X-User-UID'] = currentUser.uid;
         }
 
-        if (!!HelloDoctorHTTPClient.API_KEY) {
-            requestHeaders["X-Api-Key"] = HelloDoctorHTTPClient.API_KEY
+        if (HelloDoctorHTTPClient.API_KEY) {
+            requestHeaders['X-Api-Key'] = HelloDoctorHTTPClient.API_KEY;
         }
 
         return requestHeaders;
@@ -67,14 +67,14 @@ export class HelloDoctorHTTPClient {
         }
 
         if (currentUser?.uid === null && !currentUser.refreshToken) {
-            throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available')
+            throw new Error('[refreshAccessToken] cannot refresh access token: no user and/or refresh token available');
         } else if (!currentUser?.refreshToken) {
             return;
         }
 
         const authenticationResponse = await this.post(`/users/${currentUser.uid}/_authenticate`, {refreshToken: currentUser.refreshToken});
-        currentUser.jwt = authenticationResponse.jwt
-        currentUser.refreshToken = authenticationResponse.refreshToken
+        currentUser.jwt = authenticationResponse.jwt;
+        currentUser.refreshToken = authenticationResponse.refreshToken;
     }
 
 }

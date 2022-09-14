@@ -1,11 +1,17 @@
-import React, {useState, useEffect} from 'react';
-import HDVideoCallView from './HDVideoCallView';
+import React, {useState, useEffect, ReactElement} from 'react';
+import VideoCallView from './VideoCallView';
 import {LocalVideoView} from './native';
 import {getIncomingCall} from '../../telecom/connectionManager';
 import {navigateOnEndCall} from '../../telecom/eventHandlers';
 import videoServiceApi from '../../api/video';
 
-export default function HDVideoCall(props) {
+type VideoCallProps = {
+    videoRoomSID: string;
+    consultationID: string;
+    accessToken: string;
+}
+
+export default function VideoCall(props: VideoCallProps): ReactElement {
     const [videoRoomSID, setVideoRoomSID] = useState(props.videoRoomSID);
     const [consultationID, setConsultationID] = useState(props.consultationID);
     const [accessToken, setAccessToken] = useState(props.accessToken);
@@ -29,7 +35,7 @@ export default function HDVideoCall(props) {
                 console.warn(
                     '[HDVideoCall:doBootstrapCall] no incoming call found',
                 );
-                navigateOnEndCall();
+                navigateOnEndCall(consultationID, videoRoomSID);
                 return;
             }
 
@@ -47,7 +53,7 @@ export default function HDVideoCall(props) {
                     '[HDVideoCall:doRequestAccessToken] aborting call due to error:',
                     error,
                 );
-                navigateOnEndCall();
+                navigateOnEndCall(consultationID, videoRoomSID);
             });
     }
 
@@ -57,7 +63,7 @@ export default function HDVideoCall(props) {
                 <LocalVideoView style={{width: '100%', height: '100%'}} />
             )}
             {accessToken && (
-                <HDVideoCallView
+                <VideoCallView
                     videoRoomSID={videoRoomSID}
                     consultationID={consultationID}
                     accessToken={accessToken}

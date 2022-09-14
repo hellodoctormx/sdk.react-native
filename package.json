@@ -1,7 +1,19 @@
 {
   "name": "@hellodoctor/react-native-sdk",
-  "version": "0.6.18",
+  "version": "0.7.0",
   "private": false,
+  "description": "HelloDoctor public SDK for React Native applications",
+  "repository": "git@github.com:hellodoctormx/sdk.react-native.git",
+  "author": "Daniel Sarfati <daniel@hellodoctor.com.mx>",
+  "license": "GPL-3.0 License",
+  "main": "./dist/index.js",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist",
+    "android",
+    "ios",
+    "RNHelloDoctor.podspec"
+  ],
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
@@ -54,10 +66,5 @@
   },
   "jest": {
     "preset": "react-native"
-  },
-  "description": "HelloDoctor public SDK for React Native applications",
-  "main": "index.js",
-  "repository": "git@github.com:hellodoctormx/sdk.react-native.git",
-  "author": "Daniel Sarfati <daniel@hellodoctor.com.mx>",
-  "license": "GPL-3.0 License"
+  }
 }

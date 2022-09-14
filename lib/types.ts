@@ -1,4 +1,4 @@
-import {NativeModule} from "react-native";
+import {NativeModule} from 'react-native';
 
 interface RNHelloDoctorModuleInterface extends NativeModule {
     configure: (apiKey?: string, serviceHost?: string) => Promise<void>
@@ -9,15 +9,45 @@ interface RNHelloDoctorModuleInterface extends NativeModule {
     rejectIncomingCallNotification: () => Promise<void>
 }
 
-declare module "react-native" {
+declare module 'react-native' {
     interface NativeModulesStatic {
         RNHelloDoctorModule: RNHelloDoctorModuleInterface
     }
 }
 
+export interface ConfigOptions {
+    appName: string
+    apiKey?: string
+    serviceHost: string
+    onAnswerCall: (consultationID: string, videoRoomSID: string, accessToken: string) => void
+    onEndCall: (consultationID: string, videoRoomSID: string) => void
+    onIncomingCall?: () => void
+    ios: {
+        onRegisterPushKitToken: (token: string) => void
+    }
+}
+
+export type VideoCallNotification = {
+    videoRoomSID: string;
+    consultationID: string;
+    callerDisplayName: string;
+    callerPhotoURL?: string;
+}
+
+export type PushKitCallNotification = VideoCallNotification & {
+    callUUID: string;
+}
+
+export interface User {
+    uid: string
+    jwt?: string
+    isThirdParty: boolean
+    refreshToken?: string
+}
+
 export enum ConsultationType {
-    VIDEO = "video",
-    CHAT = "chat",
+    VIDEO = 'video',
+    CHAT = 'chat',
 }
 
 export type Consultation = {
@@ -53,4 +83,18 @@ export type PractitionerProfile = UserProfile & {
 export type PractitionerSpecialty = {
     id: string
     display: string
+}
+
+export type VideoCall = {
+    uuid: string;
+    videoRoomSID: string;
+    consultationID: string;
+    caller: VideoCallParticipant;
+    status: string;
+    isCallMuted: boolean;
+    isCallHeld: boolean;
+}
+
+export type VideoCallParticipant = {
+    displayName: string;
 }
