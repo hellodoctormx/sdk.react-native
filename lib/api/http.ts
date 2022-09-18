@@ -1,5 +1,5 @@
 import {getCurrentUser} from '../users/currentUser';
-import HDConfig from '../HDConfig';
+import HDConfig from '../config';
 
 export class HelloDoctorHTTPClient {
     static API_KEY: string = '';
@@ -52,8 +52,8 @@ export class HelloDoctorHTTPClient {
             requestHeaders['X-User-UID'] = currentUser.uid;
         }
 
-        if (HelloDoctorHTTPClient.API_KEY) {
-            requestHeaders['X-Api-Key'] = HelloDoctorHTTPClient.API_KEY;
+        if (HDConfig.apiKey) {
+            requestHeaders['X-Api-Key'] = HDConfig.apiKey;
         }
 
         return requestHeaders;
@@ -76,7 +76,6 @@ export class HelloDoctorHTTPClient {
         currentUser.jwt = authenticationResponse.jwt;
         currentUser.refreshToken = authenticationResponse.refreshToken;
     }
-
 }
 
 export const nullSafeJsonResponse = (response: Response) => {

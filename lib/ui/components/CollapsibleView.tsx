@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {PropsWithChildren, ReactElement} from 'react';
+import {PropsWithChildren, ReactElement, RefObject, useEffect, useRef} from 'react';
 import {Animated} from 'react-native';
 
 type CollapsibleViewProps = PropsWithChildren<any> & {
@@ -12,18 +12,23 @@ export default function CollapsibleView(props: CollapsibleViewProps): ReactEleme
     // reads better in the context of "expanding" but the component name makes more sense in the context of "collapsing".
     // Anyway, whatever.
 
-    const viewRef = React.useRef({});
+    const viewRef = useRef<RefObject<typeof Animated.View>>();
 
-    const expandedMaxAxis = React.useRef(new Animated.Value(0)).current;
-    const expandedOpacity = React.useRef(new Animated.Value(0)).current;
+    const expandedMaxAxis = useRef(new Animated.Value(0)).current;
+    const expandedOpacity = useRef(new Animated.Value(0)).current;
 
-    const maxAxisRef = React.useRef(props.horizontal ? props.maxWidth || 128 : props.maxHeight);
+    const maxAxisRef = useRef(props.horizontal ? props.maxWidth || 128 : props.maxHeight);
 
     const delay = props.delay || 0;
     const expandDuration = props.duration || props.maxHeight < 400 ? 500 : 900;
 
     const doExpand = () => Animated.parallel([
-        Animated.timing(expandedMaxAxis, {toValue: !maxAxisRef.current ? 10000 : maxAxisRef.current, duration: expandDuration, delay, useNativeDriver: false}),
+        Animated.timing(expandedMaxAxis, {
+            toValue: !maxAxisRef.current ? 10000 : maxAxisRef.current,
+            duration: expandDuration,
+            delay,
+            useNativeDriver: false,
+        }),
         Animated.timing(expandedOpacity, {toValue: 1, duration: 500, delay, useNativeDriver: false}),
     ]).start(props.onExpand);
 
@@ -32,7 +37,7 @@ export default function CollapsibleView(props: CollapsibleViewProps): ReactEleme
         Animated.timing(expandedOpacity, {toValue: 0, duration: 200, useNativeDriver: false}),
     ]).start(props.onCollapse);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (props.isCollapsed) {
             doCollapse();
         } else {
@@ -40,7 +45,7 @@ export default function CollapsibleView(props: CollapsibleViewProps): ReactEleme
         }
     }, [props.isCollapsed]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (props.forwardRef) {
             props.forwardRef(viewRef.current);
         }
@@ -59,7 +64,7 @@ export default function CollapsibleView(props: CollapsibleViewProps): ReactEleme
 
     return (
         <Animated.View
-            ref={(ref) => {
+            ref={(ref: React.RefObject<typeof Animated.View> | undefined) => {
                 viewRef.current = ref;
             }}
             onLayout={({nativeEvent}) => {

@@ -1,8 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {PropsWithChildren, ReactElement, RefObject, useEffect, useRef, useState} from 'react';
 import {Animated} from 'react-native';
 
+type HideableViewProps = PropsWithChildren & {
+    forwardRef: (ref: RefObject<typeof Animated.View>) => void;
+    isHidden: boolean;
+    style?: Object;
+}
 
-export default function HideableView(props) {
+export default function HideableView(props: HideableViewProps): ReactElement {
     const [isHidden, setIsHidden] = useState(props.isHidden);
 
     const animatedOpacity = useRef(new Animated.Value(0)).current;

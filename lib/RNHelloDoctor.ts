@@ -1,11 +1,11 @@
 import {NativeModules, Platform} from 'react-native';
-import {HelloDoctorHTTPClient} from './api/http';
 import usersAPI from './api/users';
 import videoAPI from './api/video';
 import * as connectionManager from './telecom/connectionManager';
 import * as connectionService from './telecom/connectionService';
 import * as eventHandlers from './telecom/eventHandlers';
 import * as auth from './users/auth';
+import * as pingService from './services/ping.service';
 import * as schedulingService from './services/scheduling.service';
 import * as currentUser from './users/currentUser';
 import HDConfig from './config';
@@ -21,8 +21,6 @@ export namespace RNHelloDoctor {
 
         Object.assign(HDConfig, config);
 
-        HelloDoctorHTTPClient.API_KEY = config.apiKey!;
-
         switch (Platform.OS) {
         case 'android':
             await RNHelloDoctorModule.configure(config.apiKey, config.serviceHost);
@@ -32,23 +30,9 @@ export namespace RNHelloDoctor {
             break;
         }
 
+        await pingService.ping();
+
         return;
-    }
-
-    export async function signIn(userID: string, serverAuthToken: string) {
-        await auth.signIn(userID, serverAuthToken);
-
-        if (Platform.OS === 'ios') {
-            connectionService.bootstrap();
-        }
-    }
-
-    export async function signInWithJWT(userID: string, jwt: string) {
-        await auth.signInWithJWT(userID, jwt);
-
-        if (Platform.OS === 'ios') {
-            connectionService.bootstrap();
-        }
     }
 
     export function teardown() {
@@ -56,6 +40,22 @@ export namespace RNHelloDoctor {
     }
 
     export namespace users {
+        export async function signIn(userID: string, serverAuthToken: string) {
+            await auth.signIn(userID, serverAuthToken);
+
+            if (Platform.OS === 'ios') {
+                connectionService.bootstrap();
+            }
+        }
+
+        export async function signInWithJWT(userID: string, jwt: string) {
+            await auth.signInWithJWT(userID, jwt);
+
+            if (Platform.OS === 'ios') {
+                connectionService.bootstrap();
+            }
+        }
+
         export function getCurrentUser() {
             return currentUser.getCurrentUser();
         }

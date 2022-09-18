@@ -1,6 +1,6 @@
 {
   "name": "@hellodoctor/react-native-sdk",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": false,
   "description": "HelloDoctor public SDK for React Native applications",
   "repository": "git@github.com:hellodoctormx/sdk.react-native.git",

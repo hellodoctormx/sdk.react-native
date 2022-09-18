@@ -37,10 +37,14 @@ export const HelloDoctorFonts = {
 export function alpha(color: string, alphaAmount: number): string {
     const rgb = hexToRgb(color);
 
+    if (rgb === null) {
+        return color;
+    }
+
     return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alphaAmount})`;
 }
 
-function hexToRgb(hex): {r: number, g: number, b: number} {
+function hexToRgb(hex: string): {r: number, g: number, b: number} | null {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
     return result ? {
