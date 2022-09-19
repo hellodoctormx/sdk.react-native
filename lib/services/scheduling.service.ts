@@ -1,5 +1,6 @@
 import {HelloDoctorHTTPClient} from '../api/http';
 import {SchedulingAvailability} from '../types';
+import {pingIntegrationStep} from "../utils/integration.utils";
 
 type GetAvailabilityResponse = {
     availableTimes: Array<ResponseAvailability>
@@ -22,11 +23,21 @@ export function getAvailability(requestMode: string, specialty: string, startTim
         }
 
         return getAvailabilityResponse.availableTimes.map(serializeSchedulingAvailability);
-    });
+    })
+        .then((response) => {
+            pingIntegrationStep('availability-retrieved');
+
+            return response;
+        });
 }
 
 export function requestConsultation(requestMode: string, specialty: string, startTime: Date, reason: string): Promise<void> {
-    return httpClient.post('/scheduling/_request', {requestMode, specialty, startTime, reason});
+    return httpClient.post('/scheduling/_request', {requestMode, specialty, startTime, reason})
+        .then((response) => {
+            pingIntegrationStep('consultation-scheduled');
+
+            return response;
+        });
 }
 
 export function getUserConsultations(limit: number) {

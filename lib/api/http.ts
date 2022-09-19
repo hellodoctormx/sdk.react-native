@@ -2,8 +2,6 @@ import {getCurrentUser} from '../users/currentUser';
 import HDConfig from '../config';
 
 export class HelloDoctorHTTPClient {
-    static API_KEY: string = '';
-
     async get(path: string) {
         return this.doRequest(path, 'GET');
     }
@@ -52,8 +50,9 @@ export class HelloDoctorHTTPClient {
             requestHeaders['X-User-UID'] = currentUser.uid;
         }
 
-        if (HDConfig.apiKey) {
-            requestHeaders['X-Api-Key'] = HDConfig.apiKey;
+        if (HDConfig.appID) {
+            requestHeaders['X-App-ID'] = HDConfig.appID!;
+            requestHeaders['X-Api-Key'] = HDConfig.apiKey!;
         }
 
         return requestHeaders;

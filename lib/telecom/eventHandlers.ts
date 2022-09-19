@@ -6,6 +6,7 @@ import {endVideoCall} from './connectionManager';
 import * as activeCallManager from './activeCallManager';
 import HDConfig from '../config';
 import {PushKitCallNotification} from '../types';
+import {pingIntegrationStep} from "../utils/integration.utils";
 
 const {RNHelloDoctorModule} = NativeModules;
 
@@ -51,6 +52,8 @@ export async function handleVideoCallEndedNotification(videoRoomSID: string) {
 
         await endVideoCall(videoRoomSID);
     }
+
+    pingIntegrationStep('video-call-ended');
 }
 
 let appStateChangeSubscription: NativeEventSubscription | undefined;

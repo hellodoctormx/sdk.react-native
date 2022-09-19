@@ -15,15 +15,17 @@ declare module 'react-native' {
     }
 }
 
-export interface ConfigOptions {
-    appName: string
-    apiKey?: string
-    serviceHost: string
-    onAnswerCall: (consultationID: string, videoRoomSID: string, accessToken: string) => void
-    onEndCall: (consultationID: string, videoRoomSID: string) => void
-    onIncomingCall?: () => void
+export type ConfigOptions = {
+    mode: 'integration' | 'development' | 'production';
+    appID: string;
+    appName: string;
+    apiKey?: string;
+    serviceHost: string;
+    onAnswerCall: (consultationID: string, videoRoomSID: string, accessToken: string) => void;
+    onEndCall: (consultationID: string, videoRoomSID: string) => void;
+    onIncomingCall?: () => void;
     ios: {
-        onRegisterPushKitToken: (token: string) => void
+        onRegisterPushKitToken: (token: string) => void;
     }
 }
 

@@ -2,7 +2,7 @@ import React, {PropsWithChildren, ReactElement, RefObject, useEffect, useRef, us
 import {Animated} from 'react-native';
 
 type HideableViewProps = PropsWithChildren & {
-    forwardRef: (ref: RefObject<typeof Animated.View>) => void;
+    forwardRef?: (ref: RefObject<typeof Animated.View>) => void;
     isHidden: boolean;
     style?: Object;
 }

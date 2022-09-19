@@ -1,6 +1,8 @@
 import {ConfigOptions} from './types';
 
 const config: ConfigOptions = {
+    mode: 'integration',
+    appID: '',
     appName: '',
     apiKey: undefined,
     serviceHost: '',

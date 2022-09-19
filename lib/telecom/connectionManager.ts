@@ -5,6 +5,7 @@ import VideoService from '../api/video';
 import {navigateOnEndCall} from './eventHandlers';
 import {AppRegistry, NativeModules, Platform} from 'react-native';
 import {VideoCall, VideoCallParticipant} from '../types';
+import {pingIntegrationStep} from "../utils/integration.utils";
 
 const {RNHelloDoctorModule} = NativeModules;
 
@@ -130,6 +131,8 @@ export async function rejectVideoCall(videoRoomSID: string) {
     await VideoService.endVideoCall(videoRoomSID);
 
     RNCallKeep.rejectCall(call.uuid);
+
+    pingIntegrationStep('video-call-rejected');
 }
 
 export async function registerPushKitCall(notification: {callUUID: string, videoRoomSID: string, consultationID: string, callerDisplayName: string}) {

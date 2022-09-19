@@ -4,35 +4,35 @@ import {createContext, useContext, useEffect, useState} from 'react';
 import { ConsultationType, SchedulingAvailability } from '../../types';
 
 type ISchedulingContext = {
-    availability: Array<SchedulingAvailability>
+    availability: Array<SchedulingAvailability> | undefined
     setAvailability: (availability: Array<SchedulingAvailability>) => void
     checkIsRequestReady: () => void
     isRequestReady: boolean
     setIsRequestReady: (isRequestReady: boolean) => void
-    consultationType: ConsultationType
-    setConsultationType: (consultationType: ConsultationType) => void
-    scheduledStart: Date
-    setScheduledStart: (scheduledStart: Date) => void
-    consultationReason: string
-    setConsultationReason: (consultationReason: string) => void
-    consultationSpecialty: string
-    setConsultationSpecialty: (consultationSpecialty: string) => void
+    consultationType: ConsultationType | undefined
+    setConsultationType: (consultationType: ConsultationType | undefined) => void
+    scheduledStart: Date | undefined
+    setScheduledStart: (scheduledStart: Date | undefined) => void
+    consultationReason: string | undefined
+    setConsultationReason: (consultationReason: string | undefined) => void
+    consultationSpecialty: string | undefined
+    setConsultationSpecialty: (consultationSpecialty: string | undefined) => void
 }
 
 const SchedulingContext = createContext<ISchedulingContext>({
     availability: undefined,
-    setAvailability: undefined,
-    checkIsRequestReady: undefined,
-    isRequestReady: undefined,
-    setIsRequestReady: undefined,
-    consultationType: undefined,
-    setConsultationType: undefined,
-    scheduledStart: undefined,
-    setScheduledStart: undefined,
+    checkIsRequestReady(): void {},
     consultationReason: undefined,
-    setConsultationReason: undefined,
     consultationSpecialty: undefined,
-    setConsultationSpecialty: undefined,
+    consultationType: undefined,
+    isRequestReady: false,
+    scheduledStart: undefined,
+    setAvailability(): void {},
+    setConsultationReason(): void {},
+    setConsultationSpecialty(): void {},
+    setConsultationType(): void {},
+    setIsRequestReady(): void {},
+    setScheduledStart(): void {},
 });
 
 export function useSchedulingContext(): ISchedulingContext {
@@ -43,7 +43,7 @@ export function SchedulingContextProvider(props: PropsWithChildren<any>): ReactE
     const [availability, setAvailability] = useState<Array<SchedulingAvailability>>([]);
     const [consultationType, setConsultationType] = useState<ConsultationType>();
     const [scheduledStart, setScheduledStart] = useState<Date>();
-    const [consultationReason, setConsultationReason] = useState<string>('Temporary reason for testing.');
+    const [consultationReason, setConsultationReason] = useState<string | undefined>('Temporary reason for testing.');
     const [consultationSpecialty, setConsultationSpecialty] = useState<string>();
 
     const [isRequestReady, setIsRequestReady] = useState(false);
@@ -59,9 +59,9 @@ export function SchedulingContextProvider(props: PropsWithChildren<any>): ReactE
 
     function checkIsRequestReady() {
         const updatedIsRequestReady = consultationSpecialty !== undefined
-            && Object.values(ConsultationType).includes(consultationType)
+            && Object.values(ConsultationType).includes(consultationType!)
             && (scheduledStart !== undefined || consultationType === 'chat')
-            && consultationReason?.length > 0;
+            && consultationReason !== undefined && consultationReason.length > 0;
 
         setIsRequestReady(updatedIsRequestReady);
 

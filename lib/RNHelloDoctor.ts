@@ -5,20 +5,17 @@ import * as connectionManager from './telecom/connectionManager';
 import * as connectionService from './telecom/connectionService';
 import * as eventHandlers from './telecom/eventHandlers';
 import * as auth from './users/auth';
-import * as pingService from './services/ping.service';
 import * as schedulingService from './services/scheduling.service';
 import * as currentUser from './users/currentUser';
 import HDConfig from './config';
 import {ConfigOptions, VideoCallNotification} from './types';
+import {pingIntegrationStep} from './utils/integration.utils';
 
 const {RNHelloDoctorModule} = NativeModules;
 
-export let appName: string;
-
 export namespace RNHelloDoctor {
-    export async function configure(config: ConfigOptions) {
-        appName = config.appName;
 
+    export async function configure(config: ConfigOptions): Promise<void> {
         Object.assign(HDConfig, config);
 
         switch (Platform.OS) {
@@ -30,7 +27,7 @@ export namespace RNHelloDoctor {
             break;
         }
 
-        await pingService.ping();
+        pingIntegrationStep('sdk-configured');
 
         return;
     }
@@ -46,6 +43,8 @@ export namespace RNHelloDoctor {
             if (Platform.OS === 'ios') {
                 connectionService.bootstrap();
             }
+
+            pingIntegrationStep('user-authenticated');
         }
 
         export async function signInWithJWT(userID: string, jwt: string) {
@@ -83,7 +82,12 @@ export namespace RNHelloDoctor {
         export function handleIncomingVideoCallNotification(videoCallPayload: VideoCallNotification) {
             const {videoRoomSID, consultationID, callerDisplayName, callerPhotoURL} = videoCallPayload;
 
-            return eventHandlers.handleIncomingVideoCallNotification(videoRoomSID, consultationID, callerDisplayName, callerPhotoURL);
+            return eventHandlers.handleIncomingVideoCallNotification(videoRoomSID, consultationID, callerDisplayName, callerPhotoURL)
+                .then((response) => {
+                    pingIntegrationStep('video-call-received');
+
+                    return response;
+                });
         }
 
         export function handleIncomingVideoCallNotificationRejected() {
@@ -96,12 +100,12 @@ export namespace RNHelloDoctor {
             connectionManager.rejectVideoCall(incomingCall.videoRoomSID).catch(console.warn);
         }
 
-        export function registerVideoCall(videoRoomSID: string, consultationID: string, callerDisplayName: string): Promise<any> {
-            return connectionManager.registerVideoCall(undefined, videoRoomSID, consultationID, {displayName: callerDisplayName});
-        }
-
         export function handleVideoCallEndedNotification(videoRoomSID: string) {
             return eventHandlers.handleVideoCallEndedNotification(videoRoomSID);
+        }
+
+        export function registerVideoCall(videoRoomSID: string, consultationID: string, callerDisplayName: string): Promise<any> {
+            return connectionManager.registerVideoCall(undefined, videoRoomSID, consultationID, {displayName: callerDisplayName});
         }
 
         export function startVideoCall(videoRoomSID: string) {

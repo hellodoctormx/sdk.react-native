@@ -1,33 +1,16 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React, {ReactElement, useEffect, useState} from 'react';
-import {
-    ActivityIndicator,
-    Pressable,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {ActivityIndicator, Pressable, ScrollView, Text, TouchableOpacity, View,} from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
 
-import {
-    ConsultationType,
-    PractitionerSpecialty,
-    SchedulingAvailability,
-} from '../../types';
-import {
-    alpha,
-    HelloDoctorColors,
-    HelloDoctorFonts,
-    ThemeColors,
-} from '../theme';
+import {ConsultationType, PractitionerSpecialty, SchedulingAvailability,} from '../../types';
+import {alpha, HelloDoctorColors, HelloDoctorFonts, ThemeColors,} from '../theme';
 import Button from '../components/Button';
 import CollapsibleView from '../components/CollapsibleView';
 import HideableView from '../components/HideableView';
 import {SpecialtyIcon} from '../components/icons/specialties.icons';
 import Modal from '../components/Modal';
-import TextInput from '../components/TextInput';
 
 import * as service from '../../services/scheduling.service';
 import {useSchedulingContext} from './scheduling.context';
@@ -67,9 +50,9 @@ export function SchedulingSection(props: SchedulingSectionProps): ReactElement {
         service
             .requestConsultation(
                 'callCenter',
-                consultationSpecialty,
-                scheduledStart,
-                consultationReason,
+                consultationSpecialty!,
+                scheduledStart!,
+                consultationReason!,
             )
             .then(props.onRequestConsultationSuccess)
             .catch(props.onRequestConsultationError)
@@ -140,8 +123,7 @@ type CallCenterSpecialtyOptionProps = {
 };
 
 function CallCenterSpecialtyOption(props: CallCenterSpecialtyOptionProps): ReactElement {
-    const {consultationSpecialty, setConsultationSpecialty} =
-        useSchedulingContext();
+    const {consultationSpecialty, setConsultationSpecialty} = useSchedulingContext();
 
     const isSelectedOption = consultationSpecialty === props.option.id;
 
@@ -168,7 +150,6 @@ function CallCenterSpecialtyOption(props: CallCenterSpecialtyOptionProps): React
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <HideableView
                         isHidden={isSelectedOption}
-                        horizontal={true}
                         style={{
                             width: 48,
                             alignItems: 'center',
@@ -286,7 +267,7 @@ function getMonthRange(forDate: Date): MonthRange {
 export function ScheduledStartSelection(): ReactElement {
     const {consultationSpecialty, scheduledStart, setScheduledStart} = useSchedulingContext();
 
-    const [selectedDate, setSelectedDate] = useState<Date>(scheduledStart);
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>(scheduledStart);
     const [currentMonthRange, setCurrentMonthRange] = useState<MonthRange>(getMonthRange(new Date()));
     const [availableTimes, setAvailableTimes] = useState<Array<SchedulingAvailability>>([]);
     const [disabledDates, setDisabledDates] = useState<Array<Date>>([]);
@@ -603,19 +584,5 @@ export function SelectableAvailability(props: SelectableAvailabilityProps): Reac
                 </Text>
             </TouchableOpacity>
         </View>
-    );
-}
-
-function ConsultationReasonInput(): ReactElement {
-    const [consultationReason, setConsultationReason] = useState<string>('');
-    console.debug('[ConsultationReasonInput]', {consultationReason});
-    return (
-        <TextInput
-            placeholder={'Razón de la consulta'}
-            value={'FUCK YOU'}
-            onChangeText={reason => {
-                console.debug('WHY THE FUCK', reason);
-            }}
-        />
     );
 }

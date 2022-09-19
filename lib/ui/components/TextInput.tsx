@@ -51,7 +51,7 @@ export default function TextInput(props: TextInputProps): ReactElement {
 
     const containerRef = useRef<TouchableOpacity>();
     const layoutRef = useRef({});
-    const inputRef = useRef<RNTextInput>();
+    const inputRef = useRef<Partial<RNTextInput>>();
 
     const isValid =
         props.minLength && props.required
@@ -65,6 +65,12 @@ export default function TextInput(props: TextInputProps): ReactElement {
     useEffect(() => {
         setValue(props.value);
     }, [props.value]);
+
+    useEffect(() => {
+        if (value !== undefined) {
+            props.onChangeText!(value);
+        }
+    }, [value]);
 
     const doFocusAnimation = () =>
         Animated.parallel([
@@ -116,7 +122,6 @@ export default function TextInput(props: TextInputProps): ReactElement {
 
     function handleOnChangeText() {
         setValue(value);
-        props.onChangeText(value);
     }
 
     const handleOnFocus = (
@@ -128,7 +133,7 @@ export default function TextInput(props: TextInputProps): ReactElement {
             props.onFocus(event);
         }
 
-        if (!_.isEmpty(props.scrollRef)) {
+        if (props.scrollRef !== undefined) {
             const scrollableNode = props.scrollRef.getScrollableNode();
 
             if (
@@ -145,10 +150,12 @@ export default function TextInput(props: TextInputProps): ReactElement {
                 containerRef.current?.measureLayout(
                     scrollableNode,
                     (left, top, _width, _height) => {
-                        const scrollMarginTop = props.scrollMarginTop || 128;
-                        const scrollToY = top - scrollMarginTop;
-                        console.debug('scrollToY', scrollToY);
-                        props.scrollRef.scrollTo({y: scrollToY});
+                        if (props.scrollRef !== undefined) {
+                            const scrollMarginTop = props.scrollMarginTop || 128;
+                            const scrollToY = top - scrollMarginTop;
+                            console.debug('scrollToY', scrollToY);
+                            props.scrollRef.scrollTo({y: scrollToY});
+                        }
                     },
                     () => {
                         console.warn(
@@ -177,16 +184,11 @@ export default function TextInput(props: TextInputProps): ReactElement {
         }
     }
 
-    const setInputRef = ref => {
-        inputRef.current =
-            props.editable !== false
-                ? ref
-                : {
-                    focus: handleOnFocus,
-                    blur: handleOnBlur,
-                };
+    const setInputRef = (ref: RNTextInput) => {
+        inputRef.current = ref;
 
         if (props.forwardRef) {
+            // @ts-ignore
             props.forwardRef(inputRef.current);
         }
     };
@@ -196,7 +198,9 @@ export default function TextInput(props: TextInputProps): ReactElement {
             return;
         }
 
-        inputRef.current.focus();
+        if (inputRef.current?.focus !== undefined) {
+            inputRef.current.focus();
+        }
 
         if (props.onPress) {
             props.onPress();
@@ -216,8 +220,8 @@ export default function TextInput(props: TextInputProps): ReactElement {
     return props.isHidden ? null : (
         <TouchableOpacity
             onPress={handleOnPress}
-            ref={ref => {
-                containerRef.current = ref;
+            ref={(ref) => {
+                containerRef.current = ref || undefined;
             }}
             onLayout={({nativeEvent}) => {
                 layoutRef.current = nativeEvent.layout;
@@ -308,7 +312,7 @@ export default function TextInput(props: TextInputProps): ReactElement {
                 <HideableView
                     isHidden={
                         !props.required ||
-                        props.icon ||
+                        !!props.icon ||
                         props.display === 'none'
                     }>
                     <CollapsibleView
